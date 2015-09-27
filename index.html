@@ -1,0 +1,173 @@
+<!doctype html>
+<html ng-app="app">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LiveCoding.tv Notifier</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <style>
+        /* Inline CSS for now because YOLO */
+        .stream {
+            background-color: #f1f1f1;
+        }
+        header {
+            padding: 10px;
+            background-color: #161a1e;
+            min-height: 0 !important;
+            color: #768e9e;
+            border: 1px solid transparent !important;
+        }
+        header .search {
+            position: relative;
+        }
+        header .search input {
+            /*background-color: #22282e;*/
+            color: #768e9e;
+        }
+        header .search .glyphicon {
+            position: absolute;
+            right: 6px;
+            top: 6px;
+        }
+        nav ul {
+            width: 50px;
+            position: fixed;
+            top: 40px;
+            height: 100%;
+            background: #22282e;
+        }
+        main {
+            padding-left: 50px;
+            padding-top: 50px;
+            margin: 10px;
+        }
+        nav .glyphicon {
+            font-size: 20px;
+            text-align: center;
+            top: 0;
+            padding: 0;
+            line-height: 25px !important;
+            color: #929497;
+        }
+        nav .active, nav a:hover, nav a:focus {
+            background-color: #313d43 !important;
+        }
+        nav .active a {
+            color: #1976d2;
+        }
+        h1 {
+            display: inline-block;
+            border-bottom: 2px solid;
+            border-color: #1976d2;
+            margin: 0 0 20px;
+            font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            /*font-size: 15px;*/
+            /*font-weight: 700;*/
+        }
+        h2 {
+            font-size: 20px;
+            margin: 0;
+        }
+        h3 {
+            font-size: 20px;
+            margin: 0;
+        }
+        main .streams .stream {
+            margin-bottom: 10px;
+        }
+        main .streams .stream .image {
+            position: relative;
+            padding: 0;
+        }
+        main .streams .stream .image i {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+    </style>
+</head>
+
+<body ng-controller="streamViewerCtrl" class="">
+
+    <header class="navbar navbar-fixed-top container">
+        <!--<div class="pull-left">-->
+            <div class="search pull-left">
+                <input type="text" ng-model="filterInput" placeholder="filter"/>
+
+                <i class="glyphicon" ng-class="filterInput ? 'glyphicon-remove' : 'glyphicon-search'"></i>
+            </div>
+        <!--</div>-->
+
+        <!--<div class="pull-right">-->
+            <!--<i class="glyphicon glyphicon-log-in"></i>-->
+            <!--<i class="glyphicon glyphicon-refresh"></i>-->
+            <!--<i class="glyphicon glyphicon-cog"></i>-->
+        <!--</div>-->
+    </header>
+
+    <nav class="container">
+        <ul class="nav navbar-nav">
+            <li ng-class="{active: category == 'follow'}">
+                <a href="#" class="glyphicon glyphicon-heart" ng-click="category = 'follow'"></a>
+            </li>
+            <li ng-class="{active: category == 'language'}">
+                <a href="#" class="glyphicon glyphicon-tags" ng-click="category = 'language'"></a>
+            </li>
+            <li ng-class="{active: category == 'country'}">
+                <a href="#" class="glyphicon glyphicon-globe" ng-click="category = 'country'"></a>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>{{category}}</h1>
+
+        <ul class="streams list-group">
+            <li class="container stream list-group-item"
+                ng-repeat="stream in streams |
+                filter:filter |
+                orderBy:stream.views">
+
+                <div class="image col-xs-5">
+                    <i class="glyphicon" ng-class="stream.favorite ? 'glyphicon-heart' : 'glyphicon-heart-empty'"></i>
+                    <i class="glyphicon glyphicon-remove"></i>
+                    <!--<a class="glyphicon glyphicon-link" href="{{stream.url}}"></a>-->
+
+                    <img class="img-responsive" src="https://www.livecoding.tv/video/livestream/easyfuckingpeasy/thumbnail_250_140/" />
+                </div>
+
+                <div class="col-xs-7">
+                    <h2>{{stream.title}}</h2>
+                    <h3>{{stream.name}}</h3>
+                    <!--<h3>{{stream.country}}</h3>-->
+                    <!--<h3>{{stream.language}}</h3>-->
+                    <!--<h3>{{stream.viewers}}</h3>-->
+
+                    testtestetsset
+
+                    <div class="tags">
+                        <span ng-repeat="tag in stream.tags">{{tag}}</span>
+                    </div>
+                </div>
+            </li>
+
+
+        </ul>
+
+    </main>
+
+    <footer>
+
+    </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/streamService.js"></script>
+    <script src="js/storageService.js"></script>
+    <script src="js/streamViewerCtrl.js"></script>
+</body>
+
+</html>
