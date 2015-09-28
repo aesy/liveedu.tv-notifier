@@ -1,9 +1,8 @@
-angular.module("app").service("storageService", function($q) {
+app.service("storageService", ["$q", function($q) {
 
     return ({
         getSettings: getSettings,
         getSeen: getSeen,
-        addSeen: addSeen
     });
 
     function getSettings() {
@@ -18,9 +17,6 @@ angular.module("app").service("storageService", function($q) {
         });
     }
 
-    function addSeen() {
-    }
-
     function getAll() {
         var deffered = $q.defer();
         var name = "livecoding";
@@ -31,4 +27,4 @@ angular.module("app").service("storageService", function($q) {
 
         return deffered.promise;
     }
-});
+}]);

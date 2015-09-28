@@ -12,14 +12,56 @@ main {
     margin-bottom: 10px;
     background-color: #f1f1f1;
 
+    &:hover .image {
+      .buttons {
+        display: block;
+
+        .glyphicon {
+          background-color: rgba(0, 0, 0, .5);
+        }
+      }
+
+      img {
+        opacity: .9;
+      }
+    }
+
     .image {
       position: relative;
       padding: 0;
 
-      i {
-        position: absolute;
-        right: 20px;
-        top: 20px;
+      .buttons {
+        display: none;
+
+        .glyphicon {
+          position: absolute;
+          font-size: 20px;
+          border-radius: 20px;
+          padding: 5px;
+
+          &:hover {
+            background-color: purple;
+          }
+        }
+
+        .glyphicon-heart, .glyphicon-heart-empty {
+          left: 10px;
+          top: 10px;
+          color: red;
+        }
+
+        .glyphicon-remove {
+          right: 10px;
+          top: 10px;
+          color: black;
+        }
+
+        .glyphicon-link {
+          left: 10px;
+          top: auto;
+          bottom: 10px;
+          color: blue;
+        }
       }
     }
   }

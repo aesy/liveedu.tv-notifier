@@ -15,19 +15,17 @@
 <body ng-controller="streamViewerCtrl">
 
     <header>
-        <!--<div class="pull-left">-->
-            <div class="search pull-left">
-                <input type="text" ng-model="filterInput" placeholder="filter"/>
+        <div class="search pull-left">
+            <input type="text" ng-model="filterInput" placeholder="filter"/>
 
-                <i class="glyphicon" ng-class="filterInput ? 'glyphicon-remove' : 'glyphicon-search'"></i>
-            </div>
-        <!--</div>-->
+            <i class="glyphicon" ng-class="filterInput ? 'glyphicon-remove' : 'glyphicon-search'"></i>
+        </div>
 
-        <!--<div class="pull-right">-->
-            <!--<i class="glyphicon glyphicon-log-in"></i>-->
-            <!--<i class="glyphicon glyphicon-refresh"></i>-->
-            <!--<i class="glyphicon glyphicon-cog"></i>-->
-        <!--</div>-->
+        <div class="options pull-right">
+            <i class="glyphicon glyphicon-log-in"></i>
+            <i class="glyphicon glyphicon-refresh"></i>
+            <i class="glyphicon glyphicon-cog"></i>
+        </div>
     </header>
 
     <nav>
@@ -54,11 +52,13 @@
                 orderBy:stream.views">
 
                 <div class="image col-xs-5">
-                    <i class="glyphicon" ng-class="stream.favorite ? 'glyphicon-heart' : 'glyphicon-heart-empty'"></i>
-                    <i class="glyphicon glyphicon-remove"></i>
-                    <!--<a class="glyphicon glyphicon-link" href="{{stream.url}}"></a>-->
-
                     <img class="img-responsive" src="https://www.livecoding.tv/video/livestream/easyfuckingpeasy/thumbnail_250_140/" />
+
+                    <div class="buttons">
+                        <i class="glyphicon" ng-class="stream.favorite ? 'glyphicon-heart' : 'glyphicon-heart-empty'"></i>
+                        <i class="glyphicon glyphicon-remove"></i>
+                        <a class="glyphicon glyphicon-link" href="{{stream.url}}"></a>
+                    </div>
                 </div>
 
                 <div class="col-xs-7">
@@ -71,7 +71,7 @@
                     testtestetsset
 
                     <div class="tags">
-                        <span ng-repeat="tag in stream.tags">{{tag}}</span>
+                        <span class="tag tag-{{tag|lowercase}}" ng-repeat="tag in stream.tags">{{tag}}</span>
                     </div>
                 </div>
             </li>

@@ -1,11 +1,4 @@
-angular.module("app").service("streamService", function($http) {
-
-    return ({
-        getAllLive: getAllLive,
-        getAllScheduled: getAllScheduled,
-        getAllVideos: getAllVideos
-    });
-
+app.service("streamService", ["$http", function($http) {
     function getAllLive() {
         var request = $http.get('secret');
 
@@ -32,4 +25,9 @@ angular.module("app").service("streamService", function($http) {
         return response;
     }
 
-});
+    return ({
+        getAllLive: getAllLive,
+        getAllScheduled: getAllScheduled,
+        getAllVideos: getAllVideos
+    });
+}]);

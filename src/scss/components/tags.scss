@@ -1,0 +1,18 @@
+.tags {
+  display: inline-block;
+
+  .tag {
+    border: 1px solid transparent;
+    border-radius: 10px;
+    padding: 1px 5px;
+
+    &.tag-javascript {
+      border-color: red;
+      color: red;
+    }
+    &.tag-php {
+      border-color: purple;
+      color: purple;
+    }
+  }
+}

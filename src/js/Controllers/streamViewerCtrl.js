@@ -1,19 +1,19 @@
-angular.module("app").controller("streamViewerCtrl",
-    ["$scope", "streamService", "storageService", function($scope, stream, storage) {
+app.controller("streamViewerCtrl",
+    ["$scope", "$interval", "streamService", "storageService", "arrayUtils", function($scope, $interval, stream, storage, array) {
 
-    $scope.category = "language";
-    $scope.subcat = "C--";
+    $scope.category = "country";
+    $scope.subcat = "1";
     $scope.streams = [
         {
             title: "test1",
             name: "name1",
             language: "C--",
             url: "192.168.0.1",
-            favorite: true,
+            favorite: false,
             image: "",
             viewers: 2,
-            country: 'imagineland',
-            tags: []
+            country: '1',
+            tags: ["Javascript"]
         },
         {
             title: "test2",
@@ -23,8 +23,8 @@ angular.module("app").controller("streamViewerCtrl",
             favorite: true,
             image: "",
             viewers: 50,
-            country: 'fairyland',
-            tags: []
+            country: '1',
+            tags: ["PHP"]
         }
     ];
     $scope.filterInput = "";
@@ -39,21 +39,21 @@ angular.module("app").controller("streamViewerCtrl",
         var timeDiff = 0;
 
         var videos = stream.getAllLive();
-        //var seen = storageService.getSeen();
-        //var notSeen = [];
-        //
-        //for (var i in videos) {
-        //    var liveStream = videos[i];
-        //
-        //    for (var j in seen) {
-        //        var seenStream = seen[i];
-        //
-        //        if (seenStream.name == liveStream.name && (Date.now() - seenStream.time) < timeDiff) {
-        //            notSeen.push(liveStream);
-        //            break;
-        //        }
-        //    }
-        //}
+        var seen = storage.getSeen();
+        var notSeen = [];
+
+        for (var i in videos) {
+            var liveStream = videos[i];
+
+            for (var j in seen) {
+                var seenStream = seen[i];
+
+                if (seenStream.name == liveStream.name && (Date.now() - seenStream.time) < timeDiff) {
+                    notSeen.push(liveStream);
+                    break;
+                }
+            }
+        }
 
         $scope.notify();
     };
@@ -62,8 +62,10 @@ angular.module("app").controller("streamViewerCtrl",
         var values = [];
 
         if ($scope.filterInput) {
-            values.push(stream.name.indexOf($scope.filterInput) > -1);
-            values.push(stream.title.indexOf($scope.filterInput) > -1);
+            var name = array.contains($scope.filterInput, stream.name);
+            var title = array.contains($scope.filterInput, stream.title);
+
+            values.push(array.any([name, title]));
         }
 
         switch ($scope.category) {
@@ -78,17 +80,8 @@ angular.module("app").controller("streamViewerCtrl",
                 break;
         }
 
-        for (var i in values) {
-            if (!values[i]) {
-                return false;
-            }
-        }
-
-        return true;
+        return array.all(values);
     };
 
-    $scope.notify = function(streams) {
-        // play sound + notification
-    };
-
+    //$interval(function() { $scope.poll(); }, 30000);
 }]);
