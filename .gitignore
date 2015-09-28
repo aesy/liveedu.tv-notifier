@@ -1,2 +1,8 @@
 .idea
 .git*
+*.iml
+node_modules
+bower_components
+dist
+.build
+npm-debug.log

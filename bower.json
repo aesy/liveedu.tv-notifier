@@ -1,0 +1,8 @@
+{
+  "name": "LiveCodingChromeExtension",
+  "version": "0.0.1",
+  "dependencies": {
+    "bootstrap": "3.x",
+    "angular": "1.x"
+  }
+}

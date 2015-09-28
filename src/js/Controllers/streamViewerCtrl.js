@@ -89,6 +89,6 @@ angular.module("app").controller("streamViewerCtrl",
 
     $scope.notify = function(streams) {
         // play sound + notification
-    }
+    };
 
 }]);

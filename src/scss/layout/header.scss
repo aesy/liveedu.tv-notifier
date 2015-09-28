@@ -1,0 +1,32 @@
+$header-color: #161a1e;
+$header-height: 50px;
+$icon-color: #768e9e;
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+
+  padding: ($header-height - 22) / 2;
+  background-color: $header-color;
+  color: $icon-color;
+  //border-bottom: 1px solid black;
+
+  .search {
+    position: relative;
+
+    input {
+      background-color: #22282e;
+      color: #768e9e;
+      border: none;
+    }
+
+    .glyphicon {
+      position: absolute;
+      right: 5px;
+      top: 4px;
+    }
+  }
+}

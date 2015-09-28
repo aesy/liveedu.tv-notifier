@@ -1,0 +1,27 @@
+h1 {
+  display: inline-block;
+  margin: 0 0 20px;
+}
+
+main {
+  padding-left: 50px;
+  padding-top: 50px;
+  margin: 10px;
+
+  .streams .stream {
+    margin-bottom: 10px;
+    background-color: #f1f1f1;
+
+    .image {
+      position: relative;
+      padding: 0;
+
+      i {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+      }
+    }
+  }
+}
+
