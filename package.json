@@ -1,0 +1,32 @@
+{
+  "name": "LiveCodingChromeExtension",
+  "version": "0.0.1",
+  "description": "",
+  "repository": "",
+  "homepage": "",
+  "author": "EasyPeasy",
+  "devDependencies": {
+    "bower": "1.x",
+    "gulp": "3.x",
+    "gulp-autoprefixer": "3.x",
+    "gulp-clean": "0.3.x",
+    "gulp-concat": "2.x",
+    "gulp-imagemin": "2.x",
+    "gulp-jshint": "1.x",
+    "gulp-sass": "2.x",
+    "gulp-livereload": "3.x",
+    "gulp-minify-css": "1.x",
+    "gulp-ngmin": "0.3.x",
+    "gulp-rename": "1.x",
+    "gulp-replace": "0.5.x",
+    "gulp-uglify": "1.x",
+    "gulp-util": "3.x",
+    "gulp-webserver": "0.9.x",
+    "gulp-wrap": "0.11.x",
+    "jshint-stylish": "2.x"
+  },
+  "engines": {
+    "node": "0.12.7",
+    "npm": "2.11.3"
+  }
+}

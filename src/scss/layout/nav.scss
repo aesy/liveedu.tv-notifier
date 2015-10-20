@@ -10,10 +10,17 @@ nav {
   width: $nav-width;
   height: 100%;
   background: $nav-color;
+  z-index: 999;
   border-right: 1px solid black;
 
   ul {
     display: inline-block;
+
+    &.bottom {
+      position: absolute;
+      bottom: 0;
+      margin-bottom: 50px;
+    }
   }
 
   .glyphicon {
@@ -25,11 +32,23 @@ nav {
     color: #929497;
   }
 
-  .active a {
-    color: $btn-active-color;
-  }
+  li {
+    &:not(.active) a {
+      &:hover {
+        background-color: $btn-hover-color;
+        color: $btn-active-color;
+      }
 
-  .active, a:hover, a:focus {
-    background-color: $btn-hover-color !important;
+      &:focus {
+        background-color: initial;
+      }
+    }
+
+    &.active a {
+      &, &:hover, &:focus {
+        background-color: $btn-active-color;
+        color: white;
+      }
+    }
   }
 }

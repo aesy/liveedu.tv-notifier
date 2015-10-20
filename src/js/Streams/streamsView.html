@@ -1,0 +1,43 @@
+<ul class="streams list-group">
+    <p ng-if="streams.collection.length == 0" style="text-align: center; margin: 20px;">There is nothing here! :-(</p>
+
+    <li class="container-fluid stream animate list-group-item"
+        ng-repeat="stream in streams.collection |
+                    filter:streams.filter |
+                    orderBy:'-views'">
+
+        <div class="image pull-left">
+            <img class="img-responsive" ng-src="{{stream.thumbnail}}"/>
+
+            <div class="items">
+                <i class="glyphicon favorite"
+                   ng-mouseover="hover = true"
+                   ng-mouseleave="hover = false"
+                   tooltip-placement="right"
+                   tooltip="{{streams.isFavorite(stream.username) ? 'Remove Favorite' : 'Add Favorite'}}"
+                   ng-click="streams.toggleFavorite(stream.username)"
+                   ng-class="streams.isFavorite(stream.username) && !hover || !streams.isFavorite(stream.username) && hover ? 'glyphicon-heart' : 'glyphicon-heart-empty'">
+                </i>
+
+                <img class="avatar" ng-src="{{stream.avatar}}">
+                <img class="flag" ng-src="{{stream.flag}}"
+                     ng-if="stream.flag"
+                     tooltip-placement="right"
+                     tooltip="{{stream.country}}">
+            </div>
+        </div>
+
+        <div>
+            <h2>{{stream.title || 'NULL because Test API'}}</h2>
+            <h3>{{stream.username}}</h3>
+            <h3>Views: {{stream.views}}</h3>
+            <h3>Difficulty: {{stream.skill|capitalize}}</h3>
+
+            <span class="tag tag-{{stream.tags|alphanumerical|lowercase}}">{{stream.tags}}</span>
+
+            <!--<div class="tags">-->
+            <!--<span class="tag tag-{{tag|lowercase}}" ng-repeat="tag in stream.tags">{{tag}}</span>-->
+            <!--</div>-->
+        </div>
+    </li>
+</ul>

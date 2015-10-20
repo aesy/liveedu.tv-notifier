@@ -1,18 +1,61 @@
-.tags {
+.tag {
+  border: 1px solid transparent;
   display: inline-block;
+  border-radius: 8px;
+  padding: 0 5px;
+  margin-top: 6px;
+  font-size: 11px;
 
-  .tag {
-    border: 1px solid transparent;
-    border-radius: 10px;
-    padding: 1px 5px;
-
-    &.tag-javascript {
-      border-color: red;
-      color: red;
-    }
-    &.tag-php {
-      border-color: purple;
-      color: purple;
-    }
+  &.tag-objcswiftios {
+    border-color: #328dcb;
+    color: #328dcb;
+  }
+  &.tag-java {
+    border-color: #639;
+    color: #639;
+  }
+  &.tag-android {
+    border-color: #a4c639;
+    color: #a4c639;
+  }
+  &.tag-cc {
+    border-color: #1e824c;
+    color: #1e824c;
+  }
+  &.tag-cnet {
+    border-color: #49aca3;
+    color: #49aca3;
+  }
+  &.tag-python {
+    border-color: #cc882a;
+    color: #cc882a;
+  }
+  &.tag-javascript {
+    border-color: #f64747;
+    color: #f64747;
+  }
+  &.tag-php {
+    border-color: #1ab999;
+    color: #1ab999;
+  }
+  &.tag-ruby {
+    border-color: #e24e5a;
+    color: #e24e5a;
+  }
+  &.tag-sql {
+    border-color: #446cb3;
+    color: #446cb3;
+  }
+  &.tag-htmlcss {
+    border-color: #d5af13;
+    color: #d5af13;
+  }
+  &.tag-others {
+    border-color: #9f74ca;
+    color: #9f74ca;
   }
 }
+
+.tags {
+}
+

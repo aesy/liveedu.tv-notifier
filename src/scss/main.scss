@@ -4,3 +4,8 @@
 @import 'pages/module';
 @import 'themes/module';
 @import 'utils/module';
+
+html, body {
+  height: 600px;
+  width: 400px;
+}

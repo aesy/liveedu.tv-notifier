@@ -1,0 +1,33 @@
+{
+  "name": "LiveCoding.tv Notifier",
+  "version": "0.1",
+  "manifest_version": 2,
+  "description": "",
+  "background": {
+    "scripts": [
+      "lib/angular/angular.min.js",
+      "js/app.min.js"
+    ],
+    "persistent": true
+  },
+  "icons": {
+    "16": "img/32_1.png",
+    "48": "img/48_1.png",
+    "128": "img/128_1.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "img/19_2.png",
+      "38": "img/38_2.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "storage",
+    "background",
+    "https://livecoding.tv/*",
+    "http://livecoding.tv/*",
+    "notifications",
+    "tabs"
+  ]
+}
