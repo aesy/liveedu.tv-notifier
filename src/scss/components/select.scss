@@ -1,0 +1,12 @@
+select {
+  width: 45%;
+  height: 22px;
+  border: 0;
+  color: white;
+  background-color: #0c948f;
+  font-size: 12px;
+
+  &:focus {
+    outline: none;
+  }
+}

@@ -19,7 +19,6 @@ var SRC_ALL = path.join(SRC, "**");
 var SRC_HTML = path.join(SRC, "**", "*.html");
 var SRC_SASS_ALL = path.join(SRC_SASS_BASE, "**", "*.scss");
 var SRC_JAVASCRIPT_ALL = path.join(SRC_JAVASCRIPT_BASE, "**", "*.js");
-var SRC_JAVASCRIPT_BG = path.join(SRC_JAVASCRIPT_BASE, "background.js");
 var SRC_IMAGES_ALL = path.join(SRC_IMAGES_BASE, "**", "*");
 var SRC_JSON_ALL = path.join(SRC, "**", "*.json");
 
@@ -45,16 +44,7 @@ gulp.task("sass", function () {
 });
 
 gulp.task("javascript", function () {
-    gulp.src(SRC_JAVASCRIPT_BG)
-        .pipe(jshint())
-        .pipe(jshint.reporter(require('jshint-stylish')))
-        .pipe(rename({
-            suffix: ".min"
-        }))
-        .pipe(require("gulp-uglify")())
-        .pipe(gulp.dest(DIST_JAVASCRIPT));
-
-    return gulp.src([SRC_JAVASCRIPT_ALL, "!" + SRC_JAVASCRIPT_BG])
+    return gulp.src(SRC_JAVASCRIPT_ALL)
         .pipe(jshint())
         .pipe(jshint.reporter(require('jshint-stylish')))
         .pipe(require("gulp-concat")(MAIN_SCRIPT))

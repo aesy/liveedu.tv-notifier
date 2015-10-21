@@ -15,7 +15,6 @@ app.factory("filterService", [function () {
         },
         matchStream: function (stream) {
             var values = [true];
-            console.log(string, category, difficulty);
 
             if (string) {
                 var name = Helpers.string.contains(string, stream.username, false);
@@ -35,5 +34,5 @@ app.factory("filterService", [function () {
 
             return Helpers.array.all(values);
         }
-    }
+    };
 }]);

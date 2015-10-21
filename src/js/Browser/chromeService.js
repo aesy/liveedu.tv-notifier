@@ -1,5 +1,5 @@
-app.service("chromeService", ["$q", "notificationService", "storageService", function ($q, notification, storage) {
-    this.open = function(url) {
+app.service("chromeService", ["$q", "notificationService", function ($q, notification) {
+    this.openTab = function(url) {
         chrome.tabs.create({
             url: url
         });
@@ -34,5 +34,31 @@ app.service("chromeService", ["$q", "notificationService", "storageService", fun
         return deferred.promise;
     };
 
-    this.storage = storage;
+    this.store = function(data, sync) {
+        var deferred = $q.defer();
+
+        if (sync) {
+            chrome.storage.sync.set(data, function() {
+                deferred.resolve();
+            });
+        } else {
+            // Local Storage
+        }
+
+        return deferred.promise;
+    };
+
+    this.storage = function(name, sync) {
+        var deferred = $q.defer();
+
+        if (sync) {
+            chrome.storage.sync.get(name, function (data) {
+                deferred.resolve(data[name] || {});
+            });
+        } else {
+            // Local Storage
+        }
+
+        return deferred.promise;
+    };
 }]);

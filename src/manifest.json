@@ -4,11 +4,7 @@
   "manifest_version": 2,
   "description": "",
   "background": {
-    "scripts": [
-      "lib/angular/angular.min.js",
-      "js/app.min.js"
-    ],
-    "persistent": true
+    "page": "background.html"
   },
   "icons": {
     "16": "img/32_1.png",

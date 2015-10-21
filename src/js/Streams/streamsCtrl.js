@@ -1,10 +1,10 @@
 app.controller("streamCtrl",
-    ["$scope", "streamService", "$routeParams", "chromeService", "filterService", function($scope, streams, $routeParams, chrome, filter) {
+    ["$scope", "streamService", "$routeParams", "browserService", "storageService", "filterService", function($scope, streams, $routeParams, browser, storage, filter) {
     var vm = this;
 
     vm.collection = [];
     vm.favorites = [];
-
+    vm.currentPage = $routeParams.page;
     vm.filter = filter.matchStream;
 
     vm.openChat = function(name) {
@@ -22,6 +22,10 @@ app.controller("streamCtrl",
         }
     };
 
+    vm.openLink = function(name) {
+        browser.openTab('https://www.livecoding.tv/' + name + '/');
+    };
+
     vm.toggleFavorite = function(name) {
         if (Helpers.array.contains(name, vm.favorites)) {
             vm.favorites = Helpers.array.removeValue(vm.favorites, name);
@@ -29,51 +33,73 @@ app.controller("streamCtrl",
             vm.favorites.push(name);
         }
 
-        chrome.storage.setFavorites(vm.favorites);
+        storage.setFavorites(vm.favorites);
+    };
+
+    vm.order = function(stream) { // TODO: Doesn't work properly
+        switch (vm.currentPage) {
+            case "scheduled":
+                return (new Date(stream.date_full) - Date.now());
+            default:
+                return '-views';
+        }
     };
 
     vm.isFavorite = function(name) {
         return Helpers.array.contains(name, vm.favorites);
     };
 
-    vm.updateFavorites = function() {
-        chrome.storage.getFavorites().then(function(data) {
+    vm.updateFavorites = function(callback) {
+        storage.getFavorites().then(function(data) {
             vm.favorites = Helpers.object.isEmpty(data) ? [] : data;
+
+            if (callback)
+                callback();
         });
     };
 
-    vm.update = function() {
-        switch ($routeParams.page) {
+    vm.refresh = function() {
+        switch (vm.currentPage) {
             case 'following':
                 streams.getAllLive().then(function (streams) {
-                    vm.collection = streams.filter(function(stream) {
+                    vm.collection = streams.filter(function (stream) {
                         return Helpers.array.contains(stream.username, vm.favorites, false);
                     });
                 });
                 break;
             case 'livestreams':
-                streams.getAllLive().then(function(streams) {
+                streams.getAllLive().then(function (streams) {
                     vm.collection = streams;
                 });
                 break;
             case 'videos':
-                streams.getAllVideos().then(function(streams) {
+                streams.getAllVideos().then(function (streams) {
                     vm.collection = streams;
                 });
                 break;
             case 'scheduled':
-                streams.getAllScheduled().then(function(streams) {
+                streams.getAllScheduled().then(function (streams) {
                     vm.collection = streams;
                 });
                 break;
         }
     };
 
+    vm.update = function() {
+        vm.updateFavorites(function() {
+            vm.refresh();
+        });
+    };
+
+    vm.remindMe = function(username) {
+
+    };
+
+    vm.willRemind = function(username) {
+
+    };
+
     $scope.$on('refreshStreams', vm.update);
     $scope.$on('$routeChangeSuccess', vm.update);
-
-    (function init() {
-        //vm.updateFavorites();
-    })();
 
 }]);

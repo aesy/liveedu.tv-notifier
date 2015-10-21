@@ -1,7 +1,14 @@
-app.service("storageService", ["$q", function($q) {
+app.service("storageService", ["$q", "browserService", function($q, browser) {
 
     this.getSettings = function() {
-        return this.getByKey("settings");
+        var defaults = {
+            sound: 'snd/Soft1.wav',
+            pollingRate: 30
+        };
+
+        var settings = this.getByKey("settings");
+
+        return Helpers.object.merge(defaults, settings);
     };
 
     this.setSettings = function(data) {
@@ -17,18 +24,18 @@ app.service("storageService", ["$q", function($q) {
     };
 
     this.getByKey = function(key) {
-        var deffered = $q.defer();
+        var deferred = $q.defer();
         var name = "livecoding_" + key;
 
-        chrome.storage.sync.get(name, function (data) {
-            deffered.resolve(data[name] || {});
+        browser.storage(name, true).then(function (data) {
+            deferred.resolve(data);
         });
 
-        return deffered.promise;
+        return deferred.promise;
     };
 
     this.setByKey = function(key, newData, merge) {
-        var deffered = $q.defer();
+        var deferred = $q.defer();
 
         this.getByKey(key).then(function(oldData) {
             var data = {};
@@ -42,24 +49,24 @@ app.service("storageService", ["$q", function($q) {
                 data[name] = newData;
             }
 
-            chrome.storage.sync.set(data, function() {
-                deffered.resolve();
+            browser.store(data, true).then(function() {
+                deferred.resolve();
             });
         });
 
-        return deffered.promise;
+        return deferred.promise;
     };
 
     this.clearByKey = function(key) {
-        var deffered = $q.defer();
+        var deferred = $q.defer();
         var data = {};
         var name = "livecoding_" + key;
         data[name] = {};
 
-        chrome.storage.sync.set(data, function () {
-            deffered.resolve();
+        browser.store(data, true).then(function () {
+            deferred.resolve();
         });
 
-        return deffered.promise;
+        return deferred.promise;
     };
 }]);
