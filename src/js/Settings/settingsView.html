@@ -15,13 +15,11 @@
 
         <select class="setting"
                 ng-options="sound.label for sound in settings.soundOptions"
-                ng-model="settings.selectedSound"
-                ng-change="settings.onSoundChanged()">
+                ng-model="settings.selectedSound">
         </select>
-        <input type="file" id="uploadSound" ng-file-select="" class="hide">
     </div>
 
-    <div class="field row" ng-if="settings.favorites.length > 0">
+    <div class="field row" ng-show="settings.favorites.length > 0">
         <h1>Manage Favorites:</h1>
 
         <ul class="favorites setting">

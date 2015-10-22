@@ -7,9 +7,9 @@ Helpers.general = {
 
         if (angular.isArray(obj1))
             return Helpers.array.compare(obj1, obj2);
-        else if (angular.isObject())
+        else if (angular.isObject(obj1))
             return Helpers.object.compare(obj1, obj2);
-        else if (angular.isFunction())
+        else if (angular.isFunction(obj1))
             return obj1.toString() === obj2.toString();
 
         return obj1 === obj2;

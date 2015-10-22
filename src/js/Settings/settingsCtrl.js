@@ -2,27 +2,19 @@ app.controller("settingsCtrl", ["$timeout", "storageService", "browserService", 
     var vm = this;
 
     var settings = {};
-    vm.saving = false;
 
     vm.soundOptions = [
         {label: 'Disabled', value: ''},
         {label: 'Soft1', value: 'snd/soft1.wav'},
         {label: 'Soft2', value: 'snd/soft2.wav'},
         {label: 'Soft3', value: 'snd/soft3.wav'},
-        {label: 'Soft4', value: 'snd/soft4.wav'},
-        {label: 'Custom...', value: ''}
+        {label: 'Soft4', value: 'snd/soft4.wav'}
     ];
 
     vm.favorites = [];
     vm.selectedSound = vm.soundOptions[0];
     vm.pollingRate = 1;
-
-    vm.onSoundChanged = function() {
-        if (!Helpers.array.contains(vm.selectedSound, vm.soundOptions)) {
-            // TODO: Doesn't Work
-            //angular.element('#uploadSound').triggerHandler('click');
-        }
-    };
+    vm.saving = false;
 
     vm.getFavorites = function() {
         storage.getFavorites().then(function(data) {
@@ -36,7 +28,7 @@ app.controller("settingsCtrl", ["$timeout", "storageService", "browserService", 
 
     vm.update = function() {
         vm.selectedSound = settings.sound;
-        vm.pollingRate = settings.pollingRate;
+        vm.pollingRate = settings.pollingRate / 60;
     };
 
     vm.openLink = function(url) {
@@ -49,23 +41,23 @@ app.controller("settingsCtrl", ["$timeout", "storageService", "browserService", 
         else
             vm.saving = true;
 
-        //storage.setSettings({
-        //    sound: vm.selectedSound.value,
-        //    pollingRate: vm.pollingRate
-        //});
+        storage.setSettings({
+            sound: vm.selectedSound.value,
+            pollingRate: vm.pollingRate * 60
+        });
 
-        //storage.setFavorites(vm.favorites);
+        storage.setFavorites(vm.favorites);
 
         $timeout(function() {
             vm.saving = false;
         }, 3 * 1000)
     };
 
-    //storage.getSettings().then(function(data) {
-    //    vm.settings = data;
+    storage.getSettings().then(function(data) {
+        vm.settings = data;
 
-    //    //vm.getFavorites();
-    //    vm.update();
-    //});
+        vm.getFavorites();
+        vm.update();
+    });
 
 }]);
