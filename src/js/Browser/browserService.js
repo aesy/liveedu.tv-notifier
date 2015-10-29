@@ -1,12 +1,8 @@
 app.service("browserService", ["chromeService", "firefoxService", function (chrome, firefox) {
-    var root = root || {};
+    var browser = firefox;
 
-    return chrome; // TEMPORARY
+    if (!!window.chrome)
+        browser = chrome;
 
-    //switch (typeof root.chrome) {
-    //    case "undefined":
-    //        return firefox;
-    //    default:
-    //        return chrome;
-    //}
+    return browser;
 }]);

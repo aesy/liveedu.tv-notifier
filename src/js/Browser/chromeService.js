@@ -1,15 +1,8 @@
-app.service("chromeService", ["$q", "notificationService", function ($q, notification) {
+app.service("chromeService", ["$q", function ($q) {
     this.openTab = function(url) {
         chrome.tabs.create({
             url: url
         });
-    };
-
-    this.displayNotification = function(data) {
-        notification.create({
-            title: data.title,
-            message: data.message
-        }).display();
     };
 
     this.setBadge = function(number) {
@@ -20,7 +13,7 @@ app.service("chromeService", ["$q", "notificationService", function ($q, notific
         });
 
         chrome.browserAction.setBadgeText({
-            text: number ? '' + number : ''
+            text: number > 0 ? '' + number : ''
         });
     };
 
@@ -53,12 +46,17 @@ app.service("chromeService", ["$q", "notificationService", function ($q, notific
 
         if (sync) {
             chrome.storage.sync.get(name, function (data) {
-                deferred.resolve(data[name] || {});
+                deferred.resolve(data[name]);
             });
         } else {
             // Local Storage
         }
 
         return deferred.promise;
+    };
+
+    this.bindNotificationClicked = function(func) {
+        // chrome.notifications.onButtonClicked.addListener(clicked);
+         chrome.notifications.onClicked.addListener(func);
     };
 }]);

@@ -1,23 +1,30 @@
-app.factory("notificationFactory", [function () {
+app.factory("notificationFactory", ["browserService", function (browser) {
+    var notifications = {};
+    var id = 0;
 
-    //chrome.notifications.onClicked.addListener(clicked);
-    //chrome.notifications.onButtonClicked.addListener(clicked);
+    browser.bindNotificationClicked(function(id) {
+        notifications[id].clicked();
+    });
 
-    //function btnClicked(button) {
-    //    switch (button) {
-    //        case 0:
-    //            // First button clicked
-    //            window.open(data.url);
-    //            break;
-    //        case 1:
-    //            // Second
-    //            break;
-    //    }
-    //}
+    function add(id, notification) {
+        notifications[id] = notification;
+    }
 
-    return function(id, data) {
+    function remove(id) {
+        delete notifications[id];
+    }
+
+    function getId() {
+        id++;
+        return 'livecoding_' + id;
+    }
+
+    return function(data) {
         var title = data.title;
         var message = data.message;
+        var url = data.url;
+        var id = getId();
+        var time = data.time ? data.time : 5;
 
         this.display = function() {
             chrome.notifications.create(
@@ -28,7 +35,7 @@ app.factory("notificationFactory", [function () {
                     type: "basic",
                     title: title,
                     message: message,
-                    eventTime: new Date().getTime() + 5,
+                    eventTime: new Date().getTime() + time,
                     isClickable: true
                 },
                 function (id) {
@@ -36,7 +43,25 @@ app.factory("notificationFactory", [function () {
             );
         };
 
-        this.clicked = function() {
+        this.close = function() {
+            chrome.notifications.clear(
+                "" + id,
+                function(id) {
+                } // callback
+            );
         };
+
+        this.clicked = function() {
+            if (url)
+                browser.openTab(url);
+
+            this.close();
+        };
+
+        setTimeout(function() {
+            remove(id);
+        }, time * 1000);
+
+        add(id, this);
     };
 }]);

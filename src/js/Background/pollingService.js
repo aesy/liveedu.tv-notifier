@@ -1,39 +1,14 @@
-app.service("pollingService", ["$interval", "streamService", "storageService", "browserService", function ($interval, streams, storage, browser) {
+app.service("pollingService", ["$q", "$interval", "streamService", "storageService", "notificationFactory", "browserService", function ($q, $interval, streams, storage, Notification, browser) {
     var promise;
     var seen = [];
+    var favorites = [];
     var settings = {};
 
     function start() {
         stop();
 
         promise = $interval(function() {
-            var favorites = storage.getFavorites();
-
-            streams.getAllLive().then(function (streams) {
-                var not_seen = Helpers.array.diff(streams, seen);
-                seen = streams;
-
-                var count = 0;
-
-                if (not_seen.length > 0 && settings.sound)
-                    new Audio(settings.sound).play();
-
-                for (var i in not_seen) {
-                    var stream = not_seen[i];
-                    count++;
-
-                    if (Helpers.array.contains(stream.username, favorites)) {
-                        browser.displayNotification({
-                            title: stream.username + 's\' stream just went live!',
-                            message: stream.tags + (stream.title ? ': ' + stream.title : '')
-                        });
-                    }
-                }
-
-                browser.getBadge().then(function(currentCount) {
-                    browser.setBadge(currentCount + count);
-                });
-            });
+            updateSettings().then(poll);
         }, settings.pollingRate * 1000);
     }
 
@@ -41,11 +16,61 @@ app.service("pollingService", ["$interval", "streamService", "storageService", "
         $interval.cancel(promise);
     }
 
-    storage.getSettings().then(function(data) {
-        settings = data;
+    function poll() {
+        streams.getAllLive().then(function (livestreams) {
+            var count = 0;
 
-        start();
-    });
+            for (var i in livestreams) {
+                var stream = livestreams[i];
+
+                if (!Helpers.array.contains(stream.username, favorites))
+                    continue;
+
+                if (Helpers.array.contains(stream.username, seen))
+                    continue;
+                else
+                    seen.push(stream.username);
+
+                if (count === 0 && settings.sound)
+                    new Audio(settings.sound).play();
+
+                new Notification({
+                    title: stream.username + 's stream just went live!',
+                    message: stream.tags + (stream.title ? ': ' + stream.title : ''),
+                    url: 'https://www.livecoding.tv/' + stream.username
+                }).display();
+
+                count++;
+            }
+
+            browser.getBadge().then(function (currentCount) {
+                browser.setBadge((parseInt(currentCount) || 0) + count);
+            });
+        });
+    }
+
+    function updateSettings() {
+        var favdeferred = $q.defer();
+        storage.getFavorites().then(function (data) {
+            favorites = data || [];
+            favdeferred.resolve();
+        });
+
+        var optdeferred = $q.defer();
+        storage.getSettings().then(function (data) {
+            settings = data;
+            optdeferred.resolve();
+        });
+
+        return $q.all([favdeferred.promise, optdeferred.promise]);
+    }
+
+    (function init() {
+        updateSettings().then(function () {
+            start();
+            poll();
+        });
+    })();
 
     return {};
 }]);

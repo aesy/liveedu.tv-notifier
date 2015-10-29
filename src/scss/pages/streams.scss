@@ -3,10 +3,26 @@ h1 {
   margin: 0 0 20px;
 }
 
+html, body, main {
+  overflow: hidden;
+}
+
 main {
+  background-color: #f1f1f1;
+  height: 100%;
   padding-left: 50px;
   padding-top: 50px;
   margin: 1px;
+
+  article {
+    overflow: auto;
+    height: 100%;
+  }
+
+  .streams > p {
+    text-align: center;
+    margin: 20px;
+  }
 
   .streams .stream {
     margin-bottom: 1px;
@@ -22,7 +38,7 @@ main {
     }
 
     h3 {
-      margin-top: 5px;
+      margin-top: 2px;
     }
 
     &:hover .info .favorite-false {
@@ -31,6 +47,11 @@ main {
 
     .info {
       width: 100%;
+
+      .buttons {
+        display: inline-block;
+        margin-left: 2px;
+      }
 
       .favorite-false {
         display: none;
@@ -47,29 +68,35 @@ main {
 
       .link {
         cursor: pointer;
+
+        &:hover {
+          color: #1976d2;
+        }
+      }
+
+      .live {
+        color: red;
       }
 
       .link, .live {
         margin: 2px;
         position: relative;
         top: 1px;
-
-        &:hover {
-          color: #1976d2;
-        }
       }
     }
 
     .image {
-      position: relative;
-      padding: 0;
-      max-width: 45%;
+      width: 70%;
       margin-right: 10px;
-      display: table;
 
-      & > img {
-        border: 1px solid white;
-        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+      .image-wrapper {
+        position: relative;
+
+        & > img {
+          border: 1px solid white;
+          background-color: #22282e;
+          box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+        }
       }
 
       .items {

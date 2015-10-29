@@ -4,10 +4,9 @@
   "dependencies": {
     "bootstrap-css-only": "3.x",
     "fontawesome": "4.x",
-    "angular": "1.x",
-    "angular-animate": "1.x",
+    "angular": "1.3.x",
+    "angular-animate": "1.3.x",
     "angular-route": "1.x",
-    "angular-ui-bootstrap-bower": "0.13.x",
-    "ngSlimscroll": ""
+    "angular-ui-bootstrap-bower": "0.13.x"
   }
 }

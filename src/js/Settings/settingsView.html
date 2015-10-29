@@ -1,6 +1,6 @@
 <div class="container">
 
-    <div class="field row">
+    <div class="field row" ng-show="Object.keys(settings.settings).length > 0">
         <h1>Polling Rate:</h1>
 
         <div class="setting">
@@ -13,9 +13,10 @@
     <div class="field row">
         <h1>Notification Sound:</h1>
 
-        <select class="setting"
+        <select class="setting" ng-show="Object.keys(settings.settings).length > 0"
                 ng-options="sound.label for sound in settings.soundOptions"
-                ng-model="settings.selectedSound">
+                ng-model="settings.selectedSound"
+                ng-change="settings.soundChange()">
         </select>
     </div>
 
@@ -23,14 +24,15 @@
         <h1>Manage Favorites:</h1>
 
         <ul class="favorites setting">
-            <li ng-repeat="favorite in settings.favorites">{{favorite}}
+            <li ng-repeat="favorite in settings.favorites">
+                <p>{{favorite}}</p>
                 <i ng-mouseover="hover = true"
-                      ng-mouseleave="hover = false"
-                      tooltip-placement="left"
-                      tooltip="Remove Favorite"
-                      ng-click="settings.toggleFavorite(favorite)"
-                      class="glyphicon glyphicon-heart"
-                      ng-class="hover ? 'glyphicon-heart-empty' : 'glyphicon-heart'">
+                   ng-mouseleave="hover = false"
+                   tooltip-placement="left"
+                   tooltip="Remove Favorite"
+                   ng-click="settings.toggleFavorite(favorite)"
+                   class="glyphicon glyphicon-heart"
+                   ng-class="hover ? 'glyphicon-heart-empty' : 'glyphicon-heart'">
                 </i>
             </li>
         </ul>
@@ -38,7 +40,7 @@
 
     <div class="field row">
         <button ng-click="settings.save()">Save</button>
-        <div class="message" ng-show="settings.saving">
+        <div class="message" ng-hide="settings.success">
             Save Successful!
         </div>
     </div>
@@ -49,14 +51,14 @@
         <div class="social setting">
             <a ng-click="settings.openLink('https://github.com/easyfuckingpeasy')"
                tooltip-placement="top"
-               tooltip="Github">
-                <i class="fa fa-3x fa-code"></i>
+               tooltip="LiveCoding.tv">
+                <i class="fa fa-2x fa-code"></i>
             </a>
 
             <a ng-click="settings.openLink('https://www.livecoding.tv/easyfuckingpeasy/')"
                tooltip-placement="top"
-               tooltip="LiveCoding.tv">
-                <i class="fa fa-3x fa-github-square"></i>
+               tooltip="Github">
+                <i class="fa fa-2x fa-github-square"></i>
             </a>
         </div>
     </div>

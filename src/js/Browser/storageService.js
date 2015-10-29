@@ -6,9 +6,14 @@ app.service("storageService", ["$q", "browserService", function($q, browser) {
             pollingRate: 30
         };
 
-        var settings = this.getByKey("settings");
+        var deferred = $q.defer();
 
-        return Helpers.object.merge(defaults, settings);
+        this.getByKey("settings").then(function(data) {
+            var settings = Helpers.object.merge(defaults, data);
+            deferred.resolve(settings);
+        });
+
+        return deferred.promise;
     };
 
     this.setSettings = function(data) {
@@ -28,7 +33,7 @@ app.service("storageService", ["$q", "browserService", function($q, browser) {
         var name = "livecoding_" + key;
 
         browser.storage(name, true).then(function (data) {
-            deferred.resolve(data);
+            deferred.resolve(data || {});
         });
 
         return deferred.promise;

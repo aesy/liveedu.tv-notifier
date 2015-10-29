@@ -18,11 +18,11 @@
     background-color: #65C765;
     border: 1px solid #519251;
     color: white;
-    opacity: 1;
+    opacity: 0;
     transition: opacity .5s;
 
     &.ng-hide {
-      opacity: 0;
+      opacity: 1;
     }
   }
 
@@ -85,12 +85,30 @@
 
     li {
       padding: 2px;
+
+      p {
+        display: inline;
+        font-size: 11px;
+      }
+
+      & + li {
+        border-top: 1px solid #F1F1F1;
+      }
+
+      &:hover {
+        background-color: #F1F1F1;
+
+        p {
+          color: #1976d2;
+        }
+      }
     }
 
     .glyphicon {
       color: red;
       float: right;
       cursor: pointer;
+      top: 3px;
     }
   }
 

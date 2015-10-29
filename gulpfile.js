@@ -14,12 +14,14 @@ var SRC_SASS_MAIN = path.join(SRC, "scss", "main.scss");
 var SRC_SASS_BASE = path.join(SRC, "scss");
 var SRC_JAVASCRIPT_BASE = path.join(SRC, "js");
 var SRC_IMAGES_BASE = path.join(SRC, "img");
+var SRC_SOUNDS_BASE = path.join(SRC, "snd");
 
 var SRC_ALL = path.join(SRC, "**");
 var SRC_HTML = path.join(SRC, "**", "*.html");
 var SRC_SASS_ALL = path.join(SRC_SASS_BASE, "**", "*.scss");
 var SRC_JAVASCRIPT_ALL = path.join(SRC_JAVASCRIPT_BASE, "**", "*.js");
 var SRC_IMAGES_ALL = path.join(SRC_IMAGES_BASE, "**", "*");
+var SRC_SOUNDS_ALL = path.join(SRC_SOUNDS_BASE, "**", "*");
 var SRC_JSON_ALL = path.join(SRC, "**", "*.json");
 
 var DIST = "dist";
@@ -28,6 +30,7 @@ var DIST_ALL = path.join(DIST, "**");
 var DIST_SASS = path.join(DIST, "css");
 var DIST_JAVASCRIPT = path.join(DIST, "js");
 var DIST_IMAGES = path.join(DIST, "img");
+var DIST_SOUNDS = path.join(DIST, "snd");
 
 var MAIN_SCRIPT = "app.js";
 
@@ -62,6 +65,11 @@ gulp.task("images", function () {
         .pipe(gulp.dest(DIST_IMAGES));
 });
 
+gulp.task("sound", function () {
+    return gulp.src(SRC_SOUNDS_ALL)
+        .pipe(gulp.dest(DIST_SOUNDS));
+});
+
 gulp.task("html", function () {
     return gulp.src(SRC_HTML)
         .pipe(gulp.dest(DIST));
@@ -78,13 +86,13 @@ gulp.task("copy-bower", function () {
         .pipe(gulp.dest(DIST_LIB));
 });
 
-gulp.task("dist", ["html", "json", "sass", "javascript", "images", "copy-bower"]);
+gulp.task("dist", ["html", "json", "sass", "javascript", "images", "sound", "copy-bower"]);
 
 gulp.task("server", function() {
     gulp.src(DIST)
         .pipe(webserver({
             port: 5000,
-            open: true,
+            //open: true,
             fallback: 'popup.html'
         }));
 

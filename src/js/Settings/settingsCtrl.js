@@ -1,20 +1,20 @@
-app.controller("settingsCtrl", ["$timeout", "storageService", "browserService", function ($timeout, storage, browser) {
+app.controller("settingsCtrl", ["$timeout", "$q", "storageService", "browserService", function ($timeout, $q, storage, browser) {
     var vm = this;
-
-    var settings = {};
 
     vm.soundOptions = [
         {label: 'Disabled', value: ''},
-        {label: 'Soft1', value: 'snd/soft1.wav'},
-        {label: 'Soft2', value: 'snd/soft2.wav'},
-        {label: 'Soft3', value: 'snd/soft3.wav'},
-        {label: 'Soft4', value: 'snd/soft4.wav'}
+        {label: 'Soft1', value: 'snd/Soft1.wav'},
+        {label: 'Soft2', value: 'snd/Soft2.wav'},
+        {label: 'Soft3', value: 'snd/Soft3.wav'},
+        {label: 'Soft4', value: 'snd/Soft4.wav'}
     ];
 
+    vm.settings = {};
     vm.favorites = [];
     vm.selectedSound = vm.soundOptions[0];
     vm.pollingRate = 1;
     vm.saving = false;
+    vm.success = false;
 
     vm.getFavorites = function() {
         storage.getFavorites().then(function(data) {
@@ -26,9 +26,14 @@ app.controller("settingsCtrl", ["$timeout", "storageService", "browserService", 
         vm.favorites = Helpers.array.removeValue(vm.favorites, name);
     };
 
+    vm.soundChange = function() {
+        if (vm.selectedSound.value)
+            new Audio(vm.selectedSound.value).play();
+    };
+
     vm.update = function() {
-        vm.selectedSound = settings.sound;
-        vm.pollingRate = settings.pollingRate / 60;
+        vm.selectedSound = Helpers.array.withPropValue(vm.soundOptions, 'value', vm.settings.sound)[0];
+        vm.pollingRate = vm.settings.pollingRate / 60;
     };
 
     vm.openLink = function(url) {
@@ -41,16 +46,21 @@ app.controller("settingsCtrl", ["$timeout", "storageService", "browserService", 
         else
             vm.saving = true;
 
-        storage.setSettings({
+        var settingsPromise = storage.setSettings({
             sound: vm.selectedSound.value,
             pollingRate: vm.pollingRate * 60
         });
 
-        storage.setFavorites(vm.favorites);
+        var favoritePromise = storage.setFavorites(vm.favorites);
 
-        $timeout(function() {
+        $q.all([settingsPromise, favoritePromise]).then(function() {
             vm.saving = false;
-        }, 3 * 1000)
+            vm.success = true;
+
+            $timeout(function() {
+                vm.success = false;
+            }, 3 * 1000);
+        });
     };
 
     storage.getSettings().then(function(data) {

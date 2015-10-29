@@ -36,12 +36,15 @@ app.controller("streamCtrl",
         storage.setFavorites(vm.favorites);
     };
 
-    vm.order = function(stream) { // TODO: Doesn't work properly
+    vm.order = function(stream) {
         switch (vm.currentPage) {
-            case "scheduled":
-                return (new Date(stream.date_full) - Date.now());
-            default:
-                return '-views';
+            case "scheduled": // Sort by time left
+                var timestamp = parseInt(stream.timestamp) || 0;
+                return timestamp*1000 - Date.now();
+            case "videos": // Don't sort
+                return '';
+            default: // Sort by views, descending
+                return -stream.views;
         }
     };
 
@@ -101,5 +104,7 @@ app.controller("streamCtrl",
 
     $scope.$on('refreshStreams', vm.update);
     $scope.$on('$routeChangeSuccess', vm.update);
+
+    browser.setBadge(0); // remove badge when popup opened
 
 }]);

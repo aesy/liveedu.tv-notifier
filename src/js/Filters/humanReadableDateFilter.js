@@ -7,21 +7,21 @@ app.filter('humanReadableDate', [function () {
         var output = [];
 
         if (obj.years)
-            output.push(obj.years + " Years");
+            output.push(obj.years + " Year" + ((obj.years !== 1) ? "s" : ""));
 
         if (obj.months)
-            output.push(obj.months + " Months");
+            output.push(obj.months + " Month" + ((obj.months !== 1) ? "s" : ""));
 
         if (obj.days)
-            output.push(obj.days + " Days");
+            output.push(obj.days + " Day" + ((obj.days !== 1) ? "s" : ""));
 
         if (obj.hours)
-            output.push(obj.hours + " Hours");
+            output.push(obj.hours + " Hour" + ((obj.hours !== 1) ? "s" : ""));
 
-        if (obj.minutes)
-            output.push(obj.minutes + " Minutes");
+        //if (obj.minutes)
+            output.push(obj.minutes + " Minute" + ((obj.minutes !== 1) ? "s" : ""));
 
-        output.push(obj.seconds + " Seconds");
+        //output.push(obj.seconds + " Seconds" + ((obj.seconds !== 1) ? "s" : ""));
 
         return output.join(', ') + '.';
     };

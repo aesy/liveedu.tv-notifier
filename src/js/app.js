@@ -1,8 +1,7 @@
 var app = angular.module("app", [
+    "ngRoute",
     "ngAnimate",
-    "ui.bootstrap",
-    "jkuri.slimscroll",
-    "ngRoute"
+    "ui.bootstrap"
 ]);
 
 app.config(["$routeProvider", "$locationProvider", function($routeProvider, $locationProvider) {

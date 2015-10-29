@@ -1,4 +1,4 @@
-app.service("firefoxService", ["$q", "notificationService", function ($q, notification) {
+app.service("firefoxService", ["$q", function ($q) {
     this.openTab = function (url) {
         portEmit("nameofExt", {
             command: "tabs.create",
@@ -6,13 +6,6 @@ app.service("firefoxService", ["$q", "notificationService", function ($q, notifi
                 url: url
             }
         });
-    };
-
-    this.displayNotification = function (data) {
-        notification.create({
-            title: data.title,
-            message: data.message
-        }).display();
     };
 
     this.setBadge = function (number) {

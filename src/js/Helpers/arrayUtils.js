@@ -69,8 +69,9 @@ Helpers.array = {
         if (angular.isString(obj1))
             return this.containsString(obj1, arr, case_sensitive);
 
-        for (var obj2 in arr) {
-            if (Helpers.general.compare(obj1, obj2))
+
+        for (var i in arr) {
+            if (Helpers.general.compare(obj1, arr[i]))
                 return true;
         }
 
@@ -84,6 +85,16 @@ Helpers.array = {
 
         return arr.map(function(val) {
             return val[property];
+        });
+    },
+
+    withPropValue: function(arr, property, value) {
+        arr.filter(function(obj) {
+            return angular.isObject(obj);
+        });
+
+        return arr.filter(function(obj) {
+            return obj[property] == value;
         });
     },
 

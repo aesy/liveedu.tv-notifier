@@ -1,5 +1,5 @@
 <ul class="streams list-group">
-    <p ng-if="streams.collection.length == 0" style="text-align: center; margin: 20px;">There is nothing here! :-(</p>
+    <p ng-if="streams.collection.length == 0">There is nothing here! :-(</p>
 
     <li class="container-fluid stream animate list-group-item"
         ng-repeat="stream in streams.collection |
@@ -8,64 +8,72 @@
                     limitTo: 25">
 
         <div class="image pull-left" ng-if="streams.currentPage !== 'scheduled'">
-            <img class="img-responsive" ng-src="{{stream.thumbnail}}"/>
+            <div class="image-wrapper">
+                <img class="img-responsive"
+                     image-ratio="{ratio: 140/250}"
+                     ng-src="{{stream.thumbnail}}">
 
-            <div class="items">
-                <img class="avatar" ng-src="{{stream.avatar}}">
-                <img class="flag" ng-src="{{stream.flag}}"
-                     ng-if="stream.flag"
-                     tooltip-placement="right"
-                     tooltip="{{stream.country}}">
+                <div class="items">
+                    <img class="avatar" ng-src="{{stream.avatar}}">
+                    <img class="flag" ng-src="{{stream.flag}}"
+                         ng-if="stream.flag"
+                         tooltip-placement="right"
+                         tooltip="{{stream.country}}">
+                </div>
             </div>
-
         </div>
 
         <div class="info">
-            <h2>{{stream.title || 'NULL because Test API'}}</h2>
-            <h3>Author: {{stream.username}}</h3>
+            <div class="text">
+                <h2>{{stream.title || 'NULL because Test API'}}</h2>
+                <h3>Author: {{stream.username}}</h3>
 
-            <h3 ng-if="streams.currentPage !== 'scheduled'">
-                Views: {{stream.views}}
-            </h3>
+                <h3 ng-if="streams.currentPage !== 'scheduled'">
+                    Views: {{stream.views}}
+                </h3>
 
-            <h3 ng-if="streams.currentPage !== 'scheduled'">
-                Difficulty: {{stream.skill|capitalize}}
-            </h3>
+                <h3 ng-if="streams.currentPage !== 'scheduled'">
+                    Difficulty: {{stream.skill|capitalize}}
+                </h3>
 
-            <h3 ng-if="streams.currentPage === 'scheduled'">
-                Time left: {{stream.date_full|humanReadableDate}}
-            </h3>
+                <h3 ng-if="streams.currentPage === 'scheduled'">
+                    Time left: {{stream.date_full|humanReadableDate}}
+                </h3>
+            </div>
 
             <span class="tag tag-{{stream.tags|alphanumerical|lowercase}}">{{stream.tags}}</span>
-            <i ng-click="streams.openLink(stream.username)"
-               tooltip-placement="top"
-               tooltip="Open Stream"
-               class="link fa fa-link"></i>
-            <i ng-click="streams.openChat(stream.username)"
-               tooltip-placement="top"
-               tooltip="Open Chat"
-               class="link fa fa-comments"></i>
 
-            <i class="fa link"
-               ng-if="!stream.live && streams.currentPage === 'scheduled'"
-               ng-mouseover="hoverRemind = true"
-               ng-mouseleave="hoverRemind = false"
-               tooltip-placement="top"
-               tooltip="{{streams.willRemind(stream.username) ? 'Don\'t Remind Me' : 'Remind Me!'}}"
-               ng-click="streams.remindMe(stream.username)"
-               ng-class="streams.willRemind(stream.username) && !hoverRemind || !streams.willRemind(stream.username) && hoverRemind ? 'fa-bell' : 'fa-bell-o'">
-            </i>
+            <div class="buttons">
+                <i ng-click="streams.openLink(stream.username)"
+                   tooltip-placement="top"
+                   tooltip="Open Stream"
+                   class="link fa fa-link"></i>
+                <i ng-click="streams.openChat(stream.username)"
+                   tooltip-placement="top"
+                   tooltip="Open Chat"
+                   class="link fa fa-comments"></i>
 
-            <i class="glyphicon favorite favorite-{{streams.isFavorite(stream.username) ? 'true' : 'false'}}"
-               ng-mouseover="hoverFav = true"
-               ng-mouseleave="hoverFav = false"
-               tooltip-placement="top"
-               tooltip="{{streams.isFavorite(stream.username) ? 'Remove Favorite' : 'Add Favorite'}}"
-               ng-click="streams.toggleFavorite(stream.username)"
-               ng-class="streams.isFavorite(stream.username) && !hoverFav || !streams.isFavorite(stream.username) && hoverFav ? 'glyphicon-heart' : 'glyphicon-heart-empty'">
-            </i>
+                <i class="fa link"
+                   ng-if="!stream.live && streams.currentPage === 'scheduled'"
+                   ng-mouseover="hoverRemind = true"
+                   ng-mouseleave="hoverRemind = false"
+                   tooltip-placement="top"
+                   tooltip="{{streams.willRemind(stream.username) ? 'Don\'t Remind Me' : 'Remind Me!'}}"
+                   ng-click="streams.remindMe(stream.username)"
+                   ng-class="streams.willRemind(stream.username) && !hoverRemind || !streams.willRemind(stream.username) && hoverRemind ? 'fa-bell' : 'fa-bell-o'">
+                </i>
 
-            <span class="live pull-right" ng-if="stream.live" style="color:red;">
+                <i class="glyphicon favorite favorite-{{streams.isFavorite(stream.username) ? 'true' : 'false'}}"
+                   ng-mouseover="hoverFav = true"
+                   ng-mouseleave="hoverFav = false"
+                   tooltip-placement="top"
+                   tooltip="{{streams.isFavorite(stream.username) ? 'Remove Favorite' : 'Add Favorite'}}"
+                   ng-click="streams.toggleFavorite(stream.username)"
+                   ng-class="streams.isFavorite(stream.username) && !hoverFav || !streams.isFavorite(stream.username) && hoverFav ? 'glyphicon-heart' : 'glyphicon-heart-empty'">
+                </i>
+            </div>
+
+            <span class="live pull-right" ng-if="stream.live">
                 <i class="glyphicon glyphicon-record"></i>
                 Live
             </span>
