@@ -48,6 +48,12 @@ main {
     .info {
       width: 100%;
 
+      .text {
+        word-break: break-word;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+
       .buttons {
         display: inline-block;
         margin-left: 2px;
