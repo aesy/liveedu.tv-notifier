@@ -2,12 +2,14 @@
     <div class="button"
          ng-class="{ clicked: showOptions }"
          ng-click="clicked()">
-        <span ng-if="selected">
-            {{ property ? selected[property] : selected }}
-        </span>
-        <span ng-if="!selected">
-            {{ placeholder }}
-        </span>
+        <div class="text-area">
+            <span ng-if="selected">
+                {{ property ? selected[property] : selected }}
+            </span>
+            <span ng-if="!selected">
+                {{ placeholder }}
+            </span>
+        </div>
     </div>
 
     <div class="options"

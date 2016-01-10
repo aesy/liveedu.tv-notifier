@@ -35,15 +35,27 @@
         </div>
 
         <div class="options pull-right">
-            <select ng-model="filter.difficulty" ng-change="filter.difficultyChanged()">
-                <option ng-repeat="difficulty in filter.difficulties"
-                        value="{{difficulty.value}}">{{difficulty.label}}</option>
-            </select>
+            <!--<select ng-model="filter.difficulty" ng-change="filter.difficultyChanged()">-->
+                <!--<option ng-repeat="difficulty in filter.difficulties"-->
+                        <!--value="{{difficulty.value}}">{{difficulty.label}}</option>-->
+            <!--</select>-->
 
-            <select ng-model="filter.category" ng-change="filter.categoryChanged()">
-                <option ng-repeat="category in filter.categories"
-                        value="{{category.value}}">{{category.label}}</option>
-            </select>
+            <dropdown-select selected="filter.difficulty"
+                             options="filter.difficulties"
+                             property="label"
+                             placeholder="Any Difficulty">
+            </dropdown-select>
+
+            <dropdown-select selected="filter.category"
+                             options="filter.categories"
+                             property="label"
+                             placeholder="Category">
+            </dropdown-select>
+
+            <!--<select ng-model="filter.category" ng-change="filter.categoryChanged()">-->
+                <!--<option ng-repeat="category in filter.categories"-->
+                        <!--value="{{category.value}}">{{category.label}}</option>-->
+            <!--</select>-->
         </div>
     </header>
 
