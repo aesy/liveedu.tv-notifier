@@ -24,8 +24,7 @@ app.controller("filterCtrl", ["filterService", function (filter) {
         {label: "PHP", value: "PHP"},
         {label: "Ruby", value: "Ruby"},
         {label: "SQL", value: "SQL"},
-        {label: "HTML/CSS", value: "HTML/CSS"},
-        {label: "Others", value: "Others"}
+        {label: "HTML/CSS", value: "HTML/CSS"}
     ];
 
     vm.difficultyChanged = function() {

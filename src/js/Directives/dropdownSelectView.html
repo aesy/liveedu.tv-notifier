@@ -1,0 +1,24 @@
+<div class="select">
+    <div class="button"
+         ng-class="{ clicked: showOptions }"
+         ng-click="clicked()">
+        <div class="text-area">
+            <span ng-if="selected">
+                {{ property ? selected[property] : selected }}
+            </span>
+            <span ng-if="!selected">
+                {{ placeholder }}
+            </span>
+        </div>
+    </div>
+
+    <div class="options"
+         ng-class="{ hidden: !showOptions, visible: showOptions }">
+        <div class="option"
+             ng-repeat="item in options"
+             ng-click="select(item)"
+             ng-class="{ selected: isSelected(item) }">
+            {{ property ? item[property] : item }}
+        </div>
+    </div>
+</div>
