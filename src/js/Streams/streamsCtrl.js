@@ -1,5 +1,5 @@
 app.controller("streamCtrl",
-    ["$scope", "streamService", "$routeParams", "browserService", "storageService", "filterService", function($scope, streams, $routeParams, browser, storage, filter) {
+    ["$scope", "streamService", "$routeParams", "lodash", "browserService", "storageService", "filterService", function($scope, streams, $routeParams, _, browser, storage, filter) {
     var vm = this;
 
     vm.collection = [];
@@ -27,8 +27,8 @@ app.controller("streamCtrl",
     };
 
     vm.toggleFavorite = function(name) {
-        if (Helpers.array.contains(name, vm.favorites)) {
-            vm.favorites = Helpers.array.removeValue(vm.favorites, name);
+        if (_.contains(vm.favorites, name)) {
+            _.remove(vm.favorites, name);
         } else {
             vm.favorites.push(name);
         }
@@ -49,12 +49,12 @@ app.controller("streamCtrl",
     };
 
     vm.isFavorite = function(name) {
-        return Helpers.array.contains(name, vm.favorites);
+        return _.contains(vm.favorites, name);
     };
 
     vm.updateFavorites = function(callback) {
         storage.getFavorites().then(function(data) {
-            vm.favorites = Helpers.object.isEmpty(data) ? [] : data;
+            vm.favorites = _.isEmpty(data) ? [] : data;
 
             if (callback)
                 callback();
@@ -66,7 +66,7 @@ app.controller("streamCtrl",
             case 'following':
                 streams.getAllLive().then(function (streams) {
                     vm.collection = streams.filter(function (stream) {
-                        return Helpers.array.contains(stream.username, vm.favorites, false);
+                        return _.contains(vm.favorites, stream.username);
                     });
                 });
                 break;

@@ -1,4 +1,4 @@
-app.controller("settingsCtrl", ["$timeout", "$q", "storageService", "browserService", function ($timeout, $q, storage, browser) {
+app.controller("settingsCtrl", ["$timeout", "$q", "lodash", "storageService", "browserService", function ($timeout, $q, _, storage, browser) {
     var vm = this;
 
     vm.soundOptions = [
@@ -23,7 +23,7 @@ app.controller("settingsCtrl", ["$timeout", "$q", "storageService", "browserServ
     };
 
     vm.toggleFavorite = function (name) {
-        vm.favorites = Helpers.array.removeValue(vm.favorites, name);
+        _.remove(vm.favorites, name);
     };
 
     vm.soundChange = function() {
@@ -32,7 +32,10 @@ app.controller("settingsCtrl", ["$timeout", "$q", "storageService", "browserServ
     };
 
     vm.update = function() {
-        vm.selectedSound = Helpers.array.withPropValue(vm.soundOptions, 'value', vm.settings.sound)[0];
+        vm.selectedSound = _.filter(vm.soundOptions, function(obj) {
+            return _.isObject(obj) && obj['value'] == vm.settings.sound;
+        })[0];
+
         vm.pollingRate = vm.settings.pollingRate / 60;
     };
 

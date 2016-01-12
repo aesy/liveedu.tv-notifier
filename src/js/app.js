@@ -1,6 +1,7 @@
 var app = angular.module("app", [
     "ngRoute",
     "ngAnimate",
+    "ngLodash",
     "ui.bootstrap"
 ]);
 

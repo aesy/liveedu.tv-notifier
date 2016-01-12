@@ -1,4 +1,4 @@
-app.service("pollingService", ["$q", "$interval", "streamService", "storageService", "notificationFactory", "browserService", function ($q, $interval, streams, storage, Notification, browser) {
+app.service("pollingService", ["$q", "$interval", "lodash", "streamService", "storageService", "notificationFactory", "browserService", function ($q, $interval, _, streams, storage, Notification, browser) {
     var promise;
     var seen = [];
     var favorites = [];
@@ -23,10 +23,10 @@ app.service("pollingService", ["$q", "$interval", "streamService", "storageServi
             for (var i in livestreams) {
                 var stream = livestreams[i];
 
-                if (!Helpers.array.contains(stream.username, favorites))
+                if (!_.contains(favorites, stream.username))
                     continue;
 
-                if (Helpers.array.contains(stream.username, seen))
+                if (_.contains(seen, stream.username))
                     continue;
                 else
                     seen.push(stream.username);

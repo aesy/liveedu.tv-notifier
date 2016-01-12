@@ -1,9 +1,40 @@
-app.filter('humanReadableDate', [function () {
+app.filter('humanReadableDate', ["lodash", function (_) {
+    function dateDiff(fromDate, toDate) {
+        var startDate = new Date(1970, 0, 1, 0).getTime(),
+            diff = toDate - fromDate,
+            date = new Date(startDate + diff),
+            years = date.getFullYear() - 1970,
+            months = date.getMonth(),
+            days = date.getDate() - 1,
+            hours = date.getHours(),
+            minutes = date.getMinutes(),
+            seconds = date.getSeconds(),
+            diffDate = {
+                years: 0,
+                months: 0,
+                days: 0,
+                hours: 0,
+                minutes: 0,
+                seconds: 0
+            };
+
+        if (years < 0) return diffDate;
+
+        diffDate.years = years > 0 ? years : 0;
+        diffDate.months = months > 0 ? months : 0;
+        diffDate.days = days > 0 ? days : 0;
+        diffDate.hours = hours > 0 ? hours : 0;
+        diffDate.minutes = minutes > 0 ? minutes : 0;
+        diffDate.seconds = seconds > 0 ? seconds : 0;
+
+        return diffDate;
+    }
+
     return function (date) {
         if (!date)
             return;
 
-        var obj = Helpers.date.diff(Date.now(), new Date(date));
+        var obj = dateDiff(Date.now(), new Date(date));
         var output = [];
 
         if (obj.years)

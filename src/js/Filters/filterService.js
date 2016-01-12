@@ -1,4 +1,4 @@
-app.factory("filterService", [function () {
+app.factory("filterService", ["lodash", function (_) {
     var string = "";
     var category = "";
     var difficulty = "";
@@ -17,22 +17,21 @@ app.factory("filterService", [function () {
             var values = [true];
 
             if (string) {
-                var name = Helpers.string.contains(string, stream.username, false);
-                var title = Helpers.string.contains(string, stream.title, false);
-                var country = Helpers.string.contains(string, stream.country, false);
+                var matches = [stream.username, stream.title, stream.country]
+                    .map(function(value) {
+                        return _.contains(value.toLowerCase(), string.toLowerCase());
+                    });
 
-                values.push(Helpers.array.any([name, title, country]));
+                values.push(_.any(matches));
             }
 
-            if (category) {
+            if (category)
                 values.push(stream.tags == category);
-            }
 
-            if (difficulty) {
+            if (difficulty)
                 values.push(stream.skill == difficulty);
-            }
 
-            return Helpers.array.all(values);
+            return _.all(values);
         }
     };
 }]);

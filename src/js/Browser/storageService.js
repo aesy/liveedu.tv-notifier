@@ -1,4 +1,4 @@
-app.service("storageService", ["$q", "browserService", function($q, browser) {
+app.service("storageService", ["$q", "lodash", "browserService", function($q, _, browser) {
 
     this.getSettings = function() {
         var defaults = {
@@ -9,7 +9,7 @@ app.service("storageService", ["$q", "browserService", function($q, browser) {
         var deferred = $q.defer();
 
         this.getByKey("settings").then(function(data) {
-            var settings = Helpers.object.merge(defaults, data);
+            var settings = _.defaultsDeep(data, defaults);
             deferred.resolve(settings);
         });
 
@@ -47,9 +47,9 @@ app.service("storageService", ["$q", "browserService", function($q, browser) {
             var name = "livecoding_" + key;
 
             if (merge && newData instanceof Object) {
-                data[name] = Helpers.object.merge(oldData, newData);
+                data[name] = _.defaultsDeep(newData, oldData);
             } else if (merge && newData instanceof Array) {
-                data[name] = Helpers.array.union(oldData, newData);
+                data[name] = _.union(newData, oldData);
             } else {
                 data[name] = newData;
             }
