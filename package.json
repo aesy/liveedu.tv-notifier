@@ -1,6 +1,6 @@
 {
-  "name": "LiveCodingChromeExtension",
-  "version": "0.0.1",
+  "name": "LiveCoding.tv-Notifier",
+  "version": "0.9.0",
   "description": "",
   "repository": "",
   "homepage": "",
@@ -11,7 +11,6 @@
     "gulp-autoprefixer": "3.x",
     "gulp-clean": "0.3.x",
     "gulp-concat": "2.x",
-    "gulp-imagemin": "2.x",
     "gulp-jshint": "1.x",
     "gulp-sass": "2.x",
     "gulp-livereload": "3.x",
@@ -20,10 +19,12 @@
     "gulp-rename": "1.x",
     "gulp-replace": "0.5.x",
     "gulp-uglify": "1.x",
+    "gulp-flatten": "0.2.x",
+    "gulp-ext-replace": "0.2.x",
     "gulp-util": "3.x",
     "gulp-webserver": "0.9.x",
     "gulp-wrap": "0.11.x",
-    "jshint-stylish": "2.x"
+    "event-stream": "3.x"
   },
   "engines": {
     "node": "0.12.7",

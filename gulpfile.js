@@ -2,119 +2,165 @@ var gulp = require("gulp"),
     path = require("path"),
     gutil = require("gulp-util"),
     rename = require("gulp-rename"),
-    pkg = require("./package.json"),
     jshint = require("gulp-jshint"),
-    replace = require('gulp-replace'),
+    replace = require("gulp-replace"),
     wrap = require("gulp-wrap"),
-    webserver = require('gulp-webserver');
-
-var SRC = "src";
-
-var SRC_SASS_MAIN = path.join(SRC, "scss", "main.scss");
-var SRC_SASS_BASE = path.join(SRC, "scss");
-var SRC_JAVASCRIPT_BASE = path.join(SRC, "js");
-var SRC_IMAGES_BASE = path.join(SRC, "img");
-var SRC_SOUNDS_BASE = path.join(SRC, "snd");
-
-var SRC_ALL = path.join(SRC, "**");
-var SRC_HTML = path.join(SRC, "**", "*.html");
-var SRC_SASS_ALL = path.join(SRC_SASS_BASE, "**", "*.scss");
-var SRC_JAVASCRIPT_ALL = path.join(SRC_JAVASCRIPT_BASE, "**", "*.js");
-var SRC_IMAGES_ALL = path.join(SRC_IMAGES_BASE, "**", "*");
-var SRC_SOUNDS_ALL = path.join(SRC_SOUNDS_BASE, "**", "*");
-var SRC_JSON_ALL = path.join(SRC, "**", "*.json");
-
-var DIST = "dist";
-var DIST_LIB = path.join(DIST, "lib");
-var DIST_ALL = path.join(DIST, "**");
-var DIST_SASS = path.join(DIST, "css");
-var DIST_JAVASCRIPT = path.join(DIST, "js");
-var DIST_IMAGES = path.join(DIST, "img");
-var DIST_SOUNDS = path.join(DIST, "snd");
-
-var MAIN_SCRIPT = "app.js";
+    webserver = require("gulp-webserver"),
+    autoprefixer = require("gulp-autoprefixer"),
+    sass = require("gulp-sass"),
+    concat = require("gulp-concat"),
+    ngmin = require("gulp-ngmin"),
+    clean = require("gulp-clean"),
+    uglify = require("gulp-uglify"),
+    minify = require("gulp-minify-css"),
+    flatten = require("gulp-flatten"),
+    ext_replace = require("gulp-ext-replace"),
+    es = require("event-stream");
 
 
-gulp.task("sass", function () {
-    return gulp.src(SRC_SASS_MAIN)
-        .pipe(require("gulp-sass")(SRC_SASS_MAIN))
-        .pipe(require("gulp-autoprefixer")("last 2 version", "safari 5", "ie 8", "ie 9", "opera 12.1", "ios 6", "android 4"))
-        .pipe(rename({
-            suffix: ".min"
-        }))
-        .pipe(require('gulp-minify-css')())
-        .pipe(gulp.dest(DIST_SASS));
+var paths = {
+    src: {
+        get base() { return "src"; },
+        get all()  { return path.join(paths.src.base, "**"); }
+    },
+    dist: {
+        get base() { return "dist"; },
+        get all()  { return path.join(paths.dist.base, "**"); },
+        get lib()  { return path.join(paths.dist.base, "lib"); }
+    },
+    css: {
+        get base()      { return path.join(paths.src.base, "assets", "styles"); },
+        get main()      { return path.join(paths.css.base, "main.scss"); },
+        get all()       { return path.join(paths.css.base, "**", "*.scss"); },
+        get dist()      { return path.join(paths.dist.base, "css"); }
+    },
+    js: {
+        get main()    { return "app.js"; },
+        get base()    { return paths.src.base; },
+        get all()     { return path.join(paths.js.base, "**", "*.js"); },
+        get dist()    { return path.join(paths.dist.base, "js"); }
+    },
+    html: {
+        get views()     { return path.join(paths.src.base, "**", "*.view.html"); },
+        get pages()     { return path.join(paths.src.base, "**", "!(*.view)*.html"); },
+        get distViews() { return path.join(paths.dist.base, "view"); },
+        get distPages() { return paths.dist.base; }
+    },
+    img: {
+        get base() { return path.join(paths.src.base, "assets", "images"); },
+        get all()  { return path.join(paths.img.base, "**", "*"); },
+        get dist() { return path.join(paths.dist.base, "img"); }
+    },
+    snd: {
+        get base() { return path.join(paths.src.base, "assets", "sounds"); },
+        get all()  { return path.join(paths.snd.base, "**", "*"); },
+        get dist() { return path.join(paths.dist.base, "snd"); }
+    },
+    json: {
+        get all()  { return path.join(paths.src.base, "**", "*.json"); },
+        get dist() { return paths.dist.base; }
+    }
+};
+
+gulp.task("Compile sass", function () {
+    return gulp.src(paths.css.main)
+            .pipe(sass())
+            .pipe(autoprefixer())
+            .pipe(minify())
+            .pipe(rename({
+                suffix: ".min"
+            }))
+            .pipe(gulp.dest(paths.css.dist));
 });
 
-gulp.task("javascript", function () {
-    return gulp.src(SRC_JAVASCRIPT_ALL)
-        .pipe(jshint())
-        .pipe(jshint.reporter(require('jshint-stylish')))
-        .pipe(require("gulp-concat")(MAIN_SCRIPT))
-        .pipe(rename({
-            suffix: ".min"
-        }))
-        .pipe(require('gulp-ngmin')()) // ngmin makes angular injection syntax compatible with uglify
-        .pipe(wrap('(function(){\n"use strict";\n<%= contents %>\n})();'))
-        //.pipe(require("gulp-uglify")())
-        .pipe(gulp.dest(DIST_JAVASCRIPT));
+gulp.task("Compile javascript", function () {
+    return gulp.src(paths.js.all)
+            .pipe(wrap("(function(){\n'use strict';\n<%= contents %>\n})();"))
+            .pipe(ngmin())
+            .pipe(concat(paths.js.main))
+            .pipe(wrap("(function(){\n'use strict';\n<%= contents %>\n})();"))
+            //.pipe(uglify())
+            .pipe(rename({
+                suffix: ".min"
+            }))
+            .pipe(gulp.dest(paths.js.dist));
 });
 
-gulp.task("images", function () {
-    return gulp.src(SRC_IMAGES_ALL)
-        .pipe(gulp.dest(DIST_IMAGES));
+gulp.task("Copy images", function () {
+    return gulp.src(paths.img.all)
+        .pipe(gulp.dest(paths.img.dist));
 });
 
-gulp.task("sound", function () {
-    return gulp.src(SRC_SOUNDS_ALL)
-        .pipe(gulp.dest(DIST_SOUNDS));
+gulp.task("Copy sound", function () {
+    return gulp.src(paths.snd.all)
+        .pipe(gulp.dest(paths.snd.dist));
 });
 
-gulp.task("html", function () {
-    return gulp.src(SRC_HTML)
-        .pipe(gulp.dest(DIST));
+gulp.task("Copy html", function () {
+    return es.merge(
+        gulp.src(paths.html.pages)
+            .pipe(flatten())
+            .pipe(gulp.dest(paths.html.distPages)),
+
+        gulp.src(paths.html.views)
+            .pipe(flatten())
+            .pipe(ext_replace(".html", ".view.html"))
+            .pipe(gulp.dest(paths.html.distViews))
+    );
 });
 
-gulp.task("json", function () {
-    return gulp.src(SRC_JSON_ALL)
-        .pipe(gulp.dest(DIST));
+gulp.task("Copy json", function () {
+    return gulp.src(paths.json.all)
+        .pipe(flatten())
+        .pipe(gulp.dest(paths.json.dist));
 
 });
 
-gulp.task("copy-bower", function () {
+gulp.task("Copy bower components", function () {
     return gulp.src("bower_components/**")
-        .pipe(gulp.dest(DIST_LIB));
+        .pipe(gulp.dest(paths.dist.lib));
 });
 
-gulp.task("dist", ["html", "json", "sass", "javascript", "images", "sound", "copy-bower"]);
+gulp.task("Build dist", [
+    "Copy html",
+    "Copy json",
+    "Compile sass",
+    "Compile javascript",
+    "Copy images",
+    "Copy sound",
+    "Copy bower components"
+]);
 
-gulp.task("server", function() {
-    gulp.src(DIST)
+gulp.task("Auto-compile", function() {
+    gulp.watch(paths.html.all, ["Copy html"]);
+    gulp.watch(paths.img.all,  ["Copy images"]);
+    gulp.watch(paths.snd.all,  ["Copy sound"]);
+    gulp.watch(paths.json.all, ["Copy json"]);
+    gulp.watch(paths.js.all,   ["Compile javascript"]);
+    gulp.watch(paths.css.all,  ["Compile sass"]);
+    gulp.watch("bower.json",   ["Copy bower components"]);
+});
+
+gulp.task("Run server", function() {
+    gulp.src(paths.dist.base)
         .pipe(webserver({
             port: 5000,
             //open: true,
-            fallback: 'popup.html'
+            fallback: "popup.html"
         }));
-
-    gulp.watch(SRC_HTML, ["html"]);
-    gulp.watch(SRC_IMAGES_ALL, ["images"]);
-    gulp.watch(SRC_JAVASCRIPT_ALL, ["javascript"]);
-    gulp.watch(SRC_JSON_ALL, ["json"]);
-    gulp.watch(SRC_SASS_ALL, ["sass"]);
-    gulp.watch("bower.json", ["copy-bower"]);
 
     var livereload = require("gulp-livereload");
     livereload.listen();
 
-    gulp.watch(DIST_ALL).on("change", function (file) {
+    gulp.watch(paths.dist.all).on("change", function (file) {
         gulp.src(file.path)
             .pipe(livereload());
     });
 });
 
-gulp.task("clean", function () {
-    return gulp.src([DIST, ".build"], {
+gulp.task("Clean dist folder", function () {
+    return gulp.src([paths.dist.base, ".build"], {
             read: false
         })
-        .pipe(require("gulp-clean")());
+        .pipe(clean());
 });

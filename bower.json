@@ -1,13 +1,13 @@
 {
-  "name": "LiveCodingChromeExtension",
-  "version": "0.0.1",
+  "name": "LiveCoding.tv-Notifier",
+  "version": "0.9.0",
   "dependencies": {
     "bootstrap-css-only": "3.x",
     "fontawesome": "4.x",
     "angular": "1.3.20",
     "angular-animate": "1.3.20",
     "angular-route": "1.3.20",
-    "angular-ui-bootstrap-bower": "0.13.x"
+    "angular-ui-bootstrap-bower": "0.13.x",
     "ng-lodash": ""
   }
 }
