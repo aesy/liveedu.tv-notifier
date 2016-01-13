@@ -1,15 +1,10 @@
 {
   "name": "LiveCoding.tv Notifier",
+  "description": "Browser extension for LiveCoding.tv which lets you know when your favourite streamers go live!",
   "version": "0.9.0",
-  "manifest_version": 2,
-  "description": "",
+  "homepage_url": "https://github.com/easyfuckingpeasy/LiveCoding.tv-Notifier",
   "background": {
     "page": "background.html"
-  },
-  "icons": {
-    "16": "img/32_1.png",
-    "48": "img/48_1.png",
-    "128": "img/128_1.png"
   },
   "browser_action": {
     "default_icon": {
@@ -18,6 +13,11 @@
     },
     "default_popup": "popup.html"
   },
+  "icons": {
+    "16": "img/32_1.png",
+    "48": "img/48_1.png",
+    "128": "img/128_1.png"
+  },
   "permissions": [
     "storage",
     "background",
@@ -25,5 +25,10 @@
     "http://livecoding.tv/*",
     "notifications",
     "tabs"
-  ]
+  ],
+  "web_accessible_resources": [
+    "auth.html"
+  ],
+  "manifest_version": 2,
+  "update_url": "https://clients2.google.com/service/update2/crx"
 }

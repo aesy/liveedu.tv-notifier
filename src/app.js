@@ -2,7 +2,8 @@ angular.module("app", [
     "ngRoute",
     "ngAnimate",
     "ngLodash",
-    "ui.bootstrap"
+    "ui.bootstrap",
+    "luegg.directives"
 ]);
 
 angular
@@ -18,19 +19,19 @@ function config($routeProvider, $locationProvider) {
     //});
 
     $routeProvider
-        .when('/settings', {
-            templateUrl: 'view/settings.html',
-            controller: 'settingsCtrl',
-            controllerAs: 'settings'
+        .when("/settings", {
+            templateUrl: "view/settings.html",
+            controller: "settingsCtrl",
+            controllerAs: "settings"
         })
 
-        .when('/:page', {
-            templateUrl: 'view/streams.html',
-            controller: 'streamCtrl',
-            controllerAs: 'streams'
+        .when("/:page", {
+            templateUrl: "view/streams.html",
+            controller: "streamCtrl",
+            controllerAs: "streams"
         })
 
         .otherwise({
-            redirectTo: '/following'
+            redirectTo: "/following"
         });
 }

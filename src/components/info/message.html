@@ -1,0 +1,249 @@
+<!doctype html>
+<html ng-app="app">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LiveCoding.tv Notifier</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/angular-animate/angular-animate.min.js"></script>
+    <script src="lib/angular-ui-bootstrap-bower/ui-bootstrap.min.js"></script>
+    <script src="lib/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
+    <script src="lib/angular-route/angular-route.min.js"></script>
+    <script src="lib/ng-lodash/build/ng-lodash.min.js"></script>
+    <script src="lib/angular-scroll-glue/src/scrollglue.js"></script>
+    <script src="js/app.min.js"></script>
+
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+            margin: 0;
+            background: #351A24;
+            background: linear-gradient(to bottom, #532339 0%, #5D2324 100%);
+        }
+
+        .terminal-window {
+            position: relative;
+            top: 50px;
+            text-align: left;
+            width: 640px;
+            height: 350px;
+            border-radius: 10px;
+            margin: 0 auto;
+            box-shadow: 3px 5px 20px rgba(0, 0, 0, .7);
+        }
+
+        .terminal-window.maximize {
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .terminal-window header {
+            display: flex;
+            align-items: center;
+            background: #3f3e3a;
+            background: linear-gradient(to bottom, #59574f 0%, #3f3e3a 100%);
+            height: 30px;
+            border-radius: 8px 8px 0 0;
+            padding-left: 10px;
+            box-shadow: inset 0 2px 1px rgba(255, 255, 255, .1);
+        }
+
+        .terminal-window.maximize header {
+            border-radius: 0;
+            padding-left: 5px;
+        }
+
+        .terminal-window header .button {
+            flex: 0 0 auto;
+            position: relative;
+            width: 15px;
+            height: 15px;
+            margin-right: 2px;
+            border: 1px solid #383735;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 2px rgba(255, 255, 255, .2);
+            cursor: pointer;
+        }
+
+        .terminal-window header .button.close {
+            background: #DE4F1D;
+        }
+
+        .terminal-window header .button.close:hover {
+            background: #EA6B3F;
+        }
+
+        .terminal-window header .button.close:before, .terminal-window header .button.close:after {
+            position: absolute;
+            left: 7px;
+            top: 4px;
+            content: " ";
+            height: 8px;
+            width: 1px;
+            background-color: #34322E;
+            box-shadow: 0 1px 1px rgba(255, 255, 255, .3);
+        }
+
+        .terminal-window header .button.close:before {
+            transform: rotate(45deg);
+        }
+
+        .terminal-window header .button.close:after {
+            transform: rotate(-45deg);
+        }
+
+        .terminal-window header .button.minimize,
+        .terminal-window header .button.maximize {
+            background: #5E5D59;
+            background: linear-gradient(to bottom, #777773 0%, #585855 100%);
+        }
+
+        .terminal-window header .button.minimize:hover,
+        .terminal-window header .button.maximize:hover {
+            background: #808080;
+            background: linear-gradient(to bottom, #777773 0%, #808080 100%);
+        }
+
+        .terminal-window header .button.minimize:before {
+            position: absolute;
+            left: 4px;
+            top: 9px;
+            content: " ";
+            height: 1px;
+            width: 7px;
+            background-color: #34322E;
+            box-shadow: 0 1px 1px rgba(255, 255, 255, .3);
+        }
+
+        .terminal-window header .button.maximize:before {
+            position: absolute;
+            left: 4px;
+            top: 4px;
+            content: " ";
+            height: 5px;
+            width: 5px;
+            border: 1px solid #34322E;
+            box-shadow: 0 1px 1px rgba(255, 255, 255, .3);
+        }
+
+        .terminal-window header .title {
+            flex: 1 1 auto;
+            margin-left: 15px;
+            font-size: 11pt;
+            font-weight: bold;
+            color: #FFF;
+            text-shadow: 1px 0 2px #000;
+        }
+
+        .terminal-window section.terminal {
+            color: white;
+            font-family: "Consolas", "Courier New", "Courier", "monospace";
+            font-size: 12pt;
+            background: #300A24;
+            padding: 6px;
+            box-sizing: border-box;
+            position: absolute;
+            width: 100%;
+            top: 30px;
+            bottom: 0;
+            overflow: auto;
+        }
+
+        .terminal-window section.terminal .cursor {
+            position: relative;
+            height: 14px;
+            width: 7px;
+            top: 2px;
+            opacity: 1;
+            background-color: #ababab;
+            animation: blink 0.7s infinite;
+        }
+
+        .terminal-window section.terminal pre.history {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .terminal-window a {
+            color: #FFFFFF;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .terminal-window *::selection {
+            background: #7B5837;
+        }
+
+        .terminal-window section::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        .terminal-window section::-webkit-scrollbar-thumb {
+            background-color: #F07746;
+        }
+
+        .terminal-window section.terminal input {
+            background: none;
+            border: none;
+            outline: 0;
+            color: #FFF;
+            font-family: "Consolas", "Courier New", "Courier", "monospace";
+            font-size: 12pt;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div ng-controller="terminalCtrl as terminal"
+         ng-class="{maximize: terminal.maximized}"
+         class="terminal-window">
+        <header>
+            <div class="button close"
+                 ng-click="terminal.quit()">
+            </div>
+
+            <div class="button minimize"
+                 ng-click="terminal.quit()">
+            </div>
+
+            <div class="button maximize"
+                 ng-click="terminal.maximized = !terminal.maximized">
+            </div>
+
+            <div class="title">
+                {{terminal.user}}
+            </div>
+        </header>
+
+        <section class="terminal" scroll-glue>
+            <div ng-if="!terminal.output.length">
+                {{user}}
+            </div>
+
+            <pre class="history"
+                 ng-repeat="row in terminal.output track by $index"
+                 ng-bind-html="terminal.output[$index] | trustedHTML">
+            </pre>
+        </section>
+    </div>
+</body>
+</html>
