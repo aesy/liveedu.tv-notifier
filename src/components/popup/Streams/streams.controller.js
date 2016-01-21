@@ -2,15 +2,16 @@ angular
     .module("app")
     .controller("streamCtrl", streamCtrl);
 
-streamCtrl.$inject = ["$scope", "streamService", "$routeParams", "lodash", "browserService", "filterService"];
+streamCtrl.$inject = ["$scope", "livecodingService", "$routeParams", "lodash", "browserService", "filterService"];
 
-function streamCtrl($scope, streams, $routeParams, _, browser, filter) {
+function streamCtrl($scope, livecoding, $routeParams, _, browser, filter) {
     var vm = this;
 
     vm.collection = [];
     vm.favorites = [];
     vm.currentPage = $routeParams.page;
     vm.filter = filter.matchStream;
+    vm.searching = false;
 
     vm.openChat = function(name) {
         var windowName     = "livecodingtv.chat." + name;
@@ -27,8 +28,8 @@ function streamCtrl($scope, streams, $routeParams, _, browser, filter) {
         }
     };
 
-    vm.openLink = function(name) {
-        browser.openTab("https://www.livecoding.tv/" + name + "/");
+    vm.openLink = function(url) {
+        browser.openTab(url);
     };
 
     vm.toggleFavorite = function(name) {
@@ -67,36 +68,45 @@ function streamCtrl($scope, streams, $routeParams, _, browser, filter) {
     };
 
     vm.refresh = function() {
+        vm.collection = [];
+        vm.searching = true;
+
         switch (vm.currentPage) {
             case "following":
-                streams.getAllLive().then(function (streams) {
+                livecoding.getAllLive().then(function (streams) {
                     vm.collection = streams.filter(function (stream) {
                         return _.contains(vm.favorites, stream.username);
                     });
+                    vm.searching = false;
                 });
                 break;
             case "livestreams":
-                streams.getAllLive().then(function (streams) {
+                livecoding.getAllLive().then(function (streams) {
                     vm.collection = streams;
+                    vm.searching = false;
                 });
                 break;
             case "videos":
-                streams.getAllVideos().then(function (streams) {
+                livecoding.getAllVideos().then(function (streams) {
                     vm.collection = streams;
+                    vm.searching = false;
                 });
                 break;
             case "scheduled":
-                streams.getAllScheduled().then(function (streams) {
+                livecoding.getAllScheduled().then(function (streams) {
                     vm.collection = streams;
+                    vm.searching = false;
                 });
                 break;
+            default:
+                vm.searching = false;
         }
     };
 
     vm.update = function() {
-        vm.updateFavorites(function() {
+        //vm.updateFavorites(function() {
             vm.refresh();
-        });
+        //});
     };
 
     vm.remindMe = function(username) {

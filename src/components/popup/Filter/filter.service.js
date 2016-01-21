@@ -23,19 +23,24 @@ function filterService(_) {
             var values = [true];
 
             if (string) {
-                var matches = [stream.username, stream.title, stream.country]
-                    .map(function(value) {
-                        return _.contains(value.toLowerCase(), string.toLowerCase());
-                    });
+                var matches = [
+                    stream.username,
+                    stream.title,
+                    stream.country,
+                    stream.description,
+                    stream.tags
+                ].map(function(value) {
+                    return _.contains(value.toLowerCase(), string.toLowerCase());
+                });
 
                 values.push(_.any(matches));
             }
 
             if (category)
-                values.push(stream.tags === category);
+                values.push(_.contains(category, stream.category));
 
             if (difficulty)
-                values.push(stream.skill === difficulty);
+                values.push(stream.difficulty === difficulty);
 
             return _.all(values);
         }

@@ -1,31 +1,38 @@
 <ul class="streams list-group">
-    <p ng-if="streams.collection.length == 0">There is nothing here! :-(</p>
+    <p ng-if="streams.collection.length == 0 && !streams.searching">
+        There is nothing here! :-(
+    </p>
+    <p ng-if="streams.collection.length == 0 && streams.searching">
+        <inline-svg src="img/loader.svg" class="loader"></inline-svg>
+    </p>
 
     <li class="container-fluid stream animate list-group-item"
         ng-repeat="stream in streams.collection |
                     filter:streams.filter |
                     orderBy:streams.order |
-                    limitTo: 25">
+                    limitTo: 40">
 
         <div class="image pull-left" ng-if="streams.currentPage !== 'scheduled'">
             <div class="image-wrapper">
+
+                <!--Ugly, fix!-->
                 <img class="img-responsive"
                      image-ratio="{ratio: 140/250}"
-                     ng-src="{{stream.thumbnail}}">
+                     ng-src="https://www.livecoding.tv/video/livestream/{{stream.username}}/thumbnail_250_140/">
 
-                <div class="items">
-                    <img class="avatar" ng-src="{{stream.avatar}}">
-                    <img class="flag" ng-src="{{stream.flag}}"
-                         ng-if="stream.flag"
-                         tooltip-placement="right"
-                         tooltip="{{stream.country}}">
-                </div>
+                <!--<div class="items">-->
+                    <!--<img class="avatar" ng-src="{{stream.avatar}}">-->
+                    <!--<img class="flag" ng-src="{{stream.flag}}"-->
+                         <!--ng-if="stream.flag"-->
+                         <!--tooltip-placement="right"-->
+                         <!--tooltip="{{stream.country}}">-->
+                <!--</div>-->
             </div>
         </div>
 
         <div class="info">
             <div class="text">
-                <h2>{{stream.title || 'NULL because Test API'}}</h2>
+                <h2>{{stream.title}}</h2>
                 <h3>Author: {{stream.username}}</h3>
 
                 <h3 ng-if="streams.currentPage !== 'scheduled'">
@@ -33,7 +40,7 @@
                 </h3>
 
                 <h3 ng-if="streams.currentPage !== 'scheduled'">
-                    Difficulty: {{stream.skill|capitalize}}
+                    Difficulty: {{stream.difficulty|capitalize}}
                 </h3>
 
                 <h3 ng-if="streams.currentPage === 'scheduled'">
@@ -41,13 +48,14 @@
                 </h3>
             </div>
 
-            <span class="tag tag-{{stream.tags|alphanumerical|lowercase}}">{{stream.tags}}</span>
+            <span ng-if="stream.category" class="tag tag-{{stream.category|alphanumerical|lowercase}}">{{stream.category}}</span>
 
             <div class="buttons">
-                <i ng-click="streams.openLink(stream.username)"
+                <i ng-click="streams.openLink(stream.url)"
                    tooltip-placement="top"
                    tooltip="Open Stream"
                    class="link fa fa-link"></i>
+
                 <i ng-click="streams.openChat(stream.username)"
                    tooltip-placement="top"
                    tooltip="Open Chat"

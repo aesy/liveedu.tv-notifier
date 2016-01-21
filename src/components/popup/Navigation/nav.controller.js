@@ -2,9 +2,9 @@ angular
     .module("app")
     .controller("navCtrl", navCtrl);
 
-navCtrl.$inject = ["$rootScope", "$location"];
+navCtrl.$inject = ["$rootScope", "$location", "livecodingService"];
 
-function navCtrl($rootScope, $location) {
+function navCtrl($rootScope, $location, livecoding) {
     var vm = this;
 
     vm.refresh = function () {
@@ -12,7 +12,7 @@ function navCtrl($rootScope, $location) {
     };
 
     vm.login = function () {
-        //
+        livecoding.authenticate();
     };
 
     vm.page = function (page) {

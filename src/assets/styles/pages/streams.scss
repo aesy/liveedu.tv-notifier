@@ -14,6 +14,15 @@ main {
   padding-top: 50px;
   margin: 1px;
 
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
   article {
     overflow: auto;
     height: 100%;
@@ -22,6 +31,10 @@ main {
   .streams > p {
     text-align: center;
     margin: 20px;
+
+    .loader svg path {
+      fill: #1976d2;
+    }
   }
 
   .streams .stream {
@@ -49,7 +62,7 @@ main {
       width: 100%;
 
       .text {
-        word-break: break-word;
+        word-break: break-all;
         word-wrap: break-word;
         overflow-wrap: break-word;
       }

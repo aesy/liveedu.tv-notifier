@@ -47,7 +47,7 @@ function chromeService($q, _) {
                     data = JSON.parse(data);
                 } catch (e) {
                     data = null;
-                    console.warn("chromeService: couldn't parse localStorage[%s] = %s", key, data);
+                    console.warn("chromeService: couldn't parse localStorage[%s]", key);
                 }
 
                 deferred.resolve(data);
@@ -79,6 +79,7 @@ function chromeService($q, _) {
 
     return {
         openTab: openTab,
+        openWindow: openWindow,
         goToPage: goToPage,
         setBadge: setBadge,
         getBadge: getBadge,
@@ -92,6 +93,12 @@ function chromeService($q, _) {
 
     function openTab(url) {
         chrome.tabs.create({
+            url: url
+        });
+    }
+
+    function openWindow(url) {
+        chrome.windows.create({
             url: url
         });
     }

@@ -2,17 +2,17 @@ angular
     .module("app")
     .controller("settingsCtrl", settingsCtrl);
 
-settingsCtrl.$inject = ["$timeout", "$q", "lodash", "browserService"];
+settingsCtrl.$inject = ["$timeout", "$q", "lodash", "browserService", "settingsService"];
 
-function settingsCtrl($timeout, $q, _, browser) {
+function settingsCtrl($timeout, $q, _, browser, settings) {
     var vm = this;
 
     vm.soundOptions = [
-        {label: 'Disabled', value: ''},
-        {label: 'Soft1', value: 'snd/Soft1.wav'},
-        {label: 'Soft2', value: 'snd/Soft2.wav'},
-        {label: 'Soft3', value: 'snd/Soft3.wav'},
-        {label: 'Soft4', value: 'snd/Soft4.wav'}
+        {label: "Disabled", value: ""},
+        {label: "Soft1", value: "snd/soft1.wav"},
+        {label: "Soft2", value: "snd/soft2.wav"},
+        {label: "Soft3", value: "snd/soft3.wav"},
+        {label: "Soft4", value: "snd/soft4.wav"}
     ];
 
     vm.settings = {};
@@ -23,26 +23,26 @@ function settingsCtrl($timeout, $q, _, browser) {
     vm.success = false;
 
     vm.getFavorites = function() {
-        //storage.getFavorites().then(function(data) {
-        //    vm.favorites = data;
-        //});
+        settings.getFavorites().then(function(data) {
+            vm.favorites = data;
+        });
     };
 
     vm.toggleFavorite = function (name) {
         _.remove(vm.favorites, name);
     };
 
-    vm.soundChange = function() {
-        if (vm.selectedSound.value)
-            new Audio(vm.selectedSound.value).play();
+    vm.soundChange = function(item) {
+        if (item.value)
+            new Audio(item.value).play();
     };
 
     vm.update = function() {
         vm.selectedSound = _.filter(vm.soundOptions, function(obj) {
-            return angular.isObject(obj) && obj['value'] === vm.settings.sound;
+            return obj.value === vm.settings.soundClip.value;
         })[0];
 
-        vm.pollingRate = vm.settings.pollingRate / 60;
+        vm.pollingRate = vm.settings.pollFrequency;
     };
 
     vm.openLink = function(url) {
@@ -55,27 +55,29 @@ function settingsCtrl($timeout, $q, _, browser) {
         else
             vm.saving = true;
 
-        //var settingsPromise = storage.setSettings({
-        //    sound: vm.selectedSound.value,
-        //    pollingRate: vm.pollingRate * 60
-        //});
-        //
+        var settingsPromise = settings.set({
+            soundClip: {
+                value: vm.selectedSound.value
+            },
+            pollFrequency: parseInt(vm.pollingRate, 10)
+        });
+
         //var favoritePromise = storage.setFavorites(vm.favorites);
-        //
-        //$q.all([settingsPromise, favoritePromise]).then(function() {
-        //    vm.saving = false;
-        //    vm.success = true;
-        //
-        //    $timeout(function() {
-        //        vm.success = false;
-        //    }, 3 * 1000);
-        //});
+
+        $q.all([settingsPromise]).then(function() {
+            vm.saving = false;
+            vm.success = true;
+
+            $timeout(function() {
+                vm.success = false;
+            }, 3 * 1000);
+        });
     };
 
-    //storage.getSettings().then(function(data) {
-    //    vm.settings = data;
-    //
+    settings.get().then(function(data) {
+        vm.settings = data;
+
     //    vm.getFavorites();
-    //    vm.update();
-    //});
+        vm.update();
+    });
 }

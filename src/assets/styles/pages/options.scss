@@ -9,6 +9,7 @@
     display: inline-block;
     font-size: 18px;
     margin-bottom: 15px;
+    margin-right: 15px;
   }
 
   .message {
@@ -42,40 +43,12 @@
     }
   }
 
-  input[type='range'] {
-    position: relative;
-    top: 4px;
-    max-width: 40%;
-    display: inline-block;
-    margin: 0 5px;
-    outline: none;
-    border: 1px solid #CCC;
-    border-bottom-width: 2px;
-    border-radius: .2em;
-    color: #FFF;
-    cursor: pointer;
-    -webkit-appearance: none !important;
-    background: white;
-    padding: 0;
-    height: 15px;
-
-    &:hover, &:focus {
-      border-color: #1976d2;
-    }
-
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none !important;
-      background: #1976d2;
-      height: 14px;
-      width: 4px;
-    }
-  }
-
   .setting {
     display: block;
   }
 
   ul {
+    min-height: 30px;
     max-height: 100px;
     overflow: auto;
     list-style: none;

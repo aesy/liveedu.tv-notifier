@@ -5,19 +5,33 @@
 
         <div class="setting">
             Check every
-            <input ng-model="settings.pollingRate" type="range" min="1" max="60" value="1" step="1">
+            <range value="settings.pollingRate" min="1" max="60" step="1" />
             <span>{{settings.pollingRate*60 | humanReadableSeconds}}</span>
         </div>
     </div>
 
     <div class="field row">
+        <h1>Show Badge:</h1>
+
+        <checkbox active="true"></checkbox>
+    </div>
+
+    <div class="field row">
+        <h1>Show Notification:</h1>
+
+        <checkbox active="true"></checkbox>
+    </div>
+
+    <div class="field row">
         <h1>Notification Sound:</h1>
 
-        <select class="setting" ng-show="Object.keys(settings.settings).length > 0"
-                ng-options="sound.label for sound in settings.soundOptions"
-                ng-model="settings.selectedSound"
-                ng-change="settings.soundChange()">
-        </select>
+        <dropdown-select class="setting"
+                         ng-show="Object.keys(settings.settings).length > 0"
+                         selected="settings.selectedSound"
+                         options="settings.soundOptions"
+                         property="label"
+                         change="settings.soundChange(value)">
+        </dropdown-select>
     </div>
 
     <div class="field row" ng-show="settings.favorites.length > 0">
@@ -55,7 +69,7 @@
                 <i class="fa fa-2x fa-code"></i>
             </a>
 
-            <a ng-click="settings.openLink('https://www.livecoding.tv/easyfuckingpeasy/')"
+            <a ng-click="settings.openLink('https://github.com/easyfuckingpeasy/LiveCoding.tv-Notifier')"
                tooltip-placement="top"
                tooltip="Github">
                 <i class="fa fa-2x fa-github-square"></i>

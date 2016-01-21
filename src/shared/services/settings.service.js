@@ -26,7 +26,7 @@ function settingsService($q, _, browser) {
         var deferred = $q.defer();
 
         browser.storage.sync.get(storage_key).then(function (data) {
-            var settings = _.defaultsDeep(data, defaults);
+            var settings = _.defaultsDeep(data || {}, defaults);
 
             deferred.resolve(settings);
         });

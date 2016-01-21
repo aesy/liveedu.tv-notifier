@@ -13,15 +13,18 @@ function dropdownSelect($document) {
             placeholder: "@",
             property: "@",
             options: "=",
-            selected: "="
+            selected: "=",
+            change: "&"
         },
         link: function (scope, elem, attr) {
-            scope.selected = null;
             scope.showOptions = false;
 
             scope.select = function (item) {
                 scope.selected = item;
                 scope.showOptions = false;
+
+                if (scope.change)
+                    scope.change({value: item});
             };
 
             scope.isSelected = function (item) {

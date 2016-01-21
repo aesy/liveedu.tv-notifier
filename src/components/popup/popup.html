@@ -18,6 +18,8 @@
     <script src="lib/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
     <script src="lib/angular-route/angular-route.min.js"></script>
     <script src="lib/ng-lodash/build/ng-lodash.min.js"></script>
+    <script src="lib/angular-scroll-glue/src/scrollglue.js"></script>
+    <script src="lib/angular-typer/dist/typer.min.js"></script>
     <script src="js/app.min.js"></script>
 </head>
 
@@ -36,27 +38,19 @@
         </div>
 
         <div class="options pull-right">
-            <!--<select ng-model="filter.difficulty" ng-change="filter.difficultyChanged()">-->
-                <!--<option ng-repeat="difficulty in filter.difficulties"-->
-                        <!--value="{{difficulty.value}}">{{difficulty.label}}</option>-->
-            <!--</select>-->
-
             <dropdown-select selected="filter.difficulty"
                              options="filter.difficulties"
                              property="label"
-                             placeholder="Any Difficulty">
+                             placeholder="Any Difficulty"
+                             change="filter.difficultyChanged(value)">
             </dropdown-select>
 
             <dropdown-select selected="filter.category"
                              options="filter.categories"
                              property="label"
-                             placeholder="Category">
+                             placeholder="Category"
+                             change="filter.categoryChanged(value)">
             </dropdown-select>
-
-            <!--<select ng-model="filter.category" ng-change="filter.categoryChanged()">-->
-                <!--<option ng-repeat="category in filter.categories"-->
-                        <!--value="{{category.value}}">{{category.label}}</option>-->
-            <!--</select>-->
         </div>
     </header>
 
@@ -66,44 +60,43 @@
                 tooltip-placement="right"
                 tooltip="following">
 
-                <a href="#/following" class="glyphicon glyphicon-heart"></a>
+                <a href="following" class="glyphicon glyphicon-heart"></a>
             </li>
 
             <li ng-class="{active: nav.page('livestreams')}"
                 tooltip-placement="right"
                 tooltip="livestreams">
 
-                <a href="#/livestreams" class="glyphicon glyphicon-record"></a>
+                <a href="livestreams" class="glyphicon glyphicon-record"></a>
             </li>
 
             <li ng-class="{active: nav.page('videos')}"
                 tooltip-placement="right"
                 tooltip="videos">
 
-                <a href="#/videos" class="glyphicon glyphicon-expand"></a>
+                <a href="videos" class="glyphicon glyphicon-expand"></a>
             </li>
 
             <li ng-class="{active: nav.page('scheduled')}"
                 tooltip-placement="right"
                 tooltip="scheduled">
 
-                <a href="#/scheduled" class="glyphicon glyphicon-paste"></a>
+                <a href="scheduled" class="glyphicon glyphicon-paste"></a>
             </li>
         </ul>
 
         <ul class="nav bottom">
-            <li ng-if="false"
-                tooltip-placement="right"
+            <li tooltip-placement="right"
                 tooltip="login">
 
-                <a href="" class="glyphicon glyphicon-log-in"
+                <a href="#" class="glyphicon glyphicon-log-in"
                    ng-click="nav.login()"></a>
             </li>
 
             <li tooltip-placement="right"
                 tooltip="refresh">
 
-                <a href="" class="glyphicon glyphicon-refresh"
+                <a href="#" class="glyphicon glyphicon-refresh"
                    ng-click="nav.refresh()"></a>
             </li>
 
@@ -111,7 +104,7 @@
                 tooltip-placement="right"
                 tooltip="settings">
 
-                <a href="#/settings" class="glyphicon glyphicon-cog"></a>
+                <a href="settings" class="glyphicon glyphicon-cog"></a>
             </li>
         </ul>
     </nav>

@@ -41,15 +41,16 @@ select {
     }
 
     &.clicked:after {
-      content: "<";
+      content: url("../img/arrowdown.svg");
+      transform: rotate(180deg);
     }
 
     &:after {
-      content: ">";
+      content: url("../img/arrowdown.svg");
       position: absolute;
       top: 0;
       bottom: 0;
-      right: 8px;
+      right: 0;
     }
   }
 
@@ -59,8 +60,8 @@ select {
     text-align: left;
     background-color: #0c948f;
     transition: max-height .1s linear 0s;
-    max-height: 300px;
     overflow: auto;
+    max-height: 0;
 
     &::-webkit-scrollbar {
       width: 8px;
@@ -78,7 +79,11 @@ select {
 
     &.hidden {
       display: block !important;
-      max-height: 0;
+      //max-height: 0;
+    }
+
+    &.visible {
+      max-height: 300px;
     }
 
     .option {

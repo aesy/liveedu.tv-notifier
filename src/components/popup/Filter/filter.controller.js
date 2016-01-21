@@ -11,6 +11,7 @@ function filterCtrl(filter) {
     vm.category = "";
     vm.difficulty = "";
 
+    // TODO: finish list
     vm.difficulties = [
         {label: "Any Difficulty", value: ""},
         {label: "Beginner", value: "beginner"},
@@ -20,25 +21,47 @@ function filterCtrl(filter) {
 
     vm.categories = [
         {label: "Category", value: ""},
-        {label: "Obj-C/Swift(iOS)", value: "Obj-C/Swift(iOS)"},
+        {label: "Obj-C/Swift(iOS)", value: [
+            "ObjC",
+            "Swift"
+        ]},
         {label: "Java", value: "Java"},
         {label: "Android", value: "Android"},
-        {label: "C/C++", value: "C/C++"},
-        {label: "C#/.NET", value: "C#/.NE"},
+        {label: "C/C++", value: [
+            "C-C++",
+            "C++"
+        ]},
+        {label: "C#/.NET", value: [
+            ".NET",
+            "C#"
+        ]},
         {label: "Python", value: "Python"},
-        {label: "JavaScript", value: "JavaScript"},
-        {label: "PHP", value: "PHP"},
+        {label: "JavaScript", value: [
+            "JavaScript",
+            "TypeScript",
+            "CoffeeScript",
+            ".js"
+        ]},
+        {label: "PHP", value: [
+            "PHP",
+            "Laravel",
+            "Wordpress"
+        ]},
         {label: "Ruby", value: "Ruby"},
         {label: "SQL", value: "SQL"},
-        {label: "HTML/CSS", value: "HTML/CSS"}
+        {label: "HTML/CSS", value: [
+            "HTML-CSS",
+            "HTML5",
+            "CSS"
+        ]}
     ];
 
-    vm.difficultyChanged = function() {
-        filter.setDifficulty(vm.difficulty);
+    vm.difficultyChanged = function(difficulty) {
+        filter.setDifficulty(difficulty.value);
     };
 
-    vm.categoryChanged = function() {
-        filter.setCategory(vm.category);
+    vm.categoryChanged = function(category) {
+        filter.setCategory(category.value);
     };
 
     vm.inputChanged = function() {
@@ -47,5 +70,6 @@ function filterCtrl(filter) {
 
     vm.clear = function () {
         vm.input = "";
+        vm.inputChanged();
     };
 }

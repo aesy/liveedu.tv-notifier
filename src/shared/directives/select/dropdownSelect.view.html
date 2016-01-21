@@ -3,17 +3,17 @@
          ng-class="{ clicked: showOptions }"
          ng-click="clicked()">
         <div class="text-area">
-            <span ng-if="selected">
+            <span ng-if="selected || !placeholder">
                 {{ property ? selected[property] : selected }}
             </span>
-            <span ng-if="!selected">
+            <span ng-if="!selected && placeholder">
                 {{ placeholder }}
             </span>
         </div>
     </div>
 
     <div class="options"
-         ng-class="{ hidden: !showOptions, visible: showOptions }">
+         ng-class="{ visible: showOptions, hidden: !showOptions }">
         <div class="option"
              ng-repeat="item in options"
              ng-click="select(item)"
