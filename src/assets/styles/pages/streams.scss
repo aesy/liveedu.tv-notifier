@@ -1,150 +1,151 @@
-h1 {
-  display: inline-block;
-  margin: 0 0 20px;
-}
-
-html, body, main {
-  overflow: hidden;
-}
-
-main {
-  background-color: #f1f1f1;
-  height: 100%;
-  padding-left: 50px;
-  padding-top: 50px;
-  margin: 1px;
-
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.3);
-  }
-
-  article {
-    overflow: auto;
-    height: 100%;
-  }
-
-  .streams > p {
-    text-align: center;
-    margin: 20px;
-
-    .loader svg path {
-      fill: #1976d2;
-    }
-  }
-
-  .streams .stream {
-    margin-bottom: 1px;
-    background-color: #f1f1f1;
-    border-top: 1px solid white;
-    border-bottom: 1px solid #C5C5C5;
+html.popup {
+  &, body, main {
     overflow: hidden;
-    display: flex;
-    align-self: center;
+  }
 
-    h2 {
-      display: inline;
+  h1 {
+    display: inline-block;
+    margin: 0 0 20px;
+  }
+
+  main {
+    background-color: #f1f1f1;
+    height: 100%;
+    padding-left: 50px;
+    padding-top: 50px;
+    margin: 1px;
+
+    ::-webkit-scrollbar {
+      width: 8px;
     }
 
-    h3 {
-      margin-top: 2px;
+    ::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.3);
     }
 
-    &:hover .info .favorite-false {
-      display: inline-block;
+    article {
+      overflow: auto;
+      height: 100%;
     }
 
-    .info {
-      width: 100%;
+    .streams > p {
+      text-align: center;
+      margin: 20px;
 
-      .text {
-        word-break: break-all;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
+      .loader svg path {
+        fill: #1976d2;
+      }
+    }
+
+    .streams .stream {
+      margin-bottom: 1px;
+      background-color: #f1f1f1;
+      border-top: 1px solid white;
+      border-bottom: 1px solid #C5C5C5;
+      overflow: hidden;
+      display: flex;
+      align-self: center;
+
+      h2 {
+        display: inline;
       }
 
-      .buttons {
+      h3 {
+        margin-top: 2px;
+      }
+
+      &:hover .info .favorite-false {
         display: inline-block;
-        margin-left: 2px;
       }
 
-      .favorite-false {
-        display: none;
-      }
+      .info {
+        width: 100%;
 
-      .favorite {
-        cursor: pointer;
-        font-size: 16px;
-        color: red;
-        position: relative;
-        top: 4px;
-        margin: 3px;
-      }
+        .text {
+          word-break: break-all;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+        }
 
-      .link {
-        cursor: pointer;
+        .buttons {
+          display: inline-block;
+          margin-left: 2px;
+        }
 
-        &:hover {
-          color: #1976d2;
+        .favorite-false {
+          display: none;
+        }
+
+        .favorite {
+          cursor: pointer;
+          font-size: 16px;
+          color: red;
+          position: relative;
+          top: 4px;
+          margin: 3px;
+        }
+
+        .link {
+          cursor: pointer;
+
+          &:hover {
+            color: #1976d2;
+          }
+        }
+
+        .live {
+          color: red;
+        }
+
+        .link, .live {
+          margin: 2px;
+          position: relative;
+          top: 1px;
         }
       }
 
-      .live {
-        color: red;
-      }
+      .image {
+        width: 70%;
+        margin-right: 10px;
 
-      .link, .live {
-        margin: 2px;
-        position: relative;
-        top: 1px;
-      }
-    }
+        .image-wrapper {
+          position: relative;
 
-    .image {
-      width: 70%;
-      margin-right: 10px;
-
-      .image-wrapper {
-        position: relative;
-
-        & > img {
-          border: 1px solid white;
-          background-color: #22282e;
-          box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+          & > img {
+            border: 1px solid white;
+            background-color: #22282e;
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+          }
         }
-      }
 
-      .items {
-        //display: none;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: 8px;
-
-        .avatar, .flag {
+        .items {
+          //display: none;
           position: absolute;
-          width: 24px;
-          height: 24px;
-        }
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          margin: 8px;
 
-        .avatar {
-          border-radius: 50%;
-          left: 0px;
-          bottom: 0px;
-        }
+          .avatar, .flag {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+          }
 
-        .flag {
-          right: 0px;
-          bottom: -1px;
+          .avatar {
+            border-radius: 50%;
+            left: 0px;
+            bottom: 0px;
+          }
+
+          .flag {
+            right: 0px;
+            bottom: -1px;
+          }
         }
       }
     }
   }
 }
-

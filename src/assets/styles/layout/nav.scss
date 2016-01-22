@@ -3,51 +3,54 @@ $nav-width: 50px;
 $btn-active-color: #1976d2;
 $btn-hover-color: #313d43;
 
-nav {
-  position: fixed;
-  top: $header-height;
-  left: 0;
-  width: $nav-width;
-  height: 100%;
-  background: $nav-color;
-  z-index: 999;
-  border-right: 1px solid black;
+html.popup {
 
-  ul {
-    display: inline-block;
+  nav {
+    position: fixed;
+    top: $header-height;
+    left: 0;
+    width: $nav-width;
+    height: 100%;
+    background: $nav-color;
+    z-index: 999;
+    border-right: 1px solid black;
 
-    &.bottom {
-      position: absolute;
-      bottom: 0;
-      margin-bottom: 50px;
-    }
-  }
+    ul {
+      display: inline-block;
 
-  .glyphicon {
-    font-size: 20px;
-    text-align: center;
-    top: 0;
-    padding: 0;
-    line-height: 25px !important;
-    color: #929497;
-  }
-
-  li {
-    &:not(.active) a {
-      &:hover {
-        background-color: $btn-hover-color;
-        color: $btn-active-color;
-      }
-
-      &:focus {
-        background-color: initial;
+      &.bottom {
+        position: absolute;
+        bottom: 0;
+        margin-bottom: 50px;
       }
     }
 
-    &.active a {
-      &, &:hover, &:focus {
-        background-color: $btn-active-color;
-        color: white;
+    .glyphicon {
+      font-size: 20px;
+      text-align: center;
+      top: 0;
+      padding: 0;
+      line-height: 25px !important;
+      color: #929497;
+    }
+
+    li {
+      &:not(.active) a {
+        &:hover {
+          background-color: $btn-hover-color;
+          color: $btn-active-color;
+        }
+
+        &:focus {
+          background-color: initial;
+        }
+      }
+
+      &.active a {
+        &, &:hover, &:focus {
+          background-color: $btn-active-color;
+          color: white;
+        }
       }
     }
   }

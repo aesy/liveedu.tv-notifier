@@ -2,50 +2,53 @@ $header-color: #161a1e;
 $header-height: 50px;
 $icon-color: #768e9e;
 
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 50px;
-  z-index: 999;
-  padding: ($header-height - 22) / 2;
-  background-color: $header-color;
-  color: $icon-color;
+html.popup {
 
-  .search {
-    position: relative;
-    width: 40%;
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    z-index: 999;
+    padding: ($header-height - 22) / 2;
+    background-color: $header-color;
+    color: $icon-color;
 
-    input {
-      background-color: #22282e;
-      padding-top: 0;
-      padding-left: 5px;
-      height: 22px;
-      width: 100%;
-      color: #768e9e;
-      border: none;
+    .search {
+      position: relative;
+      width: 40%;
 
-      &:focus {
-        background-color: #f1f1f1;
-        outline: none;
+      input {
+        background-color: #22282e;
+        padding-top: 0;
+        padding-left: 5px;
+        height: 22px;
+        width: 100%;
+        color: #768e9e;
+        border: none;
+
+        &:focus {
+          background-color: #f1f1f1;
+          outline: none;
+        }
       }
+
+      .glyphicon {
+        position: absolute;
+        right: 5px;
+        top: 4px;
+
+        &.glyphicon-remove:hover {
+          color: #0c948f;
+        }
+      }
+
     }
 
-    .glyphicon {
-      position: absolute;
-      right: 5px;
-      top: 4px;
-
-      &.glyphicon-remove:hover {
-        color: #0c948f;
-      }
+    .options {
+      width: 60%;
+      text-align: right;
     }
-
-  }
-
-  .options {
-    width: 60%;
-    text-align: right;
   }
 }

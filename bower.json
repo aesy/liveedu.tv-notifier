@@ -10,6 +10,6 @@
     "angular-ui-bootstrap-bower": "0.13.x",
     "angular-scroll-glue": "",
     "ng-lodash": "",
-    "angular-typer": ""
+    "angular-typer": "^0.5.6"
   }
 }

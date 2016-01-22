@@ -12,13 +12,14 @@ function terminalCtrl($timeout, $location, livecoding) {
 
     vm.output = [];
     vm.maximized = false;
+    vm.closed = false;
     vm.current = -1;
 
     if ($location.search().hasOwnProperty("auth")) {
         auth();
     } else if($location.search().hasOwnProperty("update")) {
         update();
-    } else {
+    } else if ($location.search().hasOwnProperty("install")) {
         install();
     }
 
@@ -35,15 +36,11 @@ function terminalCtrl($timeout, $location, livecoding) {
 
     vm.next();
 
-    vm.quit = function() {
-         //Close window?
-    };
-
     function auth() {
         vm.output.push.apply(vm.output, [
             {
                 preword: vm.user + "$ ",
-                words: ["curl -H \"Authorization: Basic LiveCoding.tv\""],
+                words: ["curl -H \"Authorization: Basic user@livecoding\""],
                 typeTime: 50,
                 delay: 2000
             }, {
@@ -96,7 +93,7 @@ function terminalCtrl($timeout, $location, livecoding) {
                 pause: 200
             }, {
                 preword: "6.52MB ",
-                words: [".", ".", ".", ".", ".", "."],
+                words: [".", ".", ".", "."],
                 typeTime: 1000,
                 pause: 1000
             }, {
