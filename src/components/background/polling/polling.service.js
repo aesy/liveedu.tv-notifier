@@ -2,9 +2,9 @@ angular
     .module("app")
     .service("pollingService", pollingService);
 
-pollingService.$inject = ["$q", "$interval", "lodash", "streamService", "notificationFactory", "browserService"];
+pollingService.$inject = ["$q", "$interval", "lodash", "livecodingService", "notificationFactory", "browserService"];
 
-function pollingService($q, $interval, _, streams, Notification, browser) {
+function pollingService($q, $interval, _, livecoding, Notification, browser) {
     //var promise,
     //    seen = [],
     //    favorites = [],

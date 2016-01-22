@@ -25,11 +25,15 @@ function livecodingService($q, _, browser, livecodingAPI) {
         getAllLive: getAllLive,
         getAllVideos: getAllVideos,
         getAllScheduled: getAllScheduled,
-        isAuthenticated: hasToken,
+        isAuthenticated: isAuthenticated,
         authorize: authorize,
         authenticate: authenticate,
         revokeToken: revokeToken
     };
+
+    function isAuthenticated() {
+        return hasToken;
+    }
 
     function getAllLive() {
         var deferred = $q.defer();
@@ -131,6 +135,8 @@ function livecodingService($q, _, browser, livecodingAPI) {
     }
 
     function authorize(code) {
+        var deferred = $q.defer();
+
         livecodingAPI.getAccessToken(code).then(function(response) {
             var data = {
                 access_token: response.data.access_token,
@@ -141,7 +147,11 @@ function livecodingService($q, _, browser, livecodingAPI) {
 
             browser.storage.local.set(storageKey, data);
             setToken(data);
+
+            deferred.resolve();
         });
+
+        return deferred.promise;
     }
 
     function authenticate() {

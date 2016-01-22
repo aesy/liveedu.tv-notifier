@@ -86,11 +86,20 @@
         </ul>
 
         <ul class="nav bottom">
-            <li tooltip-placement="right"
+            <li ng-if="!nav.isAuthenticated()"
+                tooltip-placement="right"
                 tooltip="login">
 
                 <a href="#" class="glyphicon glyphicon-log-in"
                    ng-click="nav.login()"></a>
+            </li>
+
+            <li ng-if="nav.isAuthenticated()"
+                tooltip-placement="right"
+                tooltip="logout">
+
+                <a href="#" class="glyphicon glyphicon-log-out"
+                   ng-click="nav.logout()"></a>
             </li>
 
             <li tooltip-placement="right"
