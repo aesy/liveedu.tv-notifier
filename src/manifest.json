@@ -21,13 +21,13 @@
   "permissions": [
     "storage",
     "background",
-    "https://livecoding.tv/*",
-    "http://livecoding.tv/*",
+    "https://www.livecoding.tv/o/token/",
+    "https://www.livecoding.tv/*",
     "notifications",
     "tabs"
   ],
   "web_accessible_resources": [
-    "auth.html"
+    "message.html"
   ],
   "manifest_version": 2,
   "update_url": "https://clients2.google.com/service/update2/crx"

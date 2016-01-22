@@ -9,6 +9,7 @@
     "angular-route": "1.3.20",
     "angular-ui-bootstrap-bower": "0.13.x",
     "angular-scroll-glue": "",
-    "ng-lodash": ""
+    "ng-lodash": "",
+    "angular-typer": ""
   }
 }

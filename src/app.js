@@ -3,7 +3,8 @@ angular.module("app", [
     "ngAnimate",
     "ngLodash",
     "ui.bootstrap",
-    "luegg.directives"
+    "luegg.directives",
+    "typer"
 ]);
 
 angular
@@ -13,10 +14,10 @@ angular
 config.$inject = ["$routeProvider", "$locationProvider"];
 
 function config($routeProvider, $locationProvider) {
-    //$locationProvider.html5Mode({
-    //    enabled: true,
-    //    requireBase: false
-    //});
+    $locationProvider.html5Mode({
+        enabled: true,
+        requireBase: false
+    });
 
     $routeProvider
         .when("/settings", {
@@ -25,13 +26,13 @@ function config($routeProvider, $locationProvider) {
             controllerAs: "settings"
         })
 
+        .when("/popup.html", {
+            redirectTo: "/following"
+        })
+
         .when("/:page", {
             templateUrl: "view/streams.html",
             controller: "streamCtrl",
             controllerAs: "streams"
-        })
-
-        .otherwise({
-            redirectTo: "/following"
         });
 }

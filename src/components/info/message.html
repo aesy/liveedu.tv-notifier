@@ -14,6 +14,7 @@
     <script src="lib/angular-route/angular-route.min.js"></script>
     <script src="lib/ng-lodash/build/ng-lodash.min.js"></script>
     <script src="lib/angular-scroll-glue/src/scrollglue.js"></script>
+    <script src="lib/angular-typer/dist/typer.min.js"></script>
     <script src="js/app.min.js"></script>
 
     <style>
@@ -167,10 +168,16 @@
             animation: blink 0.7s infinite;
         }
 
-        .terminal-window section.terminal pre.history {
-            margin: 0;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+        .terminal-window section.terminal .history {
+            display: none;
+        }
+
+        .terminal-window section.terminal .history.visible {
+            display: block;
+        }
+
+        .terminal-window section.terminal .history.visible .typer:not(.active) .typer__cursor {
+            display: none;
         }
 
         .terminal-window a {
@@ -239,10 +246,24 @@
                 {{user}}
             </div>
 
-            <pre class="history"
+            <div class="history"
                  ng-repeat="row in terminal.output track by $index"
-                 ng-bind-html="terminal.output[$index] | trustedHTML">
-            </pre>
+                 ng-class="{visible: terminal.current >= $index}">
+                {{row.preword}}
+                <typer class="typer"
+                       ng-class="{active: terminal.current === $index}"
+                       start-trigger="terminal.current === $index"
+                       repeat="false"
+                       start-typing="true"
+                       words="row.words"
+                       type-time="{{row.typeTime || 0}}"
+                       start-delay="{{row.delay || 0}}"
+                       pause="0"
+                       on-complete="terminal.next()">
+                </typer>
+            </div>
+
+            <!-- show cursor if terminal.current >= terminal.output.length -->
         </section>
     </div>
 </body>
