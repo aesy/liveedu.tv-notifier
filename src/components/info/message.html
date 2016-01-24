@@ -20,52 +20,10 @@
 </head>
 
 <body>
-    <div ng-controller="terminalCtrl as terminal"
-         ng-class="{maximize: terminal.maximized, hidden: terminal.closed}"
-         class="terminal-window">
-        <header>
-            <div class="button close"
-                 ng-click="terminal.closed = true">
-            </div>
-
-            <div class="button minimize"
-                 ng-click="">
-            </div>
-
-            <div class="button maximize"
-                 ng-click="terminal.maximized = !terminal.maximized">
-            </div>
-
-            <div class="title">
-                {{terminal.user}}
-            </div>
-        </header>
-
-        <section class="terminal"
-                 scroll-glue>
-            <div ng-if="!terminal.output.length">
-                {{user}}
-            </div>
-
-            <div class="history"
-                 ng-repeat="row in terminal.output track by $index"
-                 ng-class="{visible: terminal.current >= $index}">
-                {{row.preword}}
-                <typer class="typer"
-                       ng-class="{active: terminal.current === $index}"
-                       start-trigger="terminal.current === $index"
-                       repeat="false"
-                       start-typing="true"
-                       words="row.words"
-                       type-time="{{row.typeTime || 0}}"
-                       start-delay="{{row.delay || 0}}"
-                       pause="0"
-                       on-complete="terminal.next()">
-                </typer>
-            </div>
-
-            <span ng-if="terminal.current >= terminal.output.length" class="cursor"></span>
-        </section>
-    </div>
+    <terminal ng-controller="terminalCtrl as terminal"
+              username="terminal.user"
+              output="terminal.output">
+    </terminal>
 </body>
+
 </html>

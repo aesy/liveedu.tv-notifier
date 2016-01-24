@@ -1,0 +1,46 @@
+<div ng-class="{maximize: maximized, hidden: closed}"
+     class="terminal-window">
+    <header>
+        <div class="button close"
+             ng-click="closed = true">
+        </div>
+
+        <div class="button minimize"
+             ng-click="">
+        </div>
+
+        <div class="button maximize"
+             ng-click="maximized = !maximized">
+        </div>
+
+        <div class="title">
+            {{username}}
+        </div>
+    </header>
+
+    <section class="terminal"
+             scroll-glue>
+        <div ng-if="!output.length">
+            {{username}}
+        </div>
+
+        <div class="history"
+             ng-repeat="currentRow in output track by $index"
+             ng-class="{visible: currentRow >= $index}">
+            {{row.preword}}
+            <typer class="typer"
+                   ng-class="{active: currentRow === $index}"
+                   start-trigger="currentRow === $index"
+                   repeat="false"
+                   start-typing="true"
+                   words="currentRow.words"
+                   type-time="{{row.typeTime || 0}}"
+                   start-delay="{{row.delay || 0}}"
+                   pause="0"
+                   on-complete="nextRow()">
+            </typer>
+        </div>
+
+        <span ng-if="currentRow >= output.length" class="cursor"></span>
+    </section>
+</div>

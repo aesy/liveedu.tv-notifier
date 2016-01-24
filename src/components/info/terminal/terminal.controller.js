@@ -4,16 +4,13 @@ angular
 
 terminalCtrl.$inject = ["$timeout", "$location", "livecodingService"];
 
-function terminalCtrl($timeout, $location, livecoding) {
+function terminalCtrl($location, livecoding) {
     var vm = this;
 
     var name = "user";
     vm.user = name + "@livecoding: ~";
 
     vm.output = [];
-    vm.maximized = false;
-    vm.closed = false;
-    vm.current = -1;
 
     if ($location.search().hasOwnProperty("auth")) {
         auth();
@@ -22,19 +19,6 @@ function terminalCtrl($timeout, $location, livecoding) {
     } else if ($location.search().hasOwnProperty("install")) {
         install();
     }
-
-    vm.next = function() {
-        var current = {};
-
-        if (vm.current >= 0 && vm.current <= vm.output.length - 1)
-            current = vm.output[vm.current];
-
-        $timeout(function() {
-            vm.current++;
-        }, current.pause || 0);
-    };
-
-    vm.next();
 
     function auth() {
         vm.output.push.apply(vm.output, [
