@@ -25,7 +25,7 @@
         </div>
 
         <div class="history"
-             ng-repeat="currentRow in output track by $index"
+             ng-repeat="row in output track by $index"
              ng-class="{visible: currentRow >= $index}">
             {{row.preword}}
             <typer class="typer"
@@ -33,7 +33,7 @@
                    start-trigger="currentRow === $index"
                    repeat="false"
                    start-typing="true"
-                   words="currentRow.words"
+                   words="row.words"
                    type-time="{{row.typeTime || 0}}"
                    start-delay="{{row.delay || 0}}"
                    pause="0"

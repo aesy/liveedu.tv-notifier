@@ -5,6 +5,7 @@ $icon-color: #768e9e;
 html.popup {
 
   header {
+    display: flex;
     position: fixed;
     top: 0;
     left: 0;
@@ -16,8 +17,8 @@ html.popup {
     color: $icon-color;
 
     .search {
+      flex: 1 1 auto;
       position: relative;
-      width: 40%;
 
       input {
         background-color: #22282e;
@@ -46,9 +47,18 @@ html.popup {
 
     }
 
-    .options {
-      width: 60%;
-      text-align: right;
+    & > .options {
+      display: flex;
+      flex: 1 1 60%;
+      padding-left: 12px;
+
+      .select {
+        flex: 1 1 auto;
+
+        &+.select {
+          margin-left: 10px;
+        }
+      }
     }
   }
 }

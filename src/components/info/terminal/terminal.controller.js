@@ -2,7 +2,7 @@ angular
     .module("app")
     .controller("terminalCtrl", terminalCtrl);
 
-terminalCtrl.$inject = ["$timeout", "$location", "livecodingService"];
+terminalCtrl.$inject = ["$location", "livecodingService"];
 
 function terminalCtrl($location, livecoding) {
     var vm = this;

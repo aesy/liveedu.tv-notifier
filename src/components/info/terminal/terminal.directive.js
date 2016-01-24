@@ -31,7 +31,6 @@ function terminal($timeout) {
             };
 
             scope.nextRow();
-
         }
     };
 }
