@@ -19,6 +19,22 @@ function config($routeProvider, $locationProvider) {
         requireBase: false
     });
 
+    // Global resolve
+    var originalWhen = $routeProvider.when;
+    $routeProvider.when = function(path, route) {
+        route.resolve || (route.resolve = {});
+        angular.extend(route.resolve, {
+            "1": function(settingsService) {
+                return settingsService.promise;
+            },
+            "2": function(livecodingService) {
+                return livecodingService.promise;
+            }
+        });
+
+        return originalWhen.call($routeProvider, path, route);
+    };
+
     $routeProvider
         .when("/settings", {
             templateUrl: "view/settings.html",
@@ -29,6 +45,8 @@ function config($routeProvider, $locationProvider) {
         .when("/popup.html", {
             redirectTo: "/following"
         })
+
+        .when("/background.html", {})
 
         .when("/:page", {
             templateUrl: "view/streams.html",
