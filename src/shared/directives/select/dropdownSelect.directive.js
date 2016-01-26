@@ -28,7 +28,7 @@ function dropdownSelect($document) {
             };
 
             scope.isSelected = function (item) {
-                if (!scope.selected)
+                if (!scope.selected || !item)
                     return;
 
                 if (scope.property)
