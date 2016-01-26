@@ -2,9 +2,17 @@ angular
 	.module("app")
 	.service("chromeService", chromeService);
 
-chromeService.$inject = ["$q", "lodash"];
+chromeService.$inject = ["$q"];
 
-function chromeService($q, _) {
+function chromeService($q) {
+
+    chrome.runtime.onInstalled.addListener(function(details) {
+        if (details.reason == "install") {
+            openTab(getExtensionURL() + "message.html?install");
+        } else if (details.reason == "update") {
+            openTab(getExtensionURL() + "message.html?update");
+        }
+    });
 
     var storage = {
         sync: {
@@ -18,20 +26,13 @@ function chromeService($q, _) {
                 return deferred.promise;
             },
 
-            set: function(key, newData, merge) {
+            set: function(key, data) {
                 var deferred = $q.defer();
-                var data = {};
+                var obj = {};
+                obj[key] = data;
 
-                storage.sync.get(key).then(function(oldData) {
-                    if (merge) {
-                        data[key] = _.defaultsDeep(newData, oldData);
-                    } else {
-                        data[key] = newData;
-                    }
-
-                    chrome.storage.sync.set(data, function() {
-                        deferred.resolve();
-                    });
+                chrome.storage.sync.set(obj, function() {
+                    deferred.resolve();
                 });
 
                 return deferred.promise;
@@ -55,20 +56,10 @@ function chromeService($q, _) {
                 return deferred.promise;
             },
 
-            set: function(key, newData, merge) {
-                var deferred = $q.defer();
-                var data = newData;
+            set: function(key, data) {
+                localStorage.setItem(key, JSON.stringify(data));
 
-                storage.local.get(key).then(function(oldData) {
-                    if (merge) {
-                        data = _.defaultsDeep(newData, oldData);
-                    }
-
-                    localStorage.setItem(key, JSON.stringify(data));
-                    deferred.resolve();
-                });
-
-                return deferred.promise;
+                return $q.when(true);
             },
 
             clear: function(key) {
@@ -84,7 +75,7 @@ function chromeService($q, _) {
         setBadge: setBadge,
         getBadge: getBadge,
         storage: storage,
-        getURL: getURL,
+        getExtensionURL: getExtensionURL,
         bindNotificationClicked: bindNotificationClicked,
         refresh: function() {
             location.reload();
@@ -129,7 +120,7 @@ function chromeService($q, _) {
         return deferred.promise;
     }
 
-    function getURL() {
+    function getExtensionURL() {
         return chrome.extension.getURL("/");
     }
 
