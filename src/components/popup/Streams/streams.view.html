@@ -1,16 +1,10 @@
 <ul class="streams list-group">
-    <p ng-if="streams.collection.length == 0 && !streams.searching">
-        There is nothing here! :-(
-    </p>
-    <p ng-if="streams.collection.length == 0 && streams.searching">
-        <inline-svg src="img/loader.svg" class="loader"></inline-svg>
-    </p>
-
     <li class="container-fluid stream animate list-group-item"
-        ng-repeat="stream in streams.collection |
-                    filter:streams.filter |
-                    orderBy:streams.order |
-                    limitTo: 40">
+        ng-repeat="stream in filteredStreams =
+                   (streams.collection |
+                   filter:streams.filter |
+                   orderBy:streams.order |
+                   limitTo: 40)">
 
         <div class="image pull-left" ng-if="streams.currentPage !== 'scheduled'">
             <div class="image-wrapper">
@@ -20,6 +14,7 @@
                      image-ratio="{ratio: 140/250}"
                      ng-src="https://www.livecoding.tv/video/livestream/{{stream.username}}/thumbnail_250_140/">
 
+                <!--No easy way to get URLs, commenting out for now-->
                 <!--<div class="items">-->
                     <!--<img class="avatar" ng-src="{{stream.avatar}}">-->
                     <!--<img class="flag" ng-src="{{stream.flag}}"-->
@@ -44,7 +39,7 @@
                 </h3>
 
                 <h3 ng-if="streams.currentPage === 'scheduled'">
-                    Time left: {{stream.date_full|humanReadableDate}}
+                    Time left: {{stream.dateTime|humanReadableDate}}
                 </h3>
             </div>
 
@@ -87,4 +82,12 @@
             </span>
         </div>
     </li>
+
+    <p ng-if="!filteredStreams.length && !streams.searching">
+        There is nothing here! :-(
+    </p>
+
+    <p ng-if="!filteredStreams.length && streams.searching">
+        <inline-svg src="img/loader.svg" class="loader"></inline-svg>
+    </p>
 </ul>

@@ -2,13 +2,13 @@ angular
     .module("app")
     .controller("streamCtrl", streamCtrl);
 
-streamCtrl.$inject = ["$scope", "livecodingService", "$routeParams", "lodash", "browserService", "filterService"];
+streamCtrl.$inject = ["$scope", "$routeParams", "lodash", "settingsService", "livecodingService", "browserService", "filterService"];
 
-function streamCtrl($scope, livecoding, $routeParams, _, browser, filter) {
+function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filter) {
     var vm = this;
 
     vm.collection = [];
-    vm.favorites = [];
+    vm.settings = settings.get();
     vm.currentPage = $routeParams.page;
     vm.filter = filter.matchStream;
     vm.searching = false;
@@ -33,20 +33,19 @@ function streamCtrl($scope, livecoding, $routeParams, _, browser, filter) {
     };
 
     vm.toggleFavorite = function(name) {
-        if (_.contains(vm.favorites, name)) {
-            _.remove(vm.favorites, name);
+        if (_.contains(vm.settings.follows.names, name)) {
+            settings.removeFollows([name]);
         } else {
-            vm.favorites.push(name);
+            settings.addFollows([name]);
         }
 
-        //storage.setFavorites(vm.favorites);
+        vm.settings = settings.get();
     };
 
     vm.order = function(stream) {
         switch (vm.currentPage) {
             case "scheduled": // Sort by time left
-                var timestamp = parseInt(stream.timestamp) || 0;
-                return timestamp*1000 - Date.now();
+                return "-" + (stream.timestamp || 0);
             case "videos": // Don't sort
                 return "";
             default: // Sort by views, descending
@@ -55,16 +54,7 @@ function streamCtrl($scope, livecoding, $routeParams, _, browser, filter) {
     };
 
     vm.isFavorite = function(name) {
-        return _.contains(vm.favorites, name);
-    };
-
-    vm.updateFavorites = function(callback) {
-        //storage.getFavorites().then(function(data) {
-        //    vm.favorites = _.isEmpty(data) ? [] : data;
-        //
-        //    if (callback)
-        //        callback();
-        //});
+        return _.contains(vm.settings.follows.names, name);
     };
 
     vm.refresh = function() {
@@ -75,7 +65,7 @@ function streamCtrl($scope, livecoding, $routeParams, _, browser, filter) {
             case "following":
                 livecoding.getAllLive().then(function (streams) {
                     vm.collection = streams.filter(function (stream) {
-                        return _.contains(vm.favorites, stream.username);
+                        return vm.isFavorite(stream.username);
                     });
                     vm.searching = false;
                 });
@@ -104,18 +94,16 @@ function streamCtrl($scope, livecoding, $routeParams, _, browser, filter) {
     };
 
     vm.update = function() {
-        //vm.updateFavorites(function() {
-            vm.refresh();
-        //});
+        vm.refresh();
     };
 
-    vm.remindMe = function(username) {
-
-    };
-
-    vm.willRemind = function(username) {
-
-    };
+    //vm.remindMe = function(username) {
+    //
+    //};
+    //
+    //vm.willRemind = function(username) {
+    //
+    //};
 
     $scope.$on("refreshStreams", vm.update);
     $scope.$on("$routeChangeSuccess", vm.update);
