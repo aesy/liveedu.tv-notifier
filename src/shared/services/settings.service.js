@@ -72,16 +72,19 @@ function settingsService($q, _, browser, livecoding) {
 
         browser.storage.sync.get(storage_key).then(function(data) {
             settings = data || {};
-        });
 
-        livecoding.getFollowing().then(function(data) {
-            var follows = data.map(function(value) {
+            return livecoding.promise;
+        }).then(function() {
+            return livecoding.getFollowing();
+        }).then(function(data) {
+            var oldFollows = get().follows;
+            var newFollows = data.map(function(value) {
                 return value.username;
             }).filter(function(name) {
-                return !_.contains(get().follows.ignore, name)
+                return !_.contains(oldFollows.ignore, name)
             });
 
-            addFollows(_.difference(follows, get().follows.names));
+            addFollows(_.difference(newFollows, oldFollows.names));
             deferred.resolve();
         });
 

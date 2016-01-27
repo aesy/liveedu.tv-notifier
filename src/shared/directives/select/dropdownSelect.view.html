@@ -15,7 +15,7 @@
     <div class="options"
          ng-class="{ visible: showOptions, hidden: !showOptions }">
         <div class="option"
-             ng-repeat="item in options"
+             ng-repeat="item in options track by $index"
              ng-click="select(item)"
              ng-class="{ selected: isSelected(item) }">
             {{ property ? item[property] : item }}
