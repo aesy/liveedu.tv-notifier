@@ -2,25 +2,19 @@ angular
     .module("app")
     .service("livecodingAPIService", livecodingAPIService);
 
-livecodingAPIService.$inject = ["$http"];
+livecodingAPIService.$inject = ["$http", "$q"];
 
 
-function generateGUID() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0, v = c === "x" ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
-}
-
-function livecodingAPIService($http) {
+function livecodingAPIService($http, $q) {
     var baseUrl= "https://www.livecoding.tv",
+        newTokenCallbacks = [],
         accessToken = {},
         config = {
             clientId: "3uXPPL5p7PuKEPgwn5vEbK6TmGQO4YfD5rVRGn6Z",
             clientSecret: "fy2VvRhk3oFARzZjM5lNyYsOcpP5B2c4eKoxm2GfOKWsh8TkpNuReOw9R7InjqEZaHKdzGK4hMYAdMeGzqV0CCew1qFLYiZw9UHIKv7hU6r47tQU8PSUF585bzGbiMQ4",
             scope: ["read:user"],
             redirectUri: "https://www.easy-peasy.se/LiveCoding.tv-Notifier/"
-            //redirectUri: browser.getURL() + "auth.html" // TODO: notify livecoding support that redirects to chrome extentions are not allowed.
+            //redirectUri: browser.getExtensionURL() + "auth.html" // TODO: notify livecoding support that redirects to chrome extentions are not allowed.
         };
 
     return {
@@ -28,13 +22,26 @@ function livecodingAPIService($http) {
         getVideos: getVideos,
         getScheduled: getScheduled,
         getCurrentUser: getCurrentUser,
-        getCurrentUserFollowers: getCurrentUserFollowers,
+        getFollowing: getFollowing,
         getAuthorizeUrl: getAuthorizeUrl,
         setAccessToken: setAccessToken,
         getAccessToken: getAccessToken,
         refreshToken: refreshToken,
-        revokeToken: revokeToken
+        revokeToken: revokeToken,
+        onNewToken: onNewToken,
+        authorize: authorize,
+        isAuthenticated: isAuthenticated
     };
+
+    function onNewToken(callback) {
+        newTokenCallbacks.push(callback);
+    }
+
+    function fireNewToken() {
+        newTokenCallbacks.forEach(function(func) {
+            func(accessToken);
+        });
+    }
 
     function getAuthorizeUrl() {
         return [
@@ -48,58 +55,153 @@ function livecodingAPIService($http) {
     }
 
     function getLivestreams() {
-        return get("/api/livestreams/onair/", null, AuthConfig());
+        var deferred = $q.defer();
+
+        get("/api/livestreams/onair/", null, AuthConfig()).then(function(response) {
+            var results = response.data.results;
+
+            if (!(results instanceof Array))
+                deferred.reject();
+
+            deferred.resolve(liveCodingStream(results));
+        });
+
+        return deferred.promise;
     }
 
     function getVideos() {
-        return get("/api/videos/", null, AuthConfig());
+        var deferred = $q.defer();
+
+        var params = {
+            //ordering: "creation_time"
+        };
+
+        get("/api/videos/", params, AuthConfig()).then(function(response) {
+            var results = response.data.results;
+
+            if (!(results instanceof Array))
+                deferred.reject();
+
+            deferred.resolve(liveCodingStream(results));
+        });
+
+        return deferred.promise;
     }
 
-    function getScheduled() {
-        return get("/api/scheduledbroadcast/", null, AuthConfig());
+    function getScheduled(offset) {
+        var deferred = $q.defer();
+
+        var params = {
+            limit: 100,
+            offset: offset || 0
+        };
+
+        get("/api/scheduledbroadcast/", params, AuthConfig()).then(function(response) {
+            var results = response.data.results;
+
+            if (!(results instanceof Array))
+                deferred.reject();
+
+            deferred.resolve(liveCodingStream(results));
+        });
+
+        return deferred.promise;
     }
 
     function getCurrentUser() {
         return get("/api/user/", null, AuthConfig());
     }
 
-    function getCurrentUserFollowers() {
-        return get("/api/user/followers/", null, AuthConfig());
+    function getFollowing() {
+        var deferred = $q.defer();
+
+        get("/api/user/followers/", null, AuthConfig()).then(function(response) {
+            deferred.resolve(response.data);
+        }, function(e) {
+            if (e.status !== 403)
+                return;
+
+            console.log("E", e);
+
+            refreshToken().then(function() {
+                console.log("N");
+                return $http(e.config).then(function(response) {
+                    deferred.resolve(response.data);
+                }, function(e) {
+                    deferred.reject(e);
+                });
+            }, function(e) {
+                console.log("NOO", e);
+                deferred.reject(e);
+            });
+        });
+
+        return deferred.promise;
     }
 
     function setAccessToken(obj) {
         accessToken = obj;
+        fireNewToken(accessToken);
+    }
+
+    function authorize(code) {
+        var deferred = $q.defer();
+
+        getAccessToken(code).then(function(response) {
+            setAccessToken({
+                access_token: response.data.access_token,
+                refresh_token: response.data.refresh_token,
+                expires_at: timestamp_seconds() + response.data.expires_in,
+                scope: response.data.scope.split(" ")
+            });
+
+            deferred.resolve();
+        }, function() {
+            deferred.reject();
+        });
+
+        return deferred.promise;
     }
 
     function getAccessToken(code) {
-        var authCode = {
+        var params = {
             grant_type: "authorization_code",
             code: code,
             redirect_uri: config.redirectUri
         };
 
-        return $http.post(baseUrl + "/o/token/", authCode, AccessTokenConfig());
+        return post("/o/token/", params, AccessTokenConfig());
     }
 
-    function refreshToken(refresh_token) {
-        var authCode = {
+    function refreshToken() {
+        var params = {
             grant_type: "refresh_token",
-            refresh_token: refresh_token
+            refresh_token: accessToken.refresh_token
         };
 
-        return $http.post(baseUrl + "/o/token/", authCode, AccessTokenConfig());
+        return post("/o/token/", params, AccessTokenConfig()).then(function(response) {
+            setAccessToken({
+                access_token: response.data.access_token,
+                refresh_token: response.data.refresh_token,
+                expires_at: timestamp_seconds() + response.data.expires_in,
+                scope: response.data.scope.split(" ")
+            });
+
+            return $q.when(true);
+        });
     }
 
     function revokeToken() {
-        accessToken = null;
+        setAccessToken(null);
     }
 
-    function isAuthorized() {
+    function isAuthenticated() {
         return angular.isDefined(accessToken.access_token);
     }
 
     function get(url, params, config) {
         config.params = params;
+
         return $http.get(baseUrl + url, config);
     }
 
@@ -109,7 +211,6 @@ function livecodingAPIService($http) {
         return $http.post(url, params, config);
     }
 
-    // This $http config is used to exchange the request token for a user access token
     function AccessTokenConfig() {
         return {
             headers: {
@@ -125,10 +226,9 @@ function livecodingAPIService($http) {
         };
     }
 
-    // This $http config is used for all reddit API calls after OAuth is complete
     function AuthConfig() {
-        if (!isAuthorized())
-            return {};
+        if (!isAuthenticated())
+            new Error("livecodingAPI Service: Not Authenticated.");
 
         return {
             headers: {
@@ -175,4 +275,34 @@ function livecodingAPIService($http) {
 
         return query.length ? query.substr(0, query.length - 1) : query;
     }
+}
+
+
+function liveCodingStream(stream) {
+    return stream.map(function(value) {
+        return {
+            username: value.user.match(/^.*\/(.+)\//)[1] || "",
+            url: (value.url || "").replace("api/livestreams/", ""),
+            title: value.title || "",
+            description: value.description || "",
+            country: value.language || "",
+            tags: value.tags || value.product_type || "",
+            difficulty: value.difficulty || "",
+            category: value.coding_category || "",
+            views: value.viewers_live || value.viewers_overall || 0,
+            timestamp: Date.parse(value.start_time || 0),
+            dateTime: new Date(value.start_time || 0)
+        };
+    });
+}
+
+function timestamp_seconds() {
+    return Math.floor(new Date().getTime() / 1000);
+}
+
+function generateGUID() {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c === "x" ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
 }

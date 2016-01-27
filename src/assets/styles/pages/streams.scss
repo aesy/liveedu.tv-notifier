@@ -55,6 +55,10 @@ html.popup {
         margin-top: 2px;
       }
 
+      &:hover {
+        background-color: #F7F7F7;
+      }
+
       &:hover .info .favorite-false {
         display: inline-block;
       }
