@@ -2,30 +2,18 @@ angular
     .module("app")
     .controller("pollingCtrl", pollingCtrl);
 
-pollingCtrl.$inject = ["$interval", "livecodingService", "settingsService", "browserService", "lodash"];
+pollingCtrl.$inject = ["$interval", "livecodingService", "settingsService", "browserService", "notificationFactory", "lodash"];
 
-function pollingCtrl($interval, livecoding, settings, browser, _) {
+function pollingCtrl($interval, livecoding, settings, browser, Notification, _) {
     var opts = settings.get(),
-        seen = [],
-        promise;
+        seen = [];
 
-    start();
+    poll();
 
-    return {};
-
-    function start() {
-        stop();
+    $interval(function() {
+        opts = settings.get();
         poll();
-
-        promise = $interval(function() {
-            opts = settings.get();
-            //poll();
-        }, opts.pollFrequency * 1000);
-    }
-
-    function stop() {
-        $interval.cancel(promise);
-    }
+    }, opts.pollFrequency * 1000);
 
     function poll() {
         livecoding.getAllLive().then(function(livestreams) {
@@ -51,12 +39,10 @@ function pollingCtrl($interval, livecoding, settings, browser, _) {
                     }).display();
 
                 count++;
-
-                if (opts.showBadge)
-                    browser.getBadge().then(function (currentCount) {
-                        browser.setBadge((parseInt(currentCount) || 0) + count);
-                    });
             });
+
+            if (opts.showBadge)
+                browser.setBadge(count);
         });
     }
 }

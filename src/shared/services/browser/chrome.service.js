@@ -77,6 +77,8 @@ function chromeService($q) {
         storage: storage,
         getExtensionURL: getExtensionURL,
         bindNotificationClicked: bindNotificationClicked,
+        createNotification: createNotification,
+        removeNotification: removeNotification,
         refresh: function() {
             location.reload();
         }
@@ -122,6 +124,21 @@ function chromeService($q) {
 
     function getExtensionURL() {
         return chrome.extension.getURL("/");
+    }
+
+    function createNotification(id, data) {
+        chrome.notifications.create(
+            "" + id,
+            data,
+            function(id) {} // callback
+        );
+    }
+
+    function removeNotification(id) {
+        chrome.notifications.clear(
+            "" + id,
+            function(id) {} // callback
+        );
     }
 
     function bindNotificationClicked(func) {

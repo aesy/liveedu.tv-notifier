@@ -38,43 +38,27 @@ function notificationFactory(browser) {
 
         add(id, this);
 
-        return {
-            display: display,
-            close: close,
-            clicked: clicked
+        this.display = function() {
+            browser.createNotification(id, {
+                iconUrl: "img/128_1.png",
+                buttons: [],
+                type: "basic",
+                title: title,
+                message: message,
+                eventTime: new Date().getTime() + time,
+                isClickable: true
+            });
         };
 
-        function display() {
-            //browser.createNotification(id, data);
-            chrome.notifications.create(
-                "" + id,
-                {
-                    iconUrl: "img/128_1.png",
-                    buttons: [],
-                    type: "basic",
-                    title: title,
-                    message: message,
-                    eventTime: new Date().getTime() + time,
-                    isClickable: true
-                },
-                function (id) {} // callback
-            );
-        }
+        this.close = function() {
+            browser.removeNotification(id);
+        };
 
-        function close() {
-            //browser.removeNotification(id);
-            chrome.notifications.clear(
-                "" + id,
-                function(id) {
-                } // callback
-            );
-        }
-
-        function clicked() {
+        this.clicked = function() {
             if (url)
                 browser.openTab(url);
 
             close();
-        }
+        };
     };
 }
