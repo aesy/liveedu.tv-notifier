@@ -11,19 +11,21 @@ function pollingCtrl($interval, livecoding, settings, browser, Notification, _) 
     poll();
 
     $interval(function() {
-        opts = settings.get();
-        poll();
-    }, opts.pollFrequency * 1000);
+        settings.getAsync().then(function(data) {
+            opts = data;
+            poll();
+        });
+    }, opts.pollFrequency * 1000 * 60);
 
     function poll() {
         livecoding.getAllLive().then(function(livestreams) {
             var count = 0;
 
             livestreams.forEach(function(stream) {
-                if (!_.contains(opts.follows.names, stream.username))
+                if (!_.includes(opts.follows.names, stream.username))
                     return;
 
-                if (_.contains(seen, stream.username))
+                if (_.includes(seen, stream.username))
                     return;
                 else
                     seen.push(stream.username);

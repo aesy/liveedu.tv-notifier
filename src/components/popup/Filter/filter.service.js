@@ -30,14 +30,14 @@ function filterService(_) {
                     stream.description,
                     stream.tags
                 ].map(function(value) {
-                    return _.contains(value.toLowerCase(), string.toLowerCase());
+                    return _.includes(value.toLowerCase(), string.toLowerCase());
                 });
 
                 values.push(_.any(matches));
             }
 
             if (category)
-                values.push(_.contains(category, stream.category));
+                values.push(_.includes(category, stream.category));
 
             if (difficulty)
                 values.push(stream.difficulty === difficulty);

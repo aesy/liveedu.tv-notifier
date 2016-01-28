@@ -8,7 +8,7 @@ function settingsService($q, _, browser, livecoding) {
     var storageKey = "LiveCoding.tv-Notifier_settings",
         settings = {},
         defaults = {
-            pollFrequency: 60,
+            pollFrequency: 5,
             browserSync: true,
             showBadge: true,
             soundClip: {
@@ -30,6 +30,7 @@ function settingsService($q, _, browser, livecoding) {
 
     return {
         get: get,
+        getAsync: getAsync,
         set: set,
         addFollows: addFollows,
         removeFollows: removeFollows,
@@ -38,6 +39,17 @@ function settingsService($q, _, browser, livecoding) {
 
     function get() {
         return _.cloneDeep(_.defaultsDeep(settings, defaults));
+    }
+
+    function getAsync() {
+        var deferred = $q.defer();
+
+        browser.storage.sync.get(storageKey).then(function(data) {
+            settings = data || {};
+            deferred.resolve(get());
+        });
+
+        return deferred.promise;
     }
 
     function set(data) {
@@ -96,7 +108,7 @@ function settingsService($q, _, browser, livecoding) {
                 var newFollows = data.map(function(value) {
                     return value.username;
                 }).filter(function(name) {
-                    return !_.contains(oldFollows.ignore, name)
+                    return !_.includes(oldFollows.ignore, name)
                 });
 
                 addFollows(_.difference(newFollows, oldFollows.names));

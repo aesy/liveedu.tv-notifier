@@ -33,7 +33,7 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
     };
 
     vm.toggleFavorite = function(name) {
-        if (_.contains(vm.settings.follows.names, name)) {
+        if (_.includes(vm.settings.follows.names, name)) {
             settings.removeFollows([name]);
         } else {
             settings.addFollows([name]);
@@ -54,7 +54,7 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
     };
 
     vm.isFavorite = function(name) {
-        return _.contains(vm.settings.follows.names, name);
+        return _.includes(vm.settings.follows.names, name);
     };
 
     vm.refresh = function() {

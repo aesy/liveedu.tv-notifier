@@ -58,7 +58,7 @@ function livecodingAPIService($http, $q) {
     function getLivestreams() {
         var deferred = $q.defer();
 
-        get("/api/livestreams/onair/", null, AuthConfig()).then(function(response) {
+        get("/api/livestreams/onair/", {}, {}).then(function(response) {
             var results = response.data.results;
 
             if (!(results instanceof Array))
@@ -77,7 +77,7 @@ function livecodingAPIService($http, $q) {
             //ordering: "creation_time"
         };
 
-        get("/api/videos/", params, AuthConfig()).then(function(response) {
+        get("/api/videos/", params, {}).then(function(response) {
             var results = response.data.results;
 
             if (!(results instanceof Array))
@@ -97,7 +97,7 @@ function livecodingAPIService($http, $q) {
             offset: offset || 0
         };
 
-        get("/api/scheduledbroadcast/", params, AuthConfig()).then(function(response) {
+        get("/api/scheduledbroadcast/", params, {}).then(function(response) {
             var results = response.data.results;
 
             if (!(results instanceof Array))
@@ -110,13 +110,13 @@ function livecodingAPIService($http, $q) {
     }
 
     function getCurrentUser() {
-        return get("/api/user/", null, AuthConfig());
+        return get("/api/user/", {}, AuthConfig());
     }
 
     function getFollowing() {
         var deferred = $q.defer();
 
-        get("/api/user/followers/", null, AuthConfig()).then(function(response) {
+        get("/api/user/followers/", {}, AuthConfig()).then(function(response) {
             deferred.resolve(response.data);
         });
 
@@ -137,7 +137,6 @@ function livecodingAPIService($http, $q) {
 
         return post("/o/token/", params, AccessTokenConfig());
     }
-
 
     function refreshToken() {
         var params = {
@@ -162,7 +161,7 @@ function livecodingAPIService($http, $q) {
     }
 
     function revokeToken() {
-        setAccessToken(null);
+        setAccessToken({});
     }
 
     function authorize(code) {
