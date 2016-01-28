@@ -29,12 +29,12 @@ function config($routeProvider, $locationProvider) {
             controller: "settingsCtrl",
             controllerAs: "settings",
             resolve: {
-                settings: function(settingsService) {
+                settings: ["settingsService", function(settingsService) {
                     return settingsService.promise;
-                },
-                livecoding: function(livecodingService) {
+                }],
+                livecoding: ["livecodingService", function(livecodingService) {
                     return livecodingService.promise;
-                }
+                }]
             }
         })
 
@@ -42,12 +42,12 @@ function config($routeProvider, $locationProvider) {
             template: "",
             controller: "pollingCtrl",
             resolve: {
-                settings: function(settingsService) {
+                settings: ["settingsService", function(settingsService) {
                     return settingsService.promise;
-                },
-                livecoding: function(livecodingService) {
+                }],
+                livecoding: ["livecodingService", function(livecodingService) {
                     return livecodingService.promise;
-                }
+                }]
             }
         })
 
@@ -56,12 +56,12 @@ function config($routeProvider, $locationProvider) {
             controller: "streamCtrl",
             controllerAs: "streams",
             resolve: {
-                settings: function(settingsService) {
+                settings: ["settingsService", function(settingsService) {
                     return settingsService.promise;
-                },
-                livecoding: function(livecodingService) {
+                }],
+                livecoding: ["livecodingService", function(livecodingService) {
                     return livecodingService.promise;
-                }
+                }]
             }
         });
 }
