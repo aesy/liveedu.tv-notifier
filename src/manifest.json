@@ -22,8 +22,7 @@
     "storage",
     "https://www.livecoding.tv/o/token/",
     "https://www.livecoding.tv/*",
-    "notifications",
-    "tabs"
+    "notifications"
   ],
   "web_accessible_resources": [
     "message.html"

@@ -62,15 +62,16 @@ var paths = {
     }
 };
 
-gulp.task("Compile sass", function () {
+
+gulp.task("Compile sass", function() {
     return gulp.src(paths.css.main)
-            .pipe(sass())
-            .pipe(autoprefixer())
-            .pipe(minify())
-            .pipe(rename({
-                suffix: ".min"
-            }))
-            .pipe(gulp.dest(paths.css.dist));
+        .pipe(sass())
+        .pipe(autoprefixer())
+        .pipe(minify())
+        .pipe(rename({
+            suffix: ".min"
+        }))
+        .pipe(gulp.dest(paths.css.dist));
 });
 
 gulp.task("Compile javascript", function () {

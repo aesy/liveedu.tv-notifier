@@ -91,9 +91,10 @@ function chromeService($q) {
     };
 
     function openTab(url) {
-        chrome.tabs.create({
-            url: url
-        });
+        window.open(url, "_blank");
+        //chrome.tabs.create({
+        //    url: url
+        //});
     }
 
     function openWindow(url) {

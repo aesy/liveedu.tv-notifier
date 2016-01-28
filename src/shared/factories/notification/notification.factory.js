@@ -58,7 +58,7 @@ function notificationFactory(browser) {
             if (url)
                 browser.openTab(url);
 
-            close();
+            this.close();
         };
     };
 }

@@ -23,6 +23,7 @@ function livecodingAPIService($http, $q) {
         getScheduled: getScheduled,
         getCurrentUser: getCurrentUser,
         getFollowing: getFollowing,
+
         getAuthorizeUrl: getAuthorizeUrl,
         setAccessToken: setAccessToken,
         getAccessToken: getAccessToken,
@@ -117,7 +118,7 @@ function livecodingAPIService($http, $q) {
 
         get("/api/user/followers/", null, AuthConfig()).then(function(response) {
             deferred.resolve(response.data);
-        }, errorHandlerFactory(deferred));
+        });
 
         return deferred.promise;
     }
@@ -125,6 +126,43 @@ function livecodingAPIService($http, $q) {
     function setAccessToken(obj) {
         accessToken = obj;
         fireNewToken(accessToken);
+    }
+
+    function getAccessToken(code) {
+        var params = {
+            grant_type: "authorization_code",
+            code: code,
+            redirect_uri: config.redirectUri
+        };
+
+        return post("/o/token/", params, AccessTokenConfig());
+    }
+
+
+    function refreshToken() {
+        var params = {
+            grant_type: "refresh_token",
+            refresh_token: accessToken.refresh_token
+        };
+
+        var deferred = $q.defer();
+
+        post("/o/token/", params, AccessTokenConfig()).then(function(response) {
+            setAccessToken({
+                access_token: response.data.access_token,
+                refresh_token: response.data.refresh_token,
+                expires_at: timestamp_seconds() + response.data.expires_in,
+                scope: response.data.scope.split(" ")
+            });
+
+            deferred.resolve();
+        });
+
+        return deferred.promise;
+    }
+
+    function revokeToken() {
+        setAccessToken(null);
     }
 
     function authorize(code) {
@@ -146,38 +184,6 @@ function livecodingAPIService($http, $q) {
         return deferred.promise;
     }
 
-    function getAccessToken(code) {
-        var params = {
-            grant_type: "authorization_code",
-            code: code,
-            redirect_uri: config.redirectUri
-        };
-
-        return post("/o/token/", params, AccessTokenConfig());
-    }
-
-    function refreshToken() {
-        var params = {
-            grant_type: "refresh_token",
-            refresh_token: accessToken.refresh_token
-        };
-
-        return post("/o/token/", params, AccessTokenConfig()).then(function(response) {
-            setAccessToken({
-                access_token: response.data.access_token,
-                refresh_token: response.data.refresh_token,
-                expires_at: timestamp_seconds() + response.data.expires_in,
-                scope: response.data.scope.split(" ")
-            });
-
-            return $q.when(true);
-        });
-    }
-
-    function revokeToken() {
-        setAccessToken(null);
-    }
-
     function isAuthenticated() {
         return angular.isDefined(accessToken.access_token);
     }
@@ -185,13 +191,25 @@ function livecodingAPIService($http, $q) {
     function get(url, params, config) {
         config.params = params;
 
-        return $http.get(baseUrl + url, config);
+        var deferred = $q.defer();
+
+        $http.get(baseUrl + url, config).then(function(response) {
+            deferred.resolve(response);
+        }, errorHandlerFactory(deferred));
+
+        return deferred.promise;
     }
 
     function post(url, params, config) {
         url = baseUrl + url;
 
-        return $http.post(url, params, config);
+        var deferred = $q.defer();
+
+        $http.post(url, params, config).then(function(response) {
+            deferred.resolve(response);
+        }, errorHandlerFactory(deferred));
+
+        return deferred.promise;
     }
 
     function AccessTokenConfig() {
@@ -211,7 +229,7 @@ function livecodingAPIService($http, $q) {
 
     function AuthConfig() {
         if (!isAuthenticated())
-            new Error("livecodingAPI Service: Not Authenticated.");
+            throw Error("livecodingAPI Service: Not Authenticated.");
 
         return {
             headers: {
@@ -230,20 +248,22 @@ function livecodingAPIService($http, $q) {
         deferred = deferred || $q.defer();
 
         return function(e) {
-            if (e.status !== 403)
+            if (e.status !== 403 || !isAuthenticated()) {
+                deferred.reject(e);
                 return;
+            }
 
-            console.log("Error code 403 when trying to get followers", e);
+            console.log("Error code 403", e);
             refreshToken().then(function() {
                 console.log("Token succesfully refreshed");
                 var config = e.config;
                 config.headers = AuthConfig().headers;
 
                 return $http(config).then(function(response) {
-                    console.log("Now able to get followers", response);
+                    console.log("Now able to make request", response);
                     deferred.resolve(response.data);
                 }, function(e) {
-                    console.log("Unable to get followers anyway");
+                    console.log("Unable to make request anyway");
                     deferred.reject(e);
                 });
             }, function(e) {

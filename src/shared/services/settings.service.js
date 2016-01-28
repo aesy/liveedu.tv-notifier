@@ -5,7 +5,7 @@ angular
 settingsService.$inject = ["$q", "lodash", "browserService", "livecodingService"];
 
 function settingsService($q, _, browser, livecoding) {
-    var storage_key = "LiveCoding.tv-Notifier_settings",
+    var storageKey = "LiveCoding.tv-Notifier_settings",
         settings = {},
         defaults = {
             pollFrequency: 60,
@@ -66,22 +66,22 @@ function settingsService($q, _, browser, livecoding) {
     function saveChanges() {
         //console.log("pre-storage", settings);
         //var obj = {};
-        //obj[storage_key] = settings;
+        //obj[storageKey] = settings;
         //chrome.storage.sync.set(obj, function() {
         //    setTimeout(function() {
-        //        chrome.storage.sync.get(storage_key, function(data) {
-        //            console.log("post-storage", data[storage_key]);
+        //        chrome.storage.sync.get(storageKey, function(data) {
+        //            console.log("post-storage", data[storageKey]);
         //        });
         //    }, 3000);
         //});
 
-        browser.storage.sync.set(storage_key, settings);
+        browser.storage.sync.set(storageKey, settings);
     }
 
     function sync() {
         var deferred = $q.defer();
 
-        browser.storage.sync.get(storage_key).then(function(data) {
+        browser.storage.sync.get(storageKey).then(function(data) {
             settings = data || {};
 
             return livecoding.promise;
