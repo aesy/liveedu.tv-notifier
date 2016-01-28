@@ -41,8 +41,10 @@ function pollingCtrl($interval, livecoding, settings, browser, Notification, _) 
                 count++;
             });
 
-            if (opts.showBadge)
+            if (opts.showBadge && count)
                 browser.setBadge(count);
+            else
+                browser.setBadge("");
         });
     }
 }

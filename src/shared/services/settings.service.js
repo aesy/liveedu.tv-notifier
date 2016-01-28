@@ -64,6 +64,17 @@ function settingsService($q, _, browser, livecoding) {
     }
 
     function saveChanges() {
+        //console.log("pre-storage", settings);
+        //var obj = {};
+        //obj[storage_key] = settings;
+        //chrome.storage.sync.set(obj, function() {
+        //    setTimeout(function() {
+        //        chrome.storage.sync.get(storage_key, function(data) {
+        //            console.log("post-storage", data[storage_key]);
+        //        });
+        //    }, 3000);
+        //});
+
         browser.storage.sync.set(storage_key, settings);
     }
 
@@ -75,17 +86,22 @@ function settingsService($q, _, browser, livecoding) {
 
             return livecoding.promise;
         }).then(function() {
-            return livecoding.getFollowing();
-        }).then(function(data) {
-            var oldFollows = get().follows;
-            var newFollows = data.map(function(value) {
-                return value.username;
-            }).filter(function(name) {
-                return !_.contains(oldFollows.ignore, name)
-            });
+            if (!livecoding.isAuthenticated()) {
+                deferred.resolve();
+                return;
+            }
 
-            addFollows(_.difference(newFollows, oldFollows.names));
-            deferred.resolve();
+            livecoding.getFollowing().then(function(data) {
+                var oldFollows = get().follows;
+                var newFollows = data.map(function(value) {
+                    return value.username;
+                }).filter(function(name) {
+                    return !_.contains(oldFollows.ignore, name)
+                });
+
+                addFollows(_.difference(newFollows, oldFollows.names));
+                deferred.resolve();
+            });
         });
 
         return deferred.promise;

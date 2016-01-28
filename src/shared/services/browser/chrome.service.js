@@ -31,6 +31,12 @@ function chromeService($q) {
                 var obj = {};
                 obj[key] = data;
 
+                /*
+                 * The line below fixes a very peculiar bug which you can read about here:
+                 * https://stackoverflow.com/questions/35047242/object-property-becomes-null-after-chrome-storage-sync-set
+                 */
+                obj = JSON.parse(JSON.stringify(obj));
+
                 chrome.storage.sync.set(obj, function() {
                     deferred.resolve();
                 });

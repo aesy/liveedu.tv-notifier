@@ -1,7 +1,7 @@
 {
   "name": "LiveCoding.tv Notifier",
-  "description": "Browser extension for LiveCoding.tv which lets you know when your favourite streamers go live!",
-  "version": "0.9.0",
+  "description": "Desktop notifications for LiveCoding.tv letting you know when your favorite streamers go live!",
+  "version": "0.9.1",
   "homepage_url": "https://github.com/easyfuckingpeasy/LiveCoding.tv-Notifier",
   "background": {
     "page": "background.html"
@@ -20,7 +20,6 @@
   },
   "permissions": [
     "storage",
-    "background",
     "https://www.livecoding.tv/o/token/",
     "https://www.livecoding.tv/*",
     "notifications",

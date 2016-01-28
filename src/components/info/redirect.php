@@ -1,3 +1,3 @@
 <?php
-	header("Location: " . "chrome-extension://coielikefhnefmgcdongombmkanmdkeb/message.html?auth&" . $_SERVER['QUERY_STRING']);
+	header("Location: " . "chrome-extension://lamnllmdnpadbhconapjiapmnpklmgbm/message.html?auth&" . $_SERVER['QUERY_STRING']);
 	exit;

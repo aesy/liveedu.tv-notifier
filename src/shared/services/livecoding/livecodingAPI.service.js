@@ -121,17 +121,18 @@ function livecodingAPIService($http, $q) {
             if (e.status !== 403)
                 return;
 
-            console.log("E", e);
-
+            console.log("403 when trying to get followers", e);
             refreshToken().then(function() {
-                console.log("N");
+                console.log("Token refreshed");
                 return $http(e.config).then(function(response) {
+                    console.log("Able to get followers", response);
                     deferred.resolve(response.data);
                 }, function(e) {
+                    console.log("Unable to get followers anyway");
                     deferred.reject(e);
                 });
             }, function(e) {
-                console.log("NOO", e);
+                console.log("Couldn't refresh token", e);
                 deferred.reject(e);
             });
         });
