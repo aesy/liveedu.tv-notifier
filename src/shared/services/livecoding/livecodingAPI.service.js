@@ -117,25 +117,7 @@ function livecodingAPIService($http, $q) {
 
         get("/api/user/followers/", null, AuthConfig()).then(function(response) {
             deferred.resolve(response.data);
-        }, function(e) {
-            if (e.status !== 403)
-                return;
-
-            console.log("403 when trying to get followers", e);
-            refreshToken().then(function() {
-                console.log("Token refreshed");
-                return $http(e.config).then(function(response) {
-                    console.log("Able to get followers", response);
-                    deferred.resolve(response.data);
-                }, function(e) {
-                    console.log("Unable to get followers anyway");
-                    deferred.reject(e);
-                });
-            }, function(e) {
-                console.log("Couldn't refresh token", e);
-                deferred.reject(e);
-            });
-        });
+        }, errorHandlerFactory(deferred));
 
         return deferred.promise;
     }
@@ -241,6 +223,33 @@ function livecodingAPIService($http, $q) {
                     return angular.isObject(data) && String(data) !== "[object File]" ? param(data) : data;
                 }
             ]
+        };
+    }
+
+    function errorHandlerFactory(deferred) {
+        deferred = deferred || $q.defer();
+
+        return function(e) {
+            if (e.status !== 403)
+                return;
+
+            console.log("Error code 403 when trying to get followers", e);
+            refreshToken().then(function() {
+                console.log("Token succesfully refreshed");
+                var config = e.config;
+                config.headers = AuthConfig().headers;
+
+                return $http(config).then(function(response) {
+                    console.log("Now able to get followers", response);
+                    deferred.resolve(response.data);
+                }, function(e) {
+                    console.log("Unable to get followers anyway");
+                    deferred.reject(e);
+                });
+            }, function(e) {
+                console.log("Couldn't refresh token", e);
+                deferred.reject(e);
+            });
         };
     }
 
