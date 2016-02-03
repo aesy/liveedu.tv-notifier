@@ -108,7 +108,7 @@ function settingsService($q, _, browser, livecoding) {
                 var newFollows = data.map(function(value) {
                     return value.username;
                 }).filter(function(name) {
-                    return !_.includes(oldFollows.ignore, name)
+                    return !_.includes(oldFollows.ignore, name);
                 });
 
                 addFollows(_.difference(newFollows, oldFollows.names));

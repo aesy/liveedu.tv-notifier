@@ -42,7 +42,7 @@ function filterService(_) {
             if (difficulty)
                 values.push(stream.difficulty === difficulty);
 
-            return _.all(values);
+            return _.every(values);
         }
     };
 }

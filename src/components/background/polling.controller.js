@@ -8,6 +8,14 @@ function pollingCtrl($interval, livecoding, settings, browser, Notification, _) 
     var opts = settings.get(),
         seen = [];
 
+    /*
+    Future structure for objects in 'seen':
+    {
+        username: username,
+        lastSeen: timestamp,
+    }
+    */
+
     poll();
 
     $interval(function() {

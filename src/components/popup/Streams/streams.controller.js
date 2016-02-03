@@ -93,20 +93,16 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
         }
     };
 
-    vm.update = function() {
-        vm.refresh();
-    };
-
     //vm.remindMe = function(username) {
     //
     //};
-    //
+
     //vm.willRemind = function(username) {
     //
     //};
 
-    $scope.$on("refreshStreams", vm.update);
-    $scope.$on("$routeChangeSuccess", vm.update);
+    $scope.$on("refreshStreams", vm.refresh);
+    $scope.$on("$routeChangeSuccess", vm.refresh);
 
     browser.setBadge(""); // remove badge when popup opened
 }

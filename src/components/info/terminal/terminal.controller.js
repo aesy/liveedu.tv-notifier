@@ -15,7 +15,7 @@ function terminalCtrl($location, livecoding) {
     if ($location.search().hasOwnProperty("auth")) {
         auth();
     } else if($location.search().hasOwnProperty("update")) {
-        update();
+        //update();
     } else if ($location.search().hasOwnProperty("install")) {
         install();
     }
@@ -107,20 +107,6 @@ function terminalCtrl($location, livecoding) {
             }, {
                 words: ["LiveCoding.tv-Notifier successfully updated!"],
                 pause: 2000
-            }, {
-                preword: vm.user + "$ ",
-                words: ["New in this version:"],
-                typeTime: 100,
-                pause: 200
-            }, {
-                words: ["\t* ???"],
-                pause: 200
-            }, {
-                words: ["\t* ???"],
-                pause: 200
-            }, {
-                words: ["\t* ???"],
-                pause: 200
             }
         ]);
     }

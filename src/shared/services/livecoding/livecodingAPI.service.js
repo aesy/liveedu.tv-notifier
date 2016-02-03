@@ -116,7 +116,7 @@ function livecodingAPIService($http, $q) {
     function getFollowing() {
         var deferred = $q.defer();
 
-        get("/api/user/followers/", {}, AuthConfig()).then(function(response) {
+        get("/api/user/follows/", {}, AuthConfig()).then(function(response) {
             deferred.resolve(response.data);
         });
 
@@ -252,21 +252,16 @@ function livecodingAPIService($http, $q) {
                 return;
             }
 
-            console.log("Error code 403", e);
             refreshToken().then(function() {
-                console.log("Token succesfully refreshed");
                 var config = e.config;
                 config.headers = AuthConfig().headers;
 
                 return $http(config).then(function(response) {
-                    console.log("Now able to make request", response);
-                    deferred.resolve(response.data);
+                    deferred.resolve(response);
                 }, function(e) {
-                    console.log("Unable to make request anyway");
                     deferred.reject(e);
                 });
             }, function(e) {
-                console.log("Couldn't refresh token", e);
                 deferred.reject(e);
             });
         };
