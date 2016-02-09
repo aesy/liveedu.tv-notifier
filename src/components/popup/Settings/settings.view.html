@@ -1,43 +1,51 @@
 <div class="container">
 
-    <div class="field row" ng-show="Object.keys(settings.settings).length > 0">
+    <div class="field row" ng-show="Object.keys(settings.opts).length > 0">
         <h1>Polling Rate:</h1>
 
         <div class="setting">
             Check every
-            <range value="settings.settings.pollFrequency" min="1" max="60" step="1" />
-            <span>{{settings.settings.pollFrequency*60 | humanReadableSeconds}}</span>
+            <range value="settings.opts.polling.frequencyMinutes" min="1" max="60" step="1" />
+            <span>{{settings.opts.polling.frequencyMinutes*60 | humanReadableSeconds}}</span>
         </div>
     </div>
 
     <div class="field row">
         <h1>Show Badge:</h1>
 
-        <checkbox active="settings.settings.showBadge"></checkbox>
+        <checkbox active="settings.opts.badge.show"></checkbox>
+    </div>
+
+    <div class="field row">
+        <h1>Persistent Badge:</h1>
+
+        <checkbox active="settings.opts.badge.removeOnPopup"></checkbox>
     </div>
 
     <div class="field row">
         <h1>Show Notification:</h1>
 
-        <checkbox active="settings.settings.showNotification"></checkbox>
+        <checkbox active="settings.opts.notification.show"></checkbox>
     </div>
 
     <div class="field row">
         <h1>Notification Sound:</h1>
 
         <dropdown-select class="setting"
-                         selected="settings.settings.soundClip.selected"
-                         options="settings.settings.soundClip.options"
+                         selected="settings.opts.notification.soundClip.selected"
+                         options="settings.opts.notification.soundClip.options"
                          property="label"
                          change="settings.soundChange(value)">
         </dropdown-select>
     </div>
 
-    <div class="field row" ng-show="settings.settings.follows.names > 0">
+    <div class="field row" ng-show="settings.opts.follows.names > 0">
         <h1>Manage Favorites:</h1>
 
         <ul class="favorites setting">
-            <li ng-repeat="name in settings.settings.follows.names |
+            <li ng-if="!settings.opts.follows.names">You don't follow anyone!</li>
+
+            <li ng-repeat="name in settings.opts.follows.names |
                            orderBy: name">
                 <p>{{name}}</p>
                 <i ng-mouseover="hover = true"

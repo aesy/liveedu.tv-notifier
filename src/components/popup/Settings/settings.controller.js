@@ -7,33 +7,60 @@ settingsCtrl.$inject = ["$timeout", "lodash", "browserService", "settingsService
 function settingsCtrl($timeout, _, browser, settings) {
     var vm = this;
 
-    vm.settings = settings.get();
+    vm.opts = settings.get(); // temporary (unsaved) settings
     vm.success = false;
 
+    /**
+     * Remove favorite from temporary settings (not permanent until save-button is clicked)
+     * TODO: rename favorite -> following
+     * @param name (string)
+     * @return undefined
+     */
     vm.removeFavorite = function (name) {
-        _.pull(vm.settings.follows.names, name);
-        vm.settings.follows.ignore.push(name);
+        _.pull(vm.opts.follows.names, name);
+        vm.opts.follows.ignore.push(name);
     };
 
+    /**
+     * Play sound when vm.opts.notification.soundClip.selected is changed
+     * @param item (object) equals vm.opts.notification.soundClip.selected
+     * @return undefined
+     */
     vm.soundChange = function(item) {
         if (item.value)
             new Audio(item.value).play();
     };
 
-    vm.openLink = function(url) {
-        browser.openTab(url);
-    };
+    /**
+     * Open url in new tab
+     * @read documentation of browserService.openTab
+     */
+    vm.openLink = browser.openTab;
 
+    /**
+     * Save settings in storage
+     * @return undefined
+     */
     vm.save = function() {
         if (vm.success)
             return;
         else
             vm.success = true;
 
-        settings.set(vm.settings);
+        settings.set(vm.opts);
 
         $timeout(function() {
             vm.success = false;
-        }, 3 * 1000);
+        }, 3000); // arbitrary delay is arbitrary
     };
+
+    /**
+     * Clear settings permanently
+     * @return undefined
+     */
+    vm.clear = function() {
+        settings.clear().then(function() {
+            vm.opts = settings.get();
+        });
+    }
 }
