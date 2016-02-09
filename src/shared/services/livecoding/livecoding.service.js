@@ -4,7 +4,7 @@ angular
 
 livecodingService.$inject = ["$q", "lodash", "browserService", "livecodingAPIService"];
 
-/*
+/**
  * Wrapping service for livecodingAPIService
  * which stores and persists the token in browsers storage.
  * Use this instead of livecodingAPIService.
@@ -12,12 +12,12 @@ livecodingService.$inject = ["$q", "lodash", "browserService", "livecodingAPISer
 function livecodingService($q, _, browser, livecodingAPI) {
     var storageKey = "livecodingToken";
 
+    // TODO: onNewToken is to be removed, don't use.
     livecodingAPI.onNewToken(function(token) {
         browser.storage.local.set(storageKey, token);
     });
 
     return {
-        promise: setTokenIfAvailable(),
         authenticate: authenticate,
         authorize: livecodingAPI.authorize,
         getFollowing: livecodingAPI.getFollowing,
@@ -25,9 +25,15 @@ function livecodingService($q, _, browser, livecodingAPI) {
         getAllVideos: livecodingAPI.getVideos,
         getAllScheduled: livecodingAPI.getScheduled,
         isAuthenticated: livecodingAPI.isAuthenticated,
-        revokeToken: livecodingAPI.revokeToken
+        revokeToken: livecodingAPI.revokeToken,
+        promise: setTokenIfAvailable() // Used in routes file, not to be used anywhere else.
     };
 
+    /**
+     * Set token if available
+     * Will look in browser storage for token and use it in future API requests if available
+     * @return Promise
+     */
     function setTokenIfAvailable() {
         var deferred = $q.defer();
 
@@ -41,6 +47,11 @@ function livecodingService($q, _, browser, livecodingAPI) {
         return deferred.promise;
     }
 
+    /**
+     * Authenticate
+     * Opens new browser tab where user can authorize app
+     * @return undefined
+     */
     function authenticate() {
         browser.openTab(livecodingAPI.getAuthorizeUrl());
     }

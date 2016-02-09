@@ -4,6 +4,11 @@ angular
 
 checkbox.$inject = [];
 
+/**
+ * Checkbox directive, replacing <input type="checkbox">
+ * @usage:
+ *   <checkbox active="isActive"></checkbox>
+ */
 function checkbox() {
     return {
         restrict: 'E',
@@ -16,6 +21,10 @@ function checkbox() {
             'isDisabled': '=disabled'
         },
         link: function (scope, elem, attrs) {
+            /**
+             * Toggle active state
+             * @return undefined
+             */
             scope.toggleClicked = function () {
                 if (scope.isDisabled)
                     return;

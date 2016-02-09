@@ -10,16 +10,24 @@ function terminalCtrl($location, livecoding) {
     var name = "user";
     vm.user = name + "@livecoding: ~";
 
+    /** Terminal output */
     vm.output = [];
 
+    /**
+     * Determine output
+     */
     if ($location.search().hasOwnProperty("auth")) {
         auth();
     } else if($location.search().hasOwnProperty("update")) {
-        //update();
+        update();
     } else if ($location.search().hasOwnProperty("install")) {
         install();
     }
 
+    /**
+     * Set output object for when user has been authorized
+     * @return undefined
+     */
     function auth() {
         vm.output.push.apply(vm.output, [
             {
@@ -52,6 +60,10 @@ function terminalCtrl($location, livecoding) {
         $location.url($location.path());
     }
 
+    /**
+     * Set output object for when extension has been updated
+     * @return undefined
+     */
     function update() {
         vm.output.push.apply(vm.output, [
             {
@@ -111,6 +123,10 @@ function terminalCtrl($location, livecoding) {
         ]);
     }
 
+    /**
+     * Set output object for when extension has been installed for the first time
+     * @return undefined
+     */
     function install() {
         vm.output.push.apply(vm.output, [
             {

@@ -4,6 +4,10 @@ angular
 
 browserService.$inject = ["chromeService", "firefoxService"];
 
+/**
+ * Will return appropriate browserService
+ * @return chromeService | firefoxService
+ */
 function browserService(chrome, firefox) {
     var browser = firefox;
 

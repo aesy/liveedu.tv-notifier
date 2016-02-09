@@ -4,29 +4,50 @@ angular
 
 humanReadableSeconds.$inject = [];
 
+/**
+ * Human readable seconds filter (english only)
+ * @usage:
+ *   <span>{{seconds|humanReadableSeconds}}</span>
+ * Example result:
+ *   <span>5 Seconds</span>
+ */
 function humanReadableSeconds() {
-    return function (seconds_input) {
-        if (!seconds_input)
+    /**
+     * Get a readable string describing number of seconds
+     * @param input (int)
+     * @return string
+     */
+    return function (input) {
+        if (!input)
             return;
 
-        var output = [];
-        var hours = Math.floor(seconds_input / (60 * 60));
-        var divisor_for_minutes = seconds_input % (60 * 60);
-        var minutes = Math.floor(divisor_for_minutes / 60);
-        var seconds = Math.ceil(divisor_for_minutes % 60);
+        var output = [],
+            hours = Math.floor(input / 3600),
+            divisor_for_minutes = input % 3600,
+            minutes = Math.floor(divisor_for_minutes / 60),
+            seconds = Math.ceil(divisor_for_minutes % 60),
+            times = [
+                {label: "Hour",   value: hours},
+                {label: "Minute", value: minutes},
+                {label: "Second", value: seconds}
+            ];
 
-        var times = [
-            {label: "Hour",   value: hours},
-            {label: "Minute", value: minutes},
-            {label: "Second", value: seconds}
-        ];
+        times.forEach(function(item) {
+            if (item.value <= 0)
+                return;
 
-        times.forEach(function(time) {
-            if (time.value > 0) {
-                output.push(time.value + " " + time.label + ((time.value > 1) ? "s" : ""));
-            }
+            var plural = item.value > 1,
+                sentance = item.value + " " + item.label;
+
+            if (plural)
+                sentance += "s";
+
+            output.push(sentance);
         });
 
-        return output.length > 0 ? output.join(", ") + "." : "0 Seconds.";
+        if (output.length === 0)
+            return "0 Seconds.";
+
+        return output.join(", ") + ".";
     };
 }

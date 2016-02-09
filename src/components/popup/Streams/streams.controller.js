@@ -13,6 +13,11 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
     vm.filter = filter.matchStream;
     vm.searching = false;
 
+    /**
+     * Open livecoding.tv stream chat window
+     * @param name (string) username of streamer
+     * @return undefined
+     */
     vm.openChat = function(name) {
         var windowName     = "livecodingtv.chat." + name;
         var windowFeatures = "resizable,width=320,height=480,dependent,dialog,minimizable," +
@@ -28,20 +33,31 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
         }
     };
 
-    vm.openLink = function(url) {
-        browser.openTab(url);
-    };
+    /**
+     * Open url in new tab
+     * @read documentation of browserService.openTab
+     */
+    vm.openLink = browser.openTab;
 
+    /**
+     * Toggle whether user follows user
+     * @param name (string) streamer username
+     * @return undefined;
+     */
     vm.toggleFavorite = function(name) {
         if (_.includes(vm.settings.follows.names, name)) {
             settings.removeFollows([name]);
         } else {
             settings.addFollows([name]);
         }
-
-        vm.settings = settings.get();
     };
 
+    /**
+     * Get method for sorting streams based on current page
+     * @param stream (liveCodingStream)
+     * @read liveCodingStream documentation in livecodingService
+     * @return string | int
+     */
     vm.order = function(stream) {
         switch (vm.currentPage) {
             case "scheduled": // Sort by time left
@@ -53,10 +69,18 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
         }
     };
 
+    /**
+     * Check if username is followed
+     * @param name streamers username
+     * @return boolean
+     */
     vm.isFavorite = function(name) {
         return _.includes(vm.settings.follows.names, name);
     };
 
+    /**
+     * Refresh collection of livestreams
+     */
     vm.refresh = function() {
         vm.collection = [];
         vm.searching = true;
@@ -93,16 +117,19 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
         }
     };
 
+    // TODO: implement
     //vm.remindMe = function(username) {
     //
     //};
 
+    // TODO: implement
     //vm.willRemind = function(username) {
     //
     //};
 
+
     $scope.$on("refreshStreams", vm.refresh);
     $scope.$on("$routeChangeSuccess", vm.refresh);
 
-    browser.setBadge(""); // remove badge when popup opened
+    browser.setBadge(""); // remove badge when popup opened, TODO: implement use of vm.settings.badge.removeOnPopup
 }

@@ -9,20 +9,35 @@ function navCtrl($rootScope, $location, livecoding) {
 
     vm.isAuthenticated = livecoding.isAuthenticated;
 
+    /**
+     * Request list of streams to be refreshed
+     * @return undefined
+     */
     vm.refresh = function () {
         $rootScope.$broadcast("refreshStreams");
     };
 
+    /**
+     * Login to livecoding.tv
+     */
     vm.login = function () {
         livecoding.authenticate();
     };
 
+    /**
+     * Logout
+     */
     vm.logout = function() {
         livecoding.revokeToken();
 
         // Remove favorites also ?
     };
 
+    /**
+     * Determine if input parameter is current page
+     * @param page (string)
+     * @return boolean
+     */
     vm.page = function (page) {
         if (page.lastIndexOf("/", 0) !== 0)
             page = "/" + page;

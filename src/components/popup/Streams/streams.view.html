@@ -9,12 +9,12 @@
         <div class="image pull-left" ng-if="streams.currentPage !== 'scheduled'">
             <div class="image-wrapper">
 
-                <!--Ugly, fix!-->
+                <!-- This is ugly! -->
                 <img class="img-responsive"
                      image-ratio="{ratio: 140/250}"
                      ng-src="https://www.livecoding.tv/video/livestream/{{stream.username}}/thumbnail_250_140/">
 
-                <!--No easy way to get URLs, commenting out for now-->
+                <!-- No easy way to get URLs, commenting out for now -->
                 <!--<div class="items">-->
                     <!--<img class="avatar" ng-src="{{stream.avatar}}">-->
                     <!--<img class="flag" ng-src="{{stream.flag}}"-->
@@ -39,7 +39,7 @@
                 </h3>
 
                 <h3 ng-if="streams.currentPage === 'scheduled'">
-                    Time left: {{stream.dateTime|humanReadableDate}}
+                    Time left: {{stream.dateTime|humanReadableDateDiff}}
                 </h3>
             </div>
 

@@ -4,6 +4,11 @@ angular
 
 inlineSvg.$inject = ["$http"];
 
+/**
+ * Will inline SVG source to allow CSS styling
+ * @usage:
+ *   <inline-svg src="myVector.svg"></inline-svg>
+ */
 function inlineSvg($http) {
     return {
         restrict: "EA",

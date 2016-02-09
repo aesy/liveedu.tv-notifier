@@ -7,11 +7,11 @@ filterCtrl.$inject = ["filterService"];
 function filterCtrl(filter) {
     var vm = this;
 
-    vm.input = "";
-    vm.category = "";
-    vm.difficulty = "";
+    vm.input = ""; // Filter string
+    vm.category = ""; // Category filter
+    vm.difficulty = ""; // Difficulty filter
 
-    // TODO: finish list
+    // Difficult options
     vm.difficulties = [
         {label: "Any Difficulty", value: ""},
         {label: "Beginner", value: "beginner"},
@@ -19,6 +19,10 @@ function filterCtrl(filter) {
         {label: "Expert", value: "expert"}
     ];
 
+    // TODO: Add more category values
+    /**
+     * Category options. Value can be either string or array of strings
+     */
     vm.categories = [
         {label: "Category", value: ""},
         {label: "Obj-C/Swift(iOS)", value: [
@@ -56,18 +60,34 @@ function filterCtrl(filter) {
         ]}
     ];
 
+    /**
+     * Called on vm.difficulty change
+     * @return undefined
+     */
     vm.difficultyChanged = function(difficulty) {
         filter.setDifficulty(difficulty.value);
     };
 
+    /**
+     * Called on vm.category change
+     * @return undefined
+     */
     vm.categoryChanged = function(category) {
         filter.setCategory(category.value);
     };
 
+    /**
+     * Called on vm.input change
+     * @return undefined
+     */
     vm.inputChanged = function() {
         filter.setString(vm.input);
     };
 
+    /**
+     * Clear input string
+     * @return undefined
+     */
     vm.clear = function () {
         vm.input = "";
         vm.inputChanged();

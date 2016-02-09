@@ -1,6 +1,8 @@
 LiveCoding.tv Notifier
 ======================
-This is a Chrome (and possibly future firefox) extension that will display notifications when your favourite streamers on `LiveCoding.tv <https://www.LiveCoding.tv/>`_ go live! You can also browse whatever else is available to watch.
+A chrome (and possibly future firefox) extension that will display notifications when your favourite streamers on `LiveCoding.tv <https://www.LiveCoding.tv/>`_ go live! You can also browse whatever else is available to watch.
+
+Chrome Web Store: `Link<https://chrome.google.com/webstore/detail/livecodingtv-notifier/lamnllmdnpadbhconapjiapmnpklmgbm/>`_.
 
 Screenshots
 -----------
@@ -10,10 +12,14 @@ Popup window
 .. image:: img/Screenshot_options.png
 Options page
 
-To-do List
-----------
-* Implement use of LiveCoding public API
-* Reminder notification for scheduled streams
+To-do List in
+-------------
+* Restructure and clean up CSS
+* View and get reminders for scheduled streams.
+* Additional coloured tags.
+* Additional notification sounds.
+* Option to turn off sync between browsers.
+* Show user avatar and stream language. (currently not possible)
 * Work with Firefox
 
 License

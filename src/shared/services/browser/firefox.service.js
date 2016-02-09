@@ -6,26 +6,28 @@ firefoxService.$inject = [];
 
 function firefoxService() {
 
-    return {
-        openTab: openTab,
-        setBadge: setBadge
-    };
+    // TODO: Make extension work with firefox
 
-    function openTab(url) {
-        portEmit("nameofExt", {
-            command: "tabs.create",
-            value: {
-                url: url
-            }
-        });
-    }
-
-    function setBadge(number) {
-        portEmit("nameofExt", {
-            command: "browserAction.setBadgeText",
-            value: {
-                text: number ? "" + number : ""
-            }
-        });
-    }
+    //return {
+    //    openTab: openTab,
+    //    setBadge: setBadge
+    //};
+    //
+    //function openTab(url) {
+    //    portEmit("nameofExt", {
+    //        command: "tabs.create",
+    //        value: {
+    //            url: url
+    //        }
+    //    });
+    //}
+    //
+    //function setBadge(number) {
+    //    portEmit("nameofExt", {
+    //        command: "browserAction.setBadgeText",
+    //        value: {
+    //            text: number ? "" + number : ""
+    //        }
+    //    });
+    //}
 }

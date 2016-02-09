@@ -4,17 +4,19 @@ angular
 
 livecodingAPIService.$inject = ["$http", "$q"];
 
-
+/**
+ * Service for using LiveCoding.tvs' public API.
+ */
 function livecodingAPIService($http, $q) {
     var baseUrl= "https://www.livecoding.tv",
         newTokenCallbacks = [],
         accessToken = {},
-        config = {
+        config = { // set in API wrapper?
             clientId: "3uXPPL5p7PuKEPgwn5vEbK6TmGQO4YfD5rVRGn6Z",
             clientSecret: "fy2VvRhk3oFARzZjM5lNyYsOcpP5B2c4eKoxm2GfOKWsh8TkpNuReOw9R7InjqEZaHKdzGK4hMYAdMeGzqV0CCew1qFLYiZw9UHIKv7hU6r47tQU8PSUF585bzGbiMQ4",
             scope: ["read:user"],
             redirectUri: "https://www.easy-peasy.se/LiveCoding.tv-Notifier/"
-            //redirectUri: browser.getExtensionURL() + "auth.html" // TODO: notify livecoding support that redirects to chrome extentions are not allowed.
+            //redirectUri: browser.page.getBaseUrl() + "auth.html" // TODO: notify livecoding support that redirects to chrome extentions are not allowed.
         };
 
     return {
@@ -34,16 +36,29 @@ function livecodingAPIService($http, $q) {
         isAuthenticated: isAuthenticated
     };
 
+    /**
+     * Add new access token listener
+     * @param callback (function)
+     * @return undefined
+     */
     function onNewToken(callback) {
         newTokenCallbacks.push(callback);
     }
 
-    function fireNewToken() {
+    /**
+     * Call all new access token listeners
+     * @return undefined
+     */
+    function fireNewTokenEvent() {
         newTokenCallbacks.forEach(function(func) {
             func(accessToken);
         });
     }
 
+    /**
+     * Get authorization URL
+     * @return string
+     */
     function getAuthorizeUrl() {
         return [
             baseUrl,
@@ -55,6 +70,10 @@ function livecodingAPIService($http, $q) {
         ].join("");
     }
 
+    /**
+     * Get list of streams on-air
+     * @return array of liveCodingStream objects
+     */
     function getLivestreams() {
         var deferred = $q.defer();
 
@@ -70,6 +89,10 @@ function livecodingAPIService($http, $q) {
         return deferred.promise;
     }
 
+    /**
+     * Get list of recent recorded streams
+     * @return array of liveCodingStream objects
+     */
     function getVideos() {
         var deferred = $q.defer();
 
@@ -89,6 +112,11 @@ function livecodingAPIService($http, $q) {
         return deferred.promise;
     }
 
+    /**
+     * Get list of scheduled streams
+     * @param offset (optional int)
+     * @return array of liveCodingStream objects
+     */
     function getScheduled(offset) {
         var deferred = $q.defer();
 
@@ -109,25 +137,50 @@ function livecodingAPIService($http, $q) {
         return deferred.promise;
     }
 
+    /**
+     * Get information about the current user
+     * @return http promise
+     */
     function getCurrentUser() {
         return get("/api/user/", {}, AuthConfig());
     }
 
+    /**
+     * Get list of users the current user follows
+     * @return array of user objects
+     */
     function getFollowing() {
         var deferred = $q.defer();
 
         get("/api/user/follows/", {}, AuthConfig()).then(function(response) {
-            deferred.resolve(response.data);
+            var users = response.data;
+
+            deferred.resolve(users);
         });
 
         return deferred.promise;
     }
 
+    /**
+     * Set token object, must be of format:
+     {
+       (string) access_token
+       (string) refresh_token
+       (int)    expires_at
+       (array of strings) scope
+     }
+     * @return undefined
+     */
     function setAccessToken(obj) {
         accessToken = obj;
-        fireNewToken(accessToken);
+        fireNewTokenEvent();
     }
 
+    /**
+     * Request an access token using authorization code
+     * @param code (string)
+     * @return http promise
+     */
     function getAccessToken(code) {
         var params = {
             grant_type: "authorization_code",
@@ -138,6 +191,10 @@ function livecodingAPIService($http, $q) {
         return post("/o/token/", params, AccessTokenConfig());
     }
 
+    /**
+     * Request an access token using refresh token
+     * @return Promise
+     */
     function refreshToken() {
         var params = {
             grant_type: "refresh_token",
@@ -150,7 +207,7 @@ function livecodingAPIService($http, $q) {
             setAccessToken({
                 access_token: response.data.access_token,
                 refresh_token: response.data.refresh_token,
-                expires_at: timestamp_seconds() + response.data.expires_in,
+                expires_at: timestampSeconds() + response.data.expires_in,
                 scope: response.data.scope.split(" ")
             });
 
@@ -160,10 +217,18 @@ function livecodingAPIService($http, $q) {
         return deferred.promise;
     }
 
+    /**
+     * Revoke token
+     * No API requests are made, token object is emptied (set to {}).
+     * @return undefined
+     */
     function revokeToken() {
         setAccessToken({});
     }
 
+    /**
+     * TODO: Merge this with getAccessToken() and get rid of listeners
+     */
     function authorize(code) {
         var deferred = $q.defer();
 
@@ -171,7 +236,7 @@ function livecodingAPIService($http, $q) {
             setAccessToken({
                 access_token: response.data.access_token,
                 refresh_token: response.data.refresh_token,
-                expires_at: timestamp_seconds() + response.data.expires_in,
+                expires_at: timestampSeconds() + response.data.expires_in,
                 scope: response.data.scope.split(" ")
             });
 
@@ -183,10 +248,22 @@ function livecodingAPIService($http, $q) {
         return deferred.promise;
     }
 
+    /**
+     * Check if user is authenticated
+     * @return boolean
+     */
     function isAuthenticated() {
         return angular.isDefined(accessToken.access_token);
     }
 
+    /**
+     * Http get request wrapper
+     * Will refresh access token if necessary
+     * @param url (string) NOT containing LiveCoding base URL
+     * @param params (object) additional parameters
+     * @param config (AccessTokenConfig object | AuthConfig object)
+     * @return Promise with http response
+     */
     function get(url, params, config) {
         config.params = params;
 
@@ -199,18 +276,28 @@ function livecodingAPIService($http, $q) {
         return deferred.promise;
     }
 
+    /**
+     * Http post request wrapper
+     * Will refresh access token if necessary
+     * @param url (string) NOT containing LiveCoding base URL
+     * @param params (object)
+     * @param config (AccessTokenConfig object | AuthConfig object)
+     * @return Promise with http response
+     */
     function post(url, params, config) {
-        url = baseUrl + url;
-
         var deferred = $q.defer();
 
-        $http.post(url, params, config).then(function(response) {
+        $http.post(baseUrl + url, params, config).then(function(response) {
             deferred.resolve(response);
         }, errorHandlerFactory(deferred));
 
         return deferred.promise;
     }
 
+    /**
+     * Get http config for access token related requests
+     * @return object
+     */
     function AccessTokenConfig() {
         return {
             headers: {
@@ -226,6 +313,11 @@ function livecodingAPIService($http, $q) {
         };
     }
 
+    /**
+     * Get http config for requests that require user to be authenticated
+     * Throws an error if user is not authenticated
+     * @return object
+     */
     function AuthConfig() {
         if (!isAuthenticated())
             throw Error("livecodingAPI Service: Not Authenticated.");
@@ -243,6 +335,13 @@ function livecodingAPIService($http, $q) {
         };
     }
 
+    /**
+     * Http request error handler factory
+     * Error handler will refresh token on error code 403 and make another request with the new token (one try)
+     * Will resolve (@param deferred) if new request succeeds.
+     * @param deferred (optional Deferred)
+     * @return error handler function
+     */
     function errorHandlerFactory(deferred) {
         deferred = deferred || $q.defer();
 
@@ -267,9 +366,10 @@ function livecodingAPIService($http, $q) {
         };
     }
 
-    /*
+    /**
      * Encode request data like jQuery.post (formdata) instead of the default JSON request payload
-     * http://victorblog.com/2012/12/20/make-angularjs-http-service-behave-like-jquery-ajax/
+     * @param obj (any) item to encode
+     * @read http://victorblog.com/2012/12/20/make-angularjs-http-service-behave-like-jquery-ajax/
      */
     function param(obj) {
         var query = "";
@@ -302,6 +402,24 @@ function livecodingAPIService($http, $q) {
 }
 
 
+/**
+ * Get prettified stream object
+ * @param stream (object) raw stream object from API http response
+ * @return object of format:
+ {
+  (string) username
+  (string) url
+  (string) title
+  (string) description
+  (string) country
+  (string) tags
+  (string) difficulty
+  (string) category
+  (int) views
+  (int) timestamp
+  (Date) dateTime
+ }
+ */
 function liveCodingStream(stream) {
     return stream.map(function(value) {
         return {
@@ -314,16 +432,25 @@ function liveCodingStream(stream) {
             difficulty: value.difficulty || "",
             category: value.coding_category || "",
             views: value.viewers_live || value.viewers_overall || 0,
-            timestamp: Date.parse(value.start_time || 0),
+            timestamp: Date.parse(value.start_time || 0), // 0 good default?
             dateTime: new Date(value.start_time || 0)
         };
     });
 }
 
-function timestamp_seconds() {
+/**
+ * Get current timestamp in seconds
+ * @return int
+ */
+function timestampSeconds() {
     return Math.floor(new Date().getTime() / 1000);
 }
 
+/**
+ * Get GUID
+ * @read http://stackoverflow.com/a/2117523/2331968
+ * @return string
+ */
 function generateGUID() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
         var r = Math.random() * 16 | 0, v = c === "x" ? r : (r & 0x3 | 0x8);
