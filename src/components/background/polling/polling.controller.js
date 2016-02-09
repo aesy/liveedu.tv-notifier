@@ -21,7 +21,7 @@ function pollingCtrl($interval, settings, browser, Notification, polling) {
 
     /**
      * Start polling
-     * Will cancels previous poll requests if more than once
+     * Will cancel previous poll requests if more than once
      * @return undefined
      */
     function start() {

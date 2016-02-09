@@ -11,6 +11,13 @@ function settingsCtrl($timeout, _, browser, settings) {
     vm.success = false;
 
     /**
+     * Listen for changes in settings
+     */
+    settings.onChange(function() {
+        vm.settings = settings.get();
+    });
+
+    /**
      * Remove favorite from temporary settings (not permanent until save-button is clicked)
      * TODO: rename favorite -> following
      * @param name (string)

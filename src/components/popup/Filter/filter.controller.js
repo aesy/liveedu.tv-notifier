@@ -43,7 +43,10 @@ function filterCtrl(filter) {
         {label: "JavaScript", value: [
             "JavaScript",
             "TypeScript",
-            "CoffeeScript"
+            "CoffeeScript",
+            "React.js",
+            "Angular.js",
+            "Node.js"
         ]},
         {label: "PHP", value: [
             "PHP",

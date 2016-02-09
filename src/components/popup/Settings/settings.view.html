@@ -10,13 +10,13 @@
         </div>
     </div>
 
-    <div class="field row">
+    <div class="field row animate">
         <h1>Show Badge:</h1>
 
         <checkbox active="settings.opts.badge.show"></checkbox>
     </div>
 
-    <div class="field row">
+    <div class="field row animate" ng-if="settings.opts.badge.show">
         <h1>Persistent Badge:</h1>
 
         <checkbox active="settings.opts.badge.persistent"></checkbox>

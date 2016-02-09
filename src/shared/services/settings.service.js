@@ -43,18 +43,21 @@ function settingsService($q, _, browser, livecoding) {
         sync().then(fireOnChange);
     });
 
+    sync().then(fireOnChange);
+
     return {
         get: get,
         set: set,
         clear: clear,
         addFollows: addFollows,
         removeFollows: removeFollows,
-        onChange: onChange,
-        promise: sync() // Used in routes file, not to be used anywhere else.
+        onChange: onChange
     };
 
     /**
      * Get settings
+     * Note: An empty object may be returned if this is called before the service syncs with storage.
+     * @read onChange
      * @return object - see structure of defaults variable
      */
     function get() {

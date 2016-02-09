@@ -29,9 +29,6 @@ function config($routeProvider, $locationProvider) {
             controller: "settingsCtrl",
             controllerAs: "settings",
             resolve: {
-                settings: ["settingsService", function(settingsService) {
-                    return settingsService.promise;
-                }],
                 livecoding: ["livecodingService", function(livecodingService) {
                     return livecodingService.promise;
                 }]
@@ -42,9 +39,6 @@ function config($routeProvider, $locationProvider) {
             template: "",
             controller: "pollingCtrl",
             resolve: {
-                settings: ["settingsService", function(settingsService) {
-                    return settingsService.promise;
-                }],
                 livecoding: ["livecodingService", function(livecodingService) {
                     return livecodingService.promise;
                 }]
@@ -56,9 +50,6 @@ function config($routeProvider, $locationProvider) {
             controller: "streamCtrl",
             controllerAs: "streams",
             resolve: {
-                settings: ["settingsService", function(settingsService) {
-                    return settingsService.promise;
-                }],
                 livecoding: ["livecodingService", function(livecodingService) {
                     return livecodingService.promise;
                 }]

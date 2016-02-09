@@ -19,6 +19,7 @@ function navCtrl($rootScope, $location, livecoding) {
 
     /**
      * Login to livecoding.tv
+     * @return undefined
      */
     vm.login = function () {
         livecoding.authenticate();
@@ -26,6 +27,7 @@ function navCtrl($rootScope, $location, livecoding) {
 
     /**
      * Logout
+     * @return undefined
      */
     vm.logout = function() {
         livecoding.revokeToken();

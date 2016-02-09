@@ -7,6 +7,23 @@ html.popup {
     border-top: 1px solid white;
     border-bottom: 1px solid #C5C5C5;
 
+    &.animate {
+      &.ng-enter,
+      &.ng-leave {
+        transition: 200ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+      }
+
+      &.ng-enter.ng-enter-active,
+      &.ng-leave {
+        opacity: 1;
+      }
+
+      &.ng-leave.ng-leave-active,
+      &.ng-enter {
+        opacity: 0;
+      }
+    }
+
     h1 {
       display: inline-block;
       font-size: 18px;
