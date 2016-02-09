@@ -80,7 +80,7 @@ gulp.task("Compile javascript", function () {
             .pipe(ngmin())
             .pipe(concat(paths.js.main))
             .pipe(wrap("(function(){\n'use strict';\n<%= contents %>\n})();"))
-            //.pipe(uglify())
+            .pipe(uglify())
             .pipe(rename({
                 suffix: ".min"
             }))

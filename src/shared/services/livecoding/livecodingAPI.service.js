@@ -72,7 +72,7 @@ function livecodingAPIService($http, $q) {
 
     /**
      * Get list of streams on-air
-     * @return array of liveCodingStream objects
+     * @return Promise with array of liveCodingStream objects
      */
     function getLivestreams() {
         var deferred = $q.defer();
@@ -91,7 +91,7 @@ function livecodingAPIService($http, $q) {
 
     /**
      * Get list of recent recorded streams
-     * @return array of liveCodingStream objects
+     * @return Promise with array of liveCodingStream objects
      */
     function getVideos() {
         var deferred = $q.defer();
@@ -115,7 +115,7 @@ function livecodingAPIService($http, $q) {
     /**
      * Get list of scheduled streams
      * @param offset (optional int)
-     * @return array of liveCodingStream objects
+     * @return Promise with array of liveCodingStream objects
      */
     function getScheduled(offset) {
         var deferred = $q.defer();
@@ -147,7 +147,7 @@ function livecodingAPIService($http, $q) {
 
     /**
      * Get list of users the current user follows
-     * @return array of user objects
+     * @return Promise with array of user objects
      */
     function getFollowing() {
         var deferred = $q.defer();

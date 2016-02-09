@@ -8,10 +8,17 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
     var vm = this;
 
     vm.collection = [];
-    vm.settings = settings.get();
     vm.currentPage = $routeParams.page;
     vm.filter = filter.matchStream;
     vm.searching = false;
+    vm.settings = settings.get();
+
+    /**
+     * Listen for changes in settings
+     */
+    settings.onChange(function() {
+        vm.settings = settings.get();
+    });
 
     /**
      * Open livecoding.tv stream chat window
@@ -80,41 +87,32 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
 
     /**
      * Refresh collection of livestreams
+     * @return undefined;
      */
     vm.refresh = function() {
         vm.collection = [];
         vm.searching = true;
+        var promise;
 
         switch (vm.currentPage) {
             case "following":
-                livecoding.getAllLive().then(function (streams) {
-                    vm.collection = streams.filter(function (stream) {
-                        return vm.isFavorite(stream.username);
-                    });
-                    vm.searching = false;
-                });
+                promise = livecoding.filteredLivestreams(livecoding.getAllLive(), vm.settings.follows.names);
                 break;
             case "livestreams":
-                livecoding.getAllLive().then(function (streams) {
-                    vm.collection = streams;
-                    vm.searching = false;
-                });
+                promise = livecoding.getAllLive();
                 break;
             case "videos":
-                livecoding.getAllVideos().then(function (streams) {
-                    vm.collection = streams;
-                    vm.searching = false;
-                });
+                promise = livecoding.getAllVideos();
                 break;
             case "scheduled":
-                livecoding.getAllScheduled().then(function (streams) {
-                    vm.collection = streams;
-                    vm.searching = false;
-                });
+                promise = livecoding.getAllScheduled();
                 break;
-            default:
-                vm.searching = false;
         }
+
+        promise.then(function(streams) {
+            vm.collection = streams;
+            vm.searching = false;
+        })
     };
 
     // TODO: implement
@@ -131,5 +129,6 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
     $scope.$on("refreshStreams", vm.refresh);
     $scope.$on("$routeChangeSuccess", vm.refresh);
 
-    browser.setBadge(""); // remove badge when popup opened, TODO: implement use of vm.settings.badge.removeOnPopup
+    if (!vm.settings.badge.persistent)
+        browser.setBadge("");
 }

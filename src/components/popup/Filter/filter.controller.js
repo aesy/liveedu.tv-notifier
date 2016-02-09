@@ -43,8 +43,7 @@ function filterCtrl(filter) {
         {label: "JavaScript", value: [
             "JavaScript",
             "TypeScript",
-            "CoffeeScript",
-            ".js"
+            "CoffeeScript"
         ]},
         {label: "PHP", value: [
             "PHP",
@@ -62,6 +61,7 @@ function filterCtrl(filter) {
 
     /**
      * Called on vm.difficulty change
+     * @param difficulty (string)
      * @return undefined
      */
     vm.difficultyChanged = function(difficulty) {
@@ -70,10 +70,11 @@ function filterCtrl(filter) {
 
     /**
      * Called on vm.category change
+     * @param category (string | array)
      * @return undefined
      */
     vm.categoryChanged = function(category) {
-        filter.setCategory(category.value);
+        filter.setCategory([].concat(category.value));
     };
 
     /**

@@ -5,7 +5,7 @@ angular
 imageRatio.$inject = [];
 
 /**
- * Resize image a appease a specific ratio (does NOT update on resize)
+ * Resize image to appease a specific ratio (does NOT update on resize)
  * @usage:
  *   <img image-ratio="{ratio: 140/250}" src="needmore.jpg" />
  */

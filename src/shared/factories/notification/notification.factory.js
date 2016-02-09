@@ -13,7 +13,7 @@ function notificationFactory(browser) {
      * Listen to notification click event
      */
     browser.notification.bind('click', function(id) {
-        notifications[id].clicked();
+        notifications[id].click();
     });
 
     /**
@@ -106,7 +106,7 @@ function notificationFactory(browser) {
          * if a URL was provided when creating notification, it will be opened in browser
          * @return undefined
          */
-        this.clicked = function() {
+        this.click = function() {
             if (url)
                 browser.openTab(url);
 

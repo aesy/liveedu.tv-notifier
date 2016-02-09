@@ -21,6 +21,7 @@ function livecodingService($q, _, browser, livecodingAPI) {
         authenticate: authenticate,
         authorize: livecodingAPI.authorize,
         getFollowing: livecodingAPI.getFollowing,
+        filteredLivestreams: filteredLivestreams,
         getAllLive: livecodingAPI.getLivestreams,
         getAllVideos: livecodingAPI.getVideos,
         getAllScheduled: livecodingAPI.getScheduled,
@@ -28,6 +29,24 @@ function livecodingService($q, _, browser, livecodingAPI) {
         revokeToken: livecodingAPI.revokeToken,
         promise: setTokenIfAvailable() // Used in routes file, not to be used anywhere else.
     };
+
+    /**
+     * Filter out specific users from API request that returns liveCodingStream objects
+     * @param promise (Promise) of livecodingAPI $http request
+     * @param usernames (array of strings)
+     * @return Promise with array of liveCodingStream objects
+     */
+    function filteredLivestreams(promise, usernames) {
+        var deferred = $q.defer();
+
+        promise.then(function(livestreams) {
+            deferred.resolve(livestreams.filter(function(stream) {
+                return _.includes(usernames, stream.username.toLowerCase());
+            }));
+        });
+
+        return deferred.promise;
+    }
 
     /**
      * Set token if available

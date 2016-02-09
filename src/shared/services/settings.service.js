@@ -19,7 +19,7 @@ function settingsService($q, _, browser, livecoding) {
             },
             badge: {
                 show: true,
-                removeOnPopup: false
+                persistent: true
             },
             notification: {
                 show: true,
@@ -182,13 +182,17 @@ function settingsService($q, _, browser, livecoding) {
             livecoding.getFollowing().then(function(data) {
                 var oldFollows = get().follows;
 
-                var newFollows = data.map(function(value) {
+                var currentFollows = data.map(function(value) {
                     return value.username.toLowerCase();
                 }).filter(function(name) {
                     return !_.includes(oldFollows.ignore, name);
                 });
 
-                addFollows(_.difference(newFollows, oldFollows.names));
+                var newFollows = _.difference(currentFollows, oldFollows.names);
+
+                if (newFollows.length)
+                    addFollows(newFollows);
+
                 deferred.resolve();
             });
         });

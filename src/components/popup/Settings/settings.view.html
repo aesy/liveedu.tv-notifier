@@ -19,7 +19,7 @@
     <div class="field row">
         <h1>Persistent Badge:</h1>
 
-        <checkbox active="settings.opts.badge.removeOnPopup"></checkbox>
+        <checkbox active="settings.opts.badge.persistent"></checkbox>
     </div>
 
     <div class="field row">
@@ -43,7 +43,7 @@
         <h1>Manage Favorites:</h1>
 
         <ul class="favorites setting">
-            <li ng-if="!settings.opts.follows.names">You don't follow anyone!</li>
+            <li ng-if="!settings.opts.follows.names.length">You don't follow anyone!</li>
 
             <li ng-repeat="name in settings.opts.follows.names |
                            orderBy: name">

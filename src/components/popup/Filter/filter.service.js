@@ -27,7 +27,7 @@ function filterService(_) {
 
     /**
      * Set category to search for
-     * @param input (string)
+     * @param input (array of strings)
      * @return undefined
      */
     function setCategory(input) {

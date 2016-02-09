@@ -262,7 +262,7 @@ function chromeService($q, _) {
 
     /**
      * Bind a notification event to a callback function
-     * @param event (one of 'click', 'close', 'button') determine what event to bind
+     * @param event (one of 'click', 'close', 'button click') determine what event to bind
      * @param callback (function)
      * @return undefined
      */
