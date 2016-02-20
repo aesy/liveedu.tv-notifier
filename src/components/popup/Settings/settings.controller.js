@@ -7,15 +7,22 @@ settingsCtrl.$inject = ["$timeout", "lodash", "browserService", "settingsService
 function settingsCtrl($timeout, _, browser, settings) {
     var vm = this;
 
-    vm.opts = settings.get(); // temporary (unsaved) settings
+    vm.opts = {}; // temporary (unsaved) settings
     vm.success = false;
 
     /**
      * Listen for changes in settings
      */
-    settings.onChange(function() {
-        vm.settings = settings.get();
-    });
+    settings.on("change", updateSettings);
+    settings.on("ready", updateSettings);
+
+    /**
+     * Update temporary settings object
+     * @return undefined
+     */
+    function updateSettings() {
+        vm.opts = settings.get();
+    }
 
     /**
      * Remove favorite from temporary settings (not permanent until save-button is clicked)
@@ -66,8 +73,6 @@ function settingsCtrl($timeout, _, browser, settings) {
      * @return undefined
      */
     vm.clear = function() {
-        settings.clear().then(function() {
-            vm.opts = settings.get();
-        });
+        settings.clear().then(updateSettings);
     }
 }

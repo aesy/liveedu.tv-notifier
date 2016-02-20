@@ -24,35 +24,20 @@ function config($routeProvider, $locationProvider) {
             redirectTo: "/following"
         })
 
+        .when("/background.html", {
+            template: "",
+            controller: "pollingCtrl"
+        })
+
         .when("/settings", {
             templateUrl: "view/settings.html",
             controller: "settingsCtrl",
-            controllerAs: "settings",
-            resolve: {
-                livecoding: ["livecodingService", function(livecodingService) {
-                    return livecodingService.promise;
-                }]
-            }
-        })
-
-        .when("/background.html", {
-            template: "",
-            controller: "pollingCtrl",
-            resolve: {
-                livecoding: ["livecodingService", function(livecodingService) {
-                    return livecodingService.promise;
-                }]
-            }
+            controllerAs: "settings"
         })
 
         .when("/:page", {
             templateUrl: "view/streams.html",
             controller: "streamCtrl",
-            controllerAs: "streams",
-            resolve: {
-                livecoding: ["livecodingService", function(livecodingService) {
-                    return livecodingService.promise;
-                }]
-            }
+            controllerAs: "streams"
         });
 }

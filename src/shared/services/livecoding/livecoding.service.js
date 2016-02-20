@@ -10,11 +10,16 @@ livecodingService.$inject = ["$q", "lodash", "browserService", "livecodingAPISer
  * Use this instead of livecodingAPIService.
  */
 function livecodingService($q, _, browser, livecodingAPI) {
-    var storageKey = "livecodingToken";
+    var storageKey = "livecodingToken",
+        callbacks = {};
 
     // TODO: onNewToken is to be removed, don't use.
     livecodingAPI.onNewToken(function(token) {
         browser.storage.local.set(storageKey, token);
+    });
+
+    setTokenIfAvailable().then(function() {
+        fire("ready");
     });
 
     return {
@@ -27,8 +32,44 @@ function livecodingService($q, _, browser, livecodingAPI) {
         getAllScheduled: livecodingAPI.getScheduled,
         isAuthenticated: livecodingAPI.isAuthenticated,
         revokeToken: livecodingAPI.revokeToken,
-        promise: setTokenIfAvailable() // Used in routes file, not to be used anywhere else.
+        on: on
     };
+
+    /**
+     * Add event listener
+     * @param event (string one of ('ready'))
+     * @param callback (function)
+     * @return undefined
+     */
+    function on(event, callback) {
+        switch (event) {
+            case "ready":
+                if (!callbacks.hasOwnProperty(event))
+                    callbacks[event] = [];
+
+                callbacks[event].push(callback);
+
+                if (livecodingAPI.isAuthenticated())
+                    callback();
+                break;
+            default:
+                throw Error("Invalid event type");
+        }
+    }
+
+    /**
+     * Fire off listener callbacks
+     * @param event (string one of ('ready'))
+     * @return undefined
+     */
+    function fire(event) {
+        if (!callbacks.hasOwnProperty(event))
+            return;
+
+        callbacks[event].forEach(function(callback) {
+            callback();
+        });
+    }
 
     /**
      * Filter out specific users from API request that returns liveCodingStream objects

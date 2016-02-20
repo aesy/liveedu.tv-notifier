@@ -6,7 +6,7 @@ settingsService.$inject = ["$q", "lodash", "browserService", "livecodingService"
 
 function settingsService($q, _, browser, livecoding) {
     var storageKey = "LiveCoding.tv-Notifier_settings",
-        onChangeCallbacks = [],
+        callbacks = {},
         settings = {},
         defaults = {
             browserSync: true, // TODO: implement
@@ -24,13 +24,25 @@ function settingsService($q, _, browser, livecoding) {
             notification: {
                 show: true,
                 soundClip: {
-                    selected: {label: "Soft1", value: "snd/soft1.wav"},
+                    selected: {label: "Soft 1", value: "snd/soft1.mp3"},
                     options: [
                         {label: "Disabled", value: ""},
-                        {label: "Soft1", value: "snd/soft1.wav"},
-                        {label: "Soft2", value: "snd/soft2.wav"},
-                        {label: "Soft3", value: "snd/soft3.wav"},
-                        {label: "Soft4", value: "snd/soft4.wav"}
+                        {label: "Altair", value: "snd/altair.mp3"},
+                        {label: "Ariel", value: "snd/ariel.mp3"},
+                        {label: "Beryllium", value: "snd/beryllium.mp3"},
+                        {label: "Ceres", value: "snd/ceres.mp3"},
+                        {label: "Chime", value: "snd/chime.mp3"},
+                        {label: "Cyan Message", value: "snd/cyanmessage.mp3"},
+                        {label: "Cyan Ping", value: "snd/cyanping.mp3"},
+                        {label: "Deneb", value: "snd/deneb.mp3"},
+                        {label: "Pixiedust", value: "snd/pixiedust.mp3"},
+                        {label: "Pong", value: "snd/pong.mp3"},
+                        {label: "Soft 1", value: "snd/soft1.mp3"},
+                        {label: "Soft 2", value: "snd/soft2.mp3"},
+                        {label: "Soft 3", value: "snd/soft3.mp3"},
+                        {label: "Soft 4", value: "snd/soft4.mp3"},
+                        {label: "TXP Online", value: "snd/txponline.mp3"}
+
                     ]
                 }
             }
@@ -40,10 +52,16 @@ function settingsService($q, _, browser, livecoding) {
      * Listen for storage changes and make sure settings variable reflects it
      */
     browser.storage.sync.onChange(storageKey, function() {
-        sync().then(fireOnChange);
+        sync().then(function() {
+            fire("change");
+        });
     });
 
-    sync().then(fireOnChange);
+    livecoding.on("ready", function() {
+        sync().then(function() {
+            fire("ready");
+        });
+    });
 
     return {
         get: get,
@@ -51,13 +69,13 @@ function settingsService($q, _, browser, livecoding) {
         clear: clear,
         addFollows: addFollows,
         removeFollows: removeFollows,
-        onChange: onChange
+        on: on
     };
 
     /**
      * Get settings
      * Note: An empty object may be returned if this is called before the service syncs with storage.
-     * @read onChange
+     * @read function on
      * @return object - see structure of defaults variable
      */
     function get() {
@@ -130,21 +148,42 @@ function settingsService($q, _, browser, livecoding) {
     }
 
     /**
-     * Add settings change listener
+     * Add event listener
+     * @param event (string one of ('ready', 'change'))
      * @param callback (function)
      * @return undefined
      */
-    function onChange(callback) {
-        onChangeCallbacks.push(callback);
+    function on(event, callback) {
+        switch (event) {
+            case "ready":
+            case "change":
+                if (!callbacks.hasOwnProperty(event)) {
+                    callbacks[event] = { timesFired: 0, functions: [] };
+                } else if (event === "ready") {
+                    callback();
+                    callbacks[event].timesFired += 1;
+                }
+
+                callbacks[event].functions.push(callback);
+                break;
+            default:
+                throw Error("Invalid event type");
+        }
     }
 
     /**
-     * Call listener callbacks
+     * Fire off listener callbacks
+     * @param event (string one of ('ready', 'change'))
      * @return undefined
      */
-    function fireOnChange() {
-        onChangeCallbacks.forEach(function(func) {
-            func();
+    function fire(event) {
+        if (!callbacks.hasOwnProperty(event))
+            return;
+
+        callbacks[event].timesFired += 1;
+
+        callbacks[event].functions.forEach(function(callback) {
+            callback();
         });
     }
 

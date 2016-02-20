@@ -10,15 +10,27 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
     vm.collection = [];
     vm.currentPage = $routeParams.page;
     vm.filter = filter.matchStream;
-    vm.searching = false;
-    vm.settings = settings.get();
+    vm.searching = true;
+    vm.settings = {};
 
     /**
-     * Listen for changes in settings
+     * Initialize
+     * @return undefined
      */
-    settings.onChange(function() {
+    function init() {
+        vm.refresh();
+
+        if (!vm.settings.badge.persistent)
+            browser.setBadge("");
+    }
+
+    /**
+     * Update settings object
+     * @return undefined
+     */
+    function updateSettings() {
         vm.settings = settings.get();
-    });
+    }
 
     /**
      * Open livecoding.tv stream chat window
@@ -90,8 +102,8 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
      * @return undefined;
      */
     vm.refresh = function() {
-        vm.collection = [];
         vm.searching = true;
+        vm.collection = [];
         var promise;
 
         switch (vm.currentPage) {
@@ -126,9 +138,15 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
     //};
 
 
-    $scope.$on("refreshStreams", vm.refresh);
-    $scope.$on("$routeChangeSuccess", vm.refresh);
+    /**
+     * Listen for changes in settings
+     */
+    settings.on("change", updateSettings);
+    settings.on("ready", function() {
+        updateSettings();
+        init();
+    });
 
-    if (!vm.settings.badge.persistent)
-        browser.setBadge("");
+    $scope.$on("refreshStreams", vm.refresh);
+    //$scope.$on("$routeChangeSuccess", vm.refresh);
 }

@@ -16,8 +16,6 @@ To-do List
 ----------
 * Restructure and clean up CSS
 * View and get reminders for scheduled streams.
-* Additional coloured tags.
-* Additional notification sounds.
 * Option to turn off sync between browsers.
 * Show user avatar and stream language. (currently not possible)
 * Work with Firefox

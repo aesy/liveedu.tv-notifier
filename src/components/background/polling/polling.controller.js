@@ -12,12 +12,19 @@ function pollingCtrl($interval, settings, browser, Notification, polling) {
      * Listen for changes in settings
      * Update local settings and restart poller on change
      */
-    settings.onChange(function() {
-        opts = settings.get();
+    settings.on("change", updateSettings);
+    settings.on("ready", function() {
+        updateSettings();
         start();
     });
 
-    start();
+    /**
+     * Update settings object
+     * @return undefined
+     */
+    function updateSettings() {
+        opts = settings.get();
+    }
 
     /**
      * Start polling
@@ -64,9 +71,9 @@ function pollingCtrl($interval, settings, browser, Notification, polling) {
         }
 
         if (opts.badge.persistent) {
-            browser.setBadge(livestreams.length || "");
-        } else {
             browser.setBadge(polling.getRecentlySeen().length || "");
+        } else {
+            browser.setBadge(livestreams.length || "");
         }
     }
 
