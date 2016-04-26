@@ -6,17 +6,14 @@ pollingCtrl.$inject = ["$interval", "settingsService", "browserService", "notifi
 
 function pollingCtrl($interval, settings, browser, Notification, polling) {
     var promise,
-        opts = settings.get();
+        opts;
 
     /**
      * Listen for changes in settings
      * Update local settings and restart poller on change
      */
     settings.on("change", updateSettings);
-    settings.on("ready", function() {
-        updateSettings();
-        start();
-    });
+    settings.on("ready", updateSettings);
 
     /**
      * Update settings object
@@ -24,6 +21,7 @@ function pollingCtrl($interval, settings, browser, Notification, polling) {
      */
     function updateSettings() {
         opts = settings.get();
+        start();
     }
 
     /**

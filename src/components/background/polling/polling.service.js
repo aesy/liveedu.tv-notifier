@@ -11,10 +11,12 @@ function pollingService($q, _, livecoding) {
      {
        (string) username
        (int) lastSeen - timestamp in seconds
+       (int) downtimeCooldown - seconds of downtime needed to trigger another notification
      }
      */
     var seen = [],
-        lastCheck = 0;
+        lastCheck = 0,
+        downtimeCooldown = 60 * 15;
 
     return {
         getUnseenLiveStreams: getUnseenLiveStreams,
@@ -53,11 +55,12 @@ function pollingService($q, _, livecoding) {
 
     /**
      * Get recently (since last check) seen users
+     * @param offset (int)
      * @return array of strings
      */
-    function getRecentlySeen() {
+    function getRecentlySeen(offset) {
         return seen.filter(function(value) {
-            return value.lastSeen > lastCheck;
+            return value.lastSeen >= lastCheck - (offset || 0);
         }).map(function(value) {
             return value.username;
         });
@@ -72,7 +75,7 @@ function pollingService($q, _, livecoding) {
     function getUnseenLiveStreams(filter) {
         var deferred = $q.defer(),
             promise = livecoding.getAllLive(),
-            previouslySeen = getRecentlySeen();
+            previouslySeen = getRecentlySeen(downtimeCooldown);
 
         livecoding.filteredLivestreams(promise, [].concat(filter)).then(function(livestreams) {
             deferred.resolve(livestreams.filter(function(stream) {

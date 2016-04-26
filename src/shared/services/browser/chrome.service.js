@@ -12,10 +12,10 @@ function chromeService($q, _) {
      */
     chrome.runtime.onInstalled.addListener(function(details) {
         if (details.reason == "install") {
-            openTab(getBaseUrl() + "message.html?install");
+            openTab(getBaseUrl() + "\/message.html\?install");
         } else if (details.reason == "update") {
-            chrome.storage.sync.remove("LiveCoding.tv-Notifier_settings", function() {}); // Reset settings
-            //openTab(getBaseUrl() + "message.html?update");
+            //chrome.storage.sync.remove("LiveCoding.tv-Notifier_settings", function() {}); // Reset settings
+            //openTab(getBaseUrl() + "\/message.html\?update");
         }
     });
 

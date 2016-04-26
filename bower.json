@@ -1,6 +1,5 @@
 {
   "name": "LiveCoding.tv-Notifier",
-  "version": "1.0.0",
   "dependencies": {
     "bootstrap-css-only": "3.x",
     "fontawesome": "4.x",

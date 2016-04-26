@@ -7,6 +7,7 @@ settingsService.$inject = ["$q", "lodash", "browserService", "livecodingService"
 function settingsService($q, _, browser, livecoding) {
     var storageKey = "LiveCoding.tv-Notifier_settings",
         callbacks = {},
+        ready = false,
         settings = {},
         defaults = {
             browserSync: true, // TODO: implement
@@ -157,14 +158,13 @@ function settingsService($q, _, browser, livecoding) {
         switch (event) {
             case "ready":
             case "change":
-                if (!callbacks.hasOwnProperty(event)) {
-                    callbacks[event] = { timesFired: 0, functions: [] };
-                } else if (event === "ready") {
-                    callback();
-                    callbacks[event].timesFired += 1;
-                }
+                if (!callbacks.hasOwnProperty(event))
+                    callbacks[event] = [];
 
-                callbacks[event].functions.push(callback);
+                callbacks[event].push(callback);
+
+                if (event === "ready" && ready)
+                    callback();
                 break;
             default:
                 throw Error("Invalid event type");
@@ -177,12 +177,13 @@ function settingsService($q, _, browser, livecoding) {
      * @return undefined
      */
     function fire(event) {
+        if (event === "ready")
+            ready = true;
+
         if (!callbacks.hasOwnProperty(event))
             return;
 
-        callbacks[event].timesFired += 1;
-
-        callbacks[event].functions.forEach(function(callback) {
+        callbacks[event].forEach(function(callback) {
             callback();
         });
     }

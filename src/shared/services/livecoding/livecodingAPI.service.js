@@ -427,7 +427,7 @@ function liveCodingStream(stream) {
             url: (value.url || "").replace("api/livestreams/", ""),
             title: value.title || "",
             description: value.description || "",
-            country: value.language || "",
+            country: isoCountries[value.language] || "",
             tags: value.tags || value.product_type || "",
             difficulty: value.difficulty || "",
             category: value.coding_category || "",

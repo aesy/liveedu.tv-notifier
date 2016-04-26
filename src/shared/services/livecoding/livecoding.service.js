@@ -11,7 +11,8 @@ livecodingService.$inject = ["$q", "lodash", "browserService", "livecodingAPISer
  */
 function livecodingService($q, _, browser, livecodingAPI) {
     var storageKey = "livecodingToken",
-        callbacks = {};
+        callbacks = {},
+        ready = false;
 
     // TODO: onNewToken is to be removed, don't use.
     livecodingAPI.onNewToken(function(token) {
@@ -49,7 +50,7 @@ function livecodingService($q, _, browser, livecodingAPI) {
 
                 callbacks[event].push(callback);
 
-                if (livecodingAPI.isAuthenticated())
+                if (event === "ready" && ready)
                     callback();
                 break;
             default:
@@ -63,6 +64,9 @@ function livecodingService($q, _, browser, livecodingAPI) {
      * @return undefined
      */
     function fire(event) {
+        if (event === "ready")
+            ready = true;
+
         if (!callbacks.hasOwnProperty(event))
             return;
 
