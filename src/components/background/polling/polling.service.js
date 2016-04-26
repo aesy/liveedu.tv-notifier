@@ -55,7 +55,7 @@ function pollingService($q, _, livecoding) {
 
     /**
      * Get recently (since last check) seen users
-     * @param offset (int)
+     * @param offset (optional int)
      * @return array of strings
      */
     function getRecentlySeen(offset) {
