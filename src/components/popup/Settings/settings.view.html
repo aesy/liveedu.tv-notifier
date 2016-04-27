@@ -35,8 +35,28 @@
                          selected="settings.opts.notification.soundClip.selected"
                          options="settings.opts.notification.soundClip.options"
                          property="label"
-                         change="settings.soundChange(value)">
+                         onchange="settings.soundChange(value)">
         </dropdown-select>
+    </div>
+
+    <div class="field row animate" ng-if="settings.opts.notification.soundClip.selected.value">
+        <h1>Notification Sound Volume:</h1>
+
+        <div class="setting">
+            <range value="settings.opts.notification.soundClip.volume" min="10" max="100" step="10"
+                   ng-mouseup="settings.soundChange()"/>
+            <span>{{settings.opts.notification.soundClip.volume}}%</span>
+        </div>
+    </div>
+
+    <div class="field row">
+        <h1>Sync Settings:</h1>
+
+        <checkbox active="settings.opts.browserSync"></checkbox>
+
+        <div class="setting">
+            <span>Synchronizes your settings between devices. This requires you to be signed into chrome.</span>
+        </div>
     </div>
 
     <div class="field row" ng-show="settings.opts.follows.names > 0">

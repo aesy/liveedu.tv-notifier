@@ -81,13 +81,16 @@ function pollingCtrl($interval, settings, browser, Notification, polling) {
      * @return undefined
      */
     function notify(livestreams) {
-        if (opts.notification.soundClip.selected.value && livestreams.length)
-            new Audio(opts.notification.soundClip.selected.value).play();
+        if (opts.notification.soundClip.selected.value && livestreams.length) {
+            var audio = new Audio(opts.notification.soundClip.selected.value);
+            audio.volume = opts.notification.soundClip.volume;
+            audio.play();
+        }
 
         if (opts.notification.show)
             livestreams.forEach(function(stream) {
                 new Notification({
-                    title: stream.username + 's stream just went live!',
+                    title: stream.username + 's stream is live!',
                     message: stream.category + ': ' + stream.title,
                     url: stream.url
                 }).display();

@@ -31,7 +31,7 @@ function dropdownSelect($document) {
             property: "@",
             options: "=",
             selected: "=",
-            change: "&"
+            onchange: "&"
         },
         link: function (scope, elem, attr) {
             scope.showOptions = false;
@@ -45,8 +45,8 @@ function dropdownSelect($document) {
                 scope.selected = item;
                 scope.showOptions = false;
 
-                if (scope.change)
-                    scope.change({value: item});
+                if (scope.onchange)
+                    scope.onchange({value: item});
             };
 
             /**

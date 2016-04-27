@@ -37,12 +37,20 @@ function settingsCtrl($timeout, _, browser, settings) {
 
     /**
      * Play sound when vm.opts.notification.soundClip.selected is changed
-     * @param item (object) equals vm.opts.notification.soundClip.selected
+     * @param item (object) audio to play, defaults to vm.opts.notification.soundClip.selected
      * @return undefined
      */
     vm.soundChange = function(item) {
-        if (item.value)
-            new Audio(item.value).play();
+        item = item || {};
+
+        var value = item.value !== undefined ? item.value : vm.opts.notification.soundClip.selected.value,
+            volume = item.volume !== undefined ? item.volume : vm.opts.notification.soundClip.volume / 100;
+
+        if (value) {
+            var audio = new Audio(value);
+            audio.volume = volume;
+            audio.play();
+        }
     };
 
     /**
@@ -74,5 +82,5 @@ function settingsCtrl($timeout, _, browser, settings) {
      */
     vm.clear = function() {
         settings.clear().then(updateSettings);
-    }
+    };
 }

@@ -25,6 +25,7 @@ function settingsService($q, _, browser, livecoding) {
             notification: {
                 show: true,
                 soundClip: {
+                    volume: 50,
                     selected: {label: "Soft 1", value: "snd/soft1.mp3"},
                     options: [
                         {label: "Disabled", value: ""},
@@ -43,7 +44,6 @@ function settingsService($q, _, browser, livecoding) {
                         {label: "Soft 3", value: "snd/soft3.mp3"},
                         {label: "Soft 4", value: "snd/soft4.mp3"},
                         {label: "TXP Online", value: "snd/txponline.mp3"}
-
                     ]
                 }
             }
@@ -52,17 +52,9 @@ function settingsService($q, _, browser, livecoding) {
     /**
      * Listen for storage changes and make sure settings variable reflects it
      */
-    browser.storage.sync.onChange(storageKey, function() {
-        sync().then(function() {
-            fire("change");
-        });
-    });
-
-    livecoding.on("ready", function() {
-        sync().then(function() {
-            fire("ready");
-        });
-    });
+    browser.storage.sync.onChange(storageKey, function() { onChange(true); });
+    browser.storage.local.onChange(storageKey, function() { onChange(false); });
+    livecoding.on("ready", function() { onChange(null, "ready"); });
 
     return {
         get: get,
@@ -72,6 +64,21 @@ function settingsService($q, _, browser, livecoding) {
         removeFollows: removeFollows,
         on: on
     };
+
+    /**
+     * onChange Event
+     * @param browserSync (optional bool) If set, must match current settings to proceed
+     * @param event (optional string) Custom event, defaults to 'change'
+     * @return undefined
+     */
+    function onChange(browserSync, event) {
+        if (!_.includes([undefined, null], browserSync) && get().browserSync !== browserSync)
+            return;
+
+        sync().then(function() {
+            fire(event || "change");
+        });
+    }
 
     /**
      * Get settings
@@ -90,6 +97,9 @@ function settingsService($q, _, browser, livecoding) {
      * @return undefined
      */
     function set(data) {
+        if (data.browserSync !== undefined && data.browserSync !== get().browserSync)
+            clear();
+
         settings = data;
         saveChanges();
     }
@@ -99,7 +109,9 @@ function settingsService($q, _, browser, livecoding) {
      * @return undefined
      */
     function clear() {
-        browser.storage.sync.clear(storageKey);
+        var type = get().browserSync ? "sync" : "local";
+
+        browser.storage[type].clear(storageKey);
     }
 
     /**
@@ -202,7 +214,8 @@ function settingsService($q, _, browser, livecoding) {
         // Bug fix for v0.9.7
         lowerCaseFollows();
 
-        browser.storage.sync.set(storageKey, settings);
+        var type = get().browserSync ? "sync" : "local";
+        browser.storage[type].set(storageKey, settings);
     }
 
     /**
@@ -210,9 +223,10 @@ function settingsService($q, _, browser, livecoding) {
      * @return Promise
      */
     function sync() {
-        var deferred = $q.defer();
+        var deferred = $q.defer(),
+            type = get().browserSync ? "sync" : "local";
 
-        browser.storage.sync.get(storageKey).then(function(data) {
+        browser.storage[type].get(storageKey).then(function(data) {
             settings = data || {};
 
             return livecoding.promise;

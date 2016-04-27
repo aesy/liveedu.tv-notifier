@@ -9,15 +9,15 @@ angular
  */
 function range() {
     return {
-        restrict: 'E',
+        restrict: "E",
         replace: true,
         transclude: true,
-        templateUrl: 'view/range.html',
+        templateUrl: "view/range.html",
         scope: {
-            min: '=',
-            max: '=',
-            step: '=',
-            value: '='
+            min: "=",
+            max: "=",
+            step: "=",
+            value: "="
         },
         link: function (scope, elem, attrs) {
         }
