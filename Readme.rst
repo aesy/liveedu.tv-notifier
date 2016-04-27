@@ -7,7 +7,7 @@ Chrome Web Store: `Link <https://chrome.google.com/webstore/detail/livecodingtv-
 Screenshots
 -----------
 +-------------------------------------+---------------------------------------+
-| Popup window (early version)        | Options page (early version)          |
+| Popup window                        | Options page                          |
 +-------------------------------------+---------------------------------------+
 | .. image:: img/Screenshot_popup.png | .. image:: img/Screenshot_options.png |
 +-------------------------------------+---------------------------------------+
