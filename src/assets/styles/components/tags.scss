@@ -32,7 +32,6 @@ $tagcolors: (
   display: inline-block;
   border-radius: 8px;
   padding: 0 5px;
-  margin-top: 6px;
   font-size: 11px;
 
   @each $tag, $color in $tagcolors {

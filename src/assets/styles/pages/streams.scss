@@ -70,6 +70,7 @@ html.popup {
           word-break: break-all;
           word-wrap: break-word;
           overflow-wrap: break-word;
+          margin-bottom: 5px;
         }
 
         .buttons {
@@ -87,7 +88,7 @@ html.popup {
           color: red;
           position: relative;
           top: 4px;
-          margin: 3px;
+          margin-left: 2px;
         }
 
         .link {
