@@ -10,11 +10,12 @@ function settingsService($q, _, browser, livecoding) {
         ready = false,
         settings = {},
         defaults = {
-            browserSync: true, // TODO: implement
+            browserSync: true,
             follows: {
                 ignore: [],
                 names: []
             },
+            reminders: [],
             polling: {
                 frequencyMinutes: 5
             },
@@ -62,6 +63,9 @@ function settingsService($q, _, browser, livecoding) {
         clear: clear,
         addFollows: addFollows,
         removeFollows: removeFollows,
+        addReminder: addReminder,
+        removeReminder: removeReminder,
+        willRemind: willRemind,
         on: on
     };
 
@@ -92,15 +96,14 @@ function settingsService($q, _, browser, livecoding) {
 
     /**
      * Set storage data
-     * @param data (object) Does not need to contain all possible properties,
-     *                      however all data not provided will be set to defaults
+     * @param data (object) Does not need to contain all possible properties.
      * @return undefined
      */
     function set(data) {
         if (data.browserSync !== undefined && data.browserSync !== get().browserSync)
             clear();
 
-        settings = data;
+        settings = _.defaultsDeep(data, settings);
         saveChanges();
     }
 
@@ -117,7 +120,7 @@ function settingsService($q, _, browser, livecoding) {
     /**
      * Add user(s) to follow
      * @param usernames (string or array of strings)
-     * @return undefined;
+     * @return undefined
      */
     function addFollows(usernames) {
         [].concat(usernames).forEach(function(username) {
@@ -131,7 +134,7 @@ function settingsService($q, _, browser, livecoding) {
     /**
      * Stop following user(s)
      * @param usernames (string or array of strings)
-     * @return undefined;
+     * @return undefined
      */
     function removeFollows(usernames) {
         [].concat(usernames).forEach(function(username) {
@@ -140,6 +143,47 @@ function settingsService($q, _, browser, livecoding) {
         });
 
         saveChanges();
+    }
+
+    /**
+     * Add reminder of scheduled broadcast
+     * @param stream (liveCodingStream object)
+     * @return undefined
+     */
+    function addReminder(stream) {
+        if (!willRemind(stream)) {
+            settings.reminders.push(stream);
+            saveChanges();
+        }
+    }
+
+    /**
+     * Stop reminder of scheduled broadcast
+     * @param stream (liveCodingStream object)
+     * @return undefined
+     */
+    function removeReminder(stream) {
+        for (var i in settings.reminders) {
+            var id = settings.reminders[i].id;
+
+            if (stream.id == id) {
+                settings.reminders.splice(i, 1);
+                break;
+            }
+        }
+
+        saveChanges();
+    }
+
+    /**
+     * Check if there will be an reminder of stream
+     * @param stream (liveCodingStream object)
+     * @return undefined
+     */
+    function willRemind(stream) {
+        return _.some(settings.reminders, function(streamReminder) {
+            return streamReminder.id === stream.id;
+        });
     }
 
     /**

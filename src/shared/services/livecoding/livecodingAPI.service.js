@@ -423,8 +423,8 @@ function livecodingAPIService($http, $q) {
 function liveCodingStream(stream) {
     return stream.map(function(value) {
         return {
-            username: value.user.match(/^.*\/(.+)\//)[1] || "",
-            url: (value.url || "").replace("api/livestreams/", ""),
+            username: (value.user || value.livestream).match(/^.*\/(.+)\//)[1] || "",
+            url: (value.url || value.livestream || "").replace("api/livestreams/", ""),
             title: value.title || "",
             description: value.description || "",
             country: value.language || "",
@@ -433,7 +433,8 @@ function liveCodingStream(stream) {
             category: value.coding_category || "",
             views: value.viewers_live || value.viewers_overall || 0,
             timestamp: Date.parse(value.start_time || 0), // 0 good default?
-            dateTime: new Date(value.start_time || 0)
+            dateTime: new Date(value.start_time || 0),
+            id: value.id || 0
         };
     });
 }

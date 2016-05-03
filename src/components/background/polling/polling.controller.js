@@ -26,7 +26,7 @@ function pollingCtrl($interval, settings, browser, Notification, polling) {
 
     /**
      * Start polling
-     * Will cancel previous poll requests if more than once
+     * Will cancel previous poll requests
      * @return undefined
      */
     function start() {
@@ -52,6 +52,7 @@ function pollingCtrl($interval, settings, browser, Notification, polling) {
      */
     function poll() {
         polling.getUnseenLiveStreams(opts.follows.names).then(function(livestreams) {
+            remind(polling.getRecentlySeen());
             updateBadge(livestreams);
             notify(livestreams);
         });
@@ -71,8 +72,33 @@ function pollingCtrl($interval, settings, browser, Notification, polling) {
         if (opts.badge.persistent) {
             browser.setBadge(polling.getRecentlySeen().length || "");
         } else {
-            browser.setBadge(livestreams.length || "");
+            var currentBadge = parseInt(browser.getBadge()) || 0;
+            browser.setBadge((currentBadge + livestreams.length) || "");
         }
+    }
+
+    /**
+     * Notifies user of streams that user has requested to be reminded of
+     * @param livestreams (array of liveCodingStream objects)
+     * @return undefined
+     */
+    function remind(livestreams) {
+        var reminders = livestreams.filter(function(stream) {
+            for (var i in opts.reminders) {
+                var reminder = opts.reminders[i];
+
+                if (reminder.timestamp < new Date().getTime() - 60 * 60 * 1000) {
+                    settings.removeReminder(reminder);
+                } else if (reminder.username == stream.username && reminder.timestamp <= new Date().getTime()) {
+                    settings.removeReminder(reminder);
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
+        notify(reminders);
     }
 
     /**
@@ -83,7 +109,7 @@ function pollingCtrl($interval, settings, browser, Notification, polling) {
     function notify(livestreams) {
         if (opts.notification.soundClip.selected.value && livestreams.length) {
             var audio = new Audio(opts.notification.soundClip.selected.value);
-            audio.volume = opts.notification.soundClip.volume;
+            audio.volume = opts.notification.soundClip.volume / 100;
             audio.play();
         }
 

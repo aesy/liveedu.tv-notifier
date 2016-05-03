@@ -30,7 +30,7 @@ function livecodingService($q, _, browser, livecodingAPI) {
         filteredLivestreams: filteredLivestreams,
         getAllLive: livecodingAPI.getLivestreams,
         getAllVideos: livecodingAPI.getVideos,
-        getAllScheduled: livecodingAPI.getScheduled,
+        getAllScheduled: getAllScheduled,
         isAuthenticated: livecodingAPI.isAuthenticated,
         revokeToken: livecodingAPI.revokeToken,
         on: on
@@ -89,6 +89,42 @@ function livecodingService($q, _, browser, livecodingAPI) {
                 return _.includes(usernames, stream.username.toLowerCase());
             }));
         });
+
+        return deferred.promise;
+    }
+
+    /**
+     * Get list of all scheduled streams (not including past broadcasts).
+     * It is slow because it requires approx. 6 http get requests before it can resolve.
+     * @return Promise with array of liveCodingStream objects
+     */
+    function getAllScheduled() {
+        var offset = -100,
+            results = [],
+            deferred = $q.defer();
+
+        var iRequests = function() {
+            offset += 100;
+
+            livecodingAPI.getScheduled(offset).then(function(data) {
+                for (var i in data) {
+                    if (data[i].dateTime > new Date()) {
+                        results.push(data[i]);
+                    } else {
+                        deferred.resolve(results);
+                        return;
+                    }
+                }
+
+                if (data.length)
+                    iRequests();
+            }, function(error) {
+                console.log("getAllScheduled Error: ", error);
+                iRequests();
+            });
+        };
+
+        iRequests();
 
         return deferred.promise;
     }

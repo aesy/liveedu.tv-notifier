@@ -79,7 +79,7 @@ function humanReadableDateDiff() {
             ];
 
         times.forEach(function(item, index) {
-            if (index !== lang.length - 1 && item.value === 0)
+            if (index !== times.length - 1 && item.value === 0)
                 return;
 
             var plural = item.value > 1,

@@ -14,7 +14,6 @@ Screenshots
 
 To-do List
 ----------
-* View and get reminders for scheduled streams.
 * Show user avatar and stream language (not possible with livecoding.tvs' current API).
 
 License
