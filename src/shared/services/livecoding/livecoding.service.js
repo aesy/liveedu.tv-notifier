@@ -95,11 +95,13 @@ function livecodingService($q, _, browser, livecodingAPI) {
 
     /**
      * Get list of all scheduled streams (not including past broadcasts).
-     * It is slow because it requires approx. 6 http get requests before it can resolve.
+     * It requires approx. 6 http get requests and is therefore cached for an arbitrary amount of time.
      * @return Promise with array of liveCodingStream objects
      */
     function getAllScheduled() {
-        var offset = -100,
+        var cacheKey = "livecodingScheduledCache",
+            refreshIntervalSeconds = 60 * 15,
+            offset = -100,
             results = [],
             deferred = $q.defer();
 
@@ -111,6 +113,11 @@ function livecodingService($q, _, browser, livecodingAPI) {
                     if (data[i].dateTime > new Date()) {
                         results.push(data[i]);
                     } else {
+                        // Cache results
+                        browser.storage.local.set(cacheKey, {
+                            timestamp: Date.now(),
+                            data: results
+                        });
                         deferred.resolve(results);
                         return;
                     }
@@ -124,7 +131,19 @@ function livecodingService($q, _, browser, livecodingAPI) {
             });
         };
 
-        iRequests();
+        // Check cache
+        browser.storage.local.get(cacheKey).then(function(result) {
+            if (result && !_.isEmpty(result) && Date.now() < result.timestamp + refreshIntervalSeconds*1000) {
+                // Fix DateTime Objects
+                result.data.forEach(function(stream) {
+                    stream.dateTime = new Date(stream.timestamp * 1000);
+                });
+
+                deferred.resolve(result.data);
+            } else {
+                iRequests();
+            }
+        });
 
         return deferred.promise;
     }
