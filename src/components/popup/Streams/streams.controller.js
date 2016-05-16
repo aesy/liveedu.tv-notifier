@@ -127,15 +127,19 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
         })
     };
 
-    // TODO: implement
-    //vm.remindMe = function(username) {
-    //
-    //};
+    vm.toggleReminder = function(stream) {
+        if (settings.willRemind(stream)) {
+            settings.removeReminder(stream);
+        } else {
+            settings.addReminder({
+                username: stream.username,
+                timestamp: stream.timestamp,
+                id: stream.id
+            });
+        }
+    };
 
-    // TODO: implement
-    //vm.willRemind = function(username) {
-    //
-    //};
+    vm.willRemind = settings.willRemind;
 
 
     /**

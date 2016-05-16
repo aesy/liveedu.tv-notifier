@@ -17,7 +17,8 @@ function settingsService($q, _, browser, livecoding) {
             },
             reminders: [],
             polling: {
-                frequencyMinutes: 5
+                frequencyMinutes: 5,
+                dismissReminderAfterMinutes: 60
             },
             badge: {
                 show: true,
@@ -25,6 +26,7 @@ function settingsService($q, _, browser, livecoding) {
             },
             notification: {
                 show: true,
+                dismissedReminder: true,
                 soundClip: {
                     volume: 50,
                     selected: {label: "Soft 1", value: "snd/soft1.mp3"},

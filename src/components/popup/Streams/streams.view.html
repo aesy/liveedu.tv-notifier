@@ -39,7 +39,7 @@
                 </h3>
 
                 <h3 ng-if="streams.currentPage === 'scheduled'">
-                    Time left: {{stream.dateTime|humanReadableDateDiff}}
+                    Time left: {{stream.dateTime|humanReadableDateDiff: "minute"}}.
                 </h3>
             </div>
 
@@ -62,8 +62,8 @@
                    ng-mouseleave="hoverRemind = false"
                    tooltip-placement="top"
                    tooltip="{{streams.willRemind(stream.username) ? 'Don\'t Remind Me' : 'Remind Me!'}}"
-                   ng-click="streams.remindMe(stream.username)"
-                   ng-class="streams.willRemind(stream.username) && !hoverRemind || !streams.willRemind(stream.username) && hoverRemind ? 'fa-bell' : 'fa-bell-o'">
+                   ng-click="streams.toggleReminder(stream)"
+                   ng-class="streams.willRemind(stream) && !hoverRemind || !streams.willRemind(stream) && hoverRemind ? 'fa-bell' : 'fa-bell-o'">
                 </i>
 
                 <i class="glyphicon favorite favorite-{{streams.isFavorite(stream.username) ? 'true' : 'false'}}"

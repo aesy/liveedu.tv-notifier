@@ -2,9 +2,9 @@ angular
     .module("app")
     .controller("pollingCtrl", pollingCtrl);
 
-pollingCtrl.$inject = ["$interval", "settingsService", "browserService", "notificationFactory", "pollingService"];
+pollingCtrl.$inject = ["$interval", "$filter", "settingsService", "browserService", "notificationFactory", "pollingService"];
 
-function pollingCtrl($interval, settings, browser, Notification, polling) {
+function pollingCtrl($interval, $filter, settings, browser, Notification, polling) {
     var promise,
         opts;
 
@@ -54,7 +54,15 @@ function pollingCtrl($interval, settings, browser, Notification, polling) {
         polling.getUnseenLiveStreams(opts.follows.names).then(function(livestreams) {
             remind(polling.getRecentlySeen());
             updateBadge(livestreams);
-            notify(livestreams);
+
+            if (opts.notification.show)
+                notify(livestreams, function(stream) {
+                    return {
+                        title: $filter("capitalize")(stream.username) + "s stream is live!",
+                        message: stream.category + ": " + stream.title,
+                        url: stream.url
+                    };
+                });
         });
     }
 
@@ -83,43 +91,66 @@ function pollingCtrl($interval, settings, browser, Notification, polling) {
      * @return undefined
      */
     function remind(livestreams) {
-        var reminders = livestreams.filter(function(stream) {
-            for (var i in opts.reminders) {
-                var reminder = opts.reminders[i];
+        var currentTimestamp = Math.floor(new Date().getTime() / 1000),
+            liveResults = [],
+            cancelled = [],
+            removeAfter = opts.polling.dismissReminderAfterMinutes * 60, // Totally arbitrary
+            checkBefore = 10 * 60;
 
-                if (reminder.timestamp < new Date().getTime() - 60 * 60 * 1000) {
-                    settings.removeReminder(reminder);
-                } else if (reminder.username == stream.username && reminder.timestamp <= new Date().getTime()) {
-                    settings.removeReminder(reminder);
-                    return true;
-                }
+        opts.reminders.forEach(function(reminder) {
+            if (reminder.timestamp < currentTimestamp - removeAfter) {
+                settings.removeReminder(reminder);
+                cancelled.push(reminder);
+                return;
             }
 
-            return false;
+            livestreams.forEach(function(stream) {
+                var username = stream.username.toLowerCase();
+
+                if (reminder.username.toLowerCase() !== username || opts.follows.names.indexOf(username) > -1)
+                    return;
+
+                if (reminder.timestamp <= currentTimestamp + checkBefore) {
+                    settings.removeReminder(reminder);
+                    liveResults.push(stream);
+                }
+            });
         });
 
-        notify(reminders);
+        if (opts.notification.dismissedReminder)
+            notify(cancelled, function(stream) {
+                return {
+                    title: $filter("capitalize")(stream.username) + "s scheduled stream notice",
+                    message: $filter("humanReadableSeconds")(currentTimestamp - stream.timestamp, "minute").toLowerCase()
+                             + " has passed but " + stream.username + "s stream has yet to go live.",
+                    url: stream.url
+                };
+            });
+
+        notify(liveResults, function(stream) {
+            return {
+                title: $filter("capitalize")(stream.username) + "s scheduled stream is live!",
+                message: stream.category + ": " + stream.title,
+                url: stream.url
+            };
+        });
     }
 
     /**
      * Notify user of new unseen livestreams
      * @param livestreams (array of liveCodingStream objects)
+     * @param messageCallback (function which returns object with title, message and url properties)
      * @return undefined
      */
-    function notify(livestreams) {
+    function notify(livestreams, messageCallback) {
         if (opts.notification.soundClip.selected.value && livestreams.length) {
             var audio = new Audio(opts.notification.soundClip.selected.value);
             audio.volume = opts.notification.soundClip.volume / 100;
             audio.play();
         }
 
-        if (opts.notification.show)
-            livestreams.forEach(function(stream) {
-                new Notification({
-                    title: stream.username + 's stream is live!',
-                    message: stream.category + ': ' + stream.title,
-                    url: stream.url
-                }).display();
-            });
+        livestreams.forEach(function(stream) {
+            new Notification(messageCallback(stream)).display();
+        });
     }
 }
