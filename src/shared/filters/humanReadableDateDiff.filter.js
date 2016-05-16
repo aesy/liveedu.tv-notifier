@@ -7,19 +7,18 @@ humanReadableDateDiff.$inject = [];
 /**
  * Human readable date difference filter (english only)
  * @usage:
- *   <span>Time left: {{myDateTimeObj|humanReadableDateDiff}}.</span>
+ *   <span>Time left: {{myDateTimeObj|humanReadableDateDiff: "hour"}}.</span>
  * Example result:
  *   <span>Time left: 2 Hours, 3 Minutes.</span>
  */
 function humanReadableDateDiff() {
     /**
      * Get object describing difference in time between two DateTime objects
-     * @param fromDate (Date object)
-     * @param toDate (Date object)
+     * @param date1 (Date object)
+     * @param date2 (Date object)
+     * @param skip (array)
      * @return object of structure:
        {
-         (int) years
-         (int) months
          (int) days
          (int) hours
          (int) minutes
@@ -27,70 +26,68 @@ function humanReadableDateDiff() {
        }
      * No integer will be below zero
      */
-    function dateDiff(fromDate, toDate) {
-        var startDate = new Date(1970, 0, 1, 0).getTime(),
-            diff = toDate - fromDate,
-            date = new Date(startDate + diff),
-            years = date.getFullYear() - 1970,
-            months = date.getMonth(),
-            days = date.getDate() - 1,
-            hours = date.getHours(),
-            minutes = date.getMinutes(),
-            seconds = date.getSeconds(),
-            diffDate = {
-                years: 0,
-                months: 0,
-                days: 0,
-                hours: 0,
-                minutes: 0,
-                seconds: 0
-            };
+    function dateDiff(date1, date2, skip) {
+        var result = { days: 0, hours: 0, minutes: 0, seconds: 0 },
+            fromDate = Math.max(date1, date2),
+            toDate = Math.min(date1, date2);
 
-        if (years < 0) return diffDate;
+        for (var unit in result) {
+            if (skip.indexOf(unit) > -1)
+                continue;
 
-        diffDate.years = years > 0 ? years : 0;
-        diffDate.months = months > 0 ? months : 0;
-        diffDate.days = days > 0 ? days : 0;
-        diffDate.hours = hours > 0 ? hours : 0;
-        diffDate.minutes = minutes > 0 ? minutes : 0;
-        diffDate.seconds = seconds > 0 ? seconds : 0;
+            var denominators = { days: 864e5, hours: 36e5, minutes: 6e4, seconds: 1e3 },
+                denominator = denominators[unit],
+                diff = fromDate - toDate,
+                value = Math.floor(diff / denominator);
 
-        return diffDate;
+            toDate += Math.floor(denominator * value);
+            result[unit] += value;
+        }
+
+        return result;
     }
 
     /**
      * Get a readable string describing time difference between input and now
      * @param date (Date object)
+     * @param accuracy (optional string) one of: year, month, day, hour, minute, second
+     * @param skip (array)
      * @return string
      */
-    return function (date) {
-        if (!date)
+    return function (date, accuracy, skip) {
+        if (!angular.isDate(new Date(date)))
             return;
 
-        var obj = dateDiff(Date.now(), new Date(date)),
+        var diff = dateDiff(new Date(), new Date(date), skip || []),
             output = [],
             times = [
-                {label: "Year",   value: obj.years},
-                {label: "Month",  value: obj.months},
-                {label: "Day",    value: obj.days},
-                {label: "Hour",   value: obj.hours},
-                {label: "Minute", value: obj.minutes}
-                //{label: "Second", value: obj.seconds} // TODO: This is specific to the project!
+                {label: "Day",    value: diff.days },
+                {label: "Hour",   value: diff.hours },
+                {label: "Minute", value: diff.minutes },
+                {label: "Second", value: diff.seconds }
             ];
 
-        times.forEach(function(item, index) {
-            if (index !== times.length - 1 && item.value === 0)
-                return;
+        for (var i in times) {
+            var item = times[i];
 
-            var plural = item.value > 1,
+            if (item.value <= 0)
+                continue;
+
+            var plural = item.value !== 1,
                 sentance = item.value + " " + item.label;
 
             if (plural)
                 sentance += "s";
 
             output.push(sentance);
-        });
 
-        return output.join(", ") + ".";
+            if (accuracy && item.label.toLowerCase() == accuracy)
+                break;
+        }
+
+        if (!output.length)
+            return "0 Seconds";
+
+        return output.join(", ");
     };
 }
