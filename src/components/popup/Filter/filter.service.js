@@ -6,7 +6,7 @@ filterService.$inject = ["lodash"];
 
 function filterService(_) {
     var string = "",
-        category = "",
+        categories = [],
         difficulty = "";
 
     return {
@@ -31,7 +31,7 @@ function filterService(_) {
      * @return undefined
      */
     function setCategory(input) {
-        category = input;
+        categories = input;
     }
 
     /**
@@ -52,10 +52,11 @@ function filterService(_) {
      * @return boolean is match
      */
     function matchStream(stream) {
-        var values = [true];
+        var values = [true],
+            matches;
 
         if (string) {
-            var matches = [
+            matches = [
                 stream.username,
                 stream.title,
                 stream.country,
@@ -68,8 +69,13 @@ function filterService(_) {
             values.push(_.some(matches));
         }
 
-        if (category)
-            values.push(_.includes(category, stream.category));
+        if (categories.length && categories[0]) {
+            matches = categories.map(function(value) {
+                return value.toLowerCase() == stream.category.toLowerCase();
+            });
+
+            values.push(_.some(matches));
+        }
 
         if (difficulty)
             values.push(stream.difficulty === difficulty);
