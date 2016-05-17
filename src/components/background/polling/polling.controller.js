@@ -91,14 +91,14 @@ function pollingCtrl($interval, $filter, settings, browser, Notification, pollin
      * @return undefined
      */
     function remind(livestreams) {
-        var currentTimestamp = Math.floor(new Date().getTime() / 1000),
+        var currentTimestamp = Date.now(),
             liveResults = [],
             cancelled = [],
             removeAfter = opts.polling.dismissReminderAfterMinutes * 60, // Totally arbitrary
             checkBefore = 10 * 60;
 
         opts.reminders.forEach(function(reminder) {
-            if (reminder.timestamp < currentTimestamp - removeAfter) {
+            if (reminder.timestamp < currentTimestamp - removeAfter*1000) {
                 settings.removeReminder(reminder);
                 cancelled.push(reminder);
                 return;
@@ -110,7 +110,7 @@ function pollingCtrl($interval, $filter, settings, browser, Notification, pollin
                 if (reminder.username.toLowerCase() !== username || opts.follows.names.indexOf(username) > -1)
                     return;
 
-                if (reminder.timestamp <= currentTimestamp + checkBefore) {
+                if (reminder.timestamp <= currentTimestamp + checkBefore*1000) {
                     settings.removeReminder(reminder);
                     liveResults.push(stream);
                 }
@@ -150,7 +150,10 @@ function pollingCtrl($interval, $filter, settings, browser, Notification, pollin
         }
 
         livestreams.forEach(function(stream) {
-            new Notification(messageCallback(stream)).display();
+            var params = messageCallback(stream);
+            params.persistent = opts.notification.persistent;
+
+            new Notification(params).display();
         });
     }
 }

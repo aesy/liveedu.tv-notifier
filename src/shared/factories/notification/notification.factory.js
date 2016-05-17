@@ -66,7 +66,7 @@ function notificationFactory(browser) {
             message = data.message,
             url = data.url,
             id = getNewId(),
-            time = data.time || 5;
+            persistent = data.persistent || false;
 
         /**
          * Get this notifications unique ID
@@ -83,12 +83,12 @@ function notificationFactory(browser) {
          */
         this.display = function() {
             browser.notification.create(id, {
+                requireInteraction: persistent,
                 iconUrl: "img/128_1.png",
                 buttons: [],
                 type: "basic",
                 title: title,
                 message: message,
-                eventTime: new Date().getTime() + time,
                 isClickable: true
             });
         };

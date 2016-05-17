@@ -26,6 +26,7 @@ function settingsService($q, _, browser, livecoding) {
             },
             notification: {
                 show: true,
+                persistent: false,
                 dismissedReminder: true,
                 soundClip: {
                     volume: 50,

@@ -28,6 +28,12 @@
         <checkbox active="settings.opts.notification.show"></checkbox>
     </div>
 
+    <div class="field row animate" ng-if="settings.opts.notification.show">
+        <h1>Persistent Notification:</h1>
+
+        <checkbox active="settings.opts.notification.persistent"></checkbox>
+    </div>
+
     <div class="field row">
         <h1>Notification Sound:</h1>
 
@@ -43,14 +49,14 @@
         <h1>Notification Sound Volume:</h1>
 
         <div class="setting">
-            <range value="settings.opts.notification.soundClip.volume" min="10" max="100" step="10"
+            <range value="settings.opts.notification.soundClip.volume" min="10" max="100" step="5"
                    ng-mouseup="settings.soundChange()"/>
             <span>{{settings.opts.notification.soundClip.volume}}%</span>
         </div>
     </div>
 
     <div class="field row">
-        <h1>Stream cancellation notice:</h1>
+        <h1>Stream Cancellation Notice:</h1>
 
         <checkbox active="settings.opts.notification.dismissedReminder"></checkbox>
 
@@ -60,12 +66,12 @@
     </div>
 
     <div class="field row">
-        <h1>Stream cancellation time:</h1>
+        <h1>Stream Cancellation Time:</h1>
 
         <div class="setting">
             Time until scheduled stream is dismissed as cancelled: <br/>
-            <range value="settings.opts.polling.dismissReminderAfterMinutes" min="15" max="300" step="5"/>
-            <span>{{settings.opts.polling.dismissReminderAfterMinutes*60 | humanReadableSeconds}}</span>
+            <range value="settings.opts.polling.dismissReminderAfterMinutes" min="30" max="300" step="10"/>
+            <span>{{settings.opts.polling.dismissReminderAfterMinutes*60 | humanReadableSeconds}}.</span>
         </div>
     </div>
 
