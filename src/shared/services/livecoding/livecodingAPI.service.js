@@ -417,7 +417,6 @@ function livecodingAPIService($http, $q) {
   (string) category
   (int) views
   (int) timestamp
-  (Date) dateTime
  }
  */
 function liveCodingStream(stream) {
@@ -432,8 +431,7 @@ function liveCodingStream(stream) {
             difficulty: value.difficulty || "",
             category: value.coding_category || "",
             views: value.viewers_live || value.viewers_overall || 0,
-            timestamp: Math.floor(Date.parse(value.start_time || 0) / 1000), // 0 good default?
-            dateTime: new Date(value.start_time || 0),
+            timestamp: Date.parse(value.start_time || 0), // 0 good default?
             id: value.id || 0
         };
     });

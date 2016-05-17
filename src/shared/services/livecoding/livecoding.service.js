@@ -11,10 +11,11 @@ livecodingService.$inject = ["$q", "lodash", "browserService", "livecodingAPISer
  */
 function livecodingService($q, _, browser, livecodingAPI) {
     var storageKey = "livecodingToken",
+        cacheKey = "livecodingCache",
+        refreshCacheSeconds = 60 * 15,
         callbacks = {},
         ready = false;
 
-    // TODO: onNewToken is to be removed, don't use.
     livecodingAPI.onNewToken(function(token) {
         browser.storage.local.set(storageKey, token);
     });
@@ -29,7 +30,7 @@ function livecodingService($q, _, browser, livecodingAPI) {
         getFollowing: livecodingAPI.getFollowing,
         filteredLivestreams: filteredLivestreams,
         getAllLive: livecodingAPI.getLivestreams,
-        getAllVideos: livecodingAPI.getVideos,
+        getAllVideos: getVideos,
         getAllScheduled: getAllScheduled,
         isAuthenticated: livecodingAPI.isAuthenticated,
         revokeToken: livecodingAPI.revokeToken,
@@ -94,14 +95,34 @@ function livecodingService($q, _, browser, livecodingAPI) {
     }
 
     /**
+     * Get list of recent recorded streams
+     * Result is cached for an arbitrary amount of time.
+     * @return Promise with array of liveCodingStream objects
+     */
+    function getVideos() {
+        var deferred = $q.defer();
+
+        getCache("videos").then(function(cache) {
+            if (cache) {
+                deferred.resolve(cache);
+            } else {
+                livecodingAPI.getVideos().then(function(results) {
+                    setCache("videos", results);
+                    deferred.resolve(results);
+                });
+            }
+        });
+
+        return deferred.promise;
+    }
+
+    /**
      * Get list of all scheduled streams (not including past broadcasts).
      * It requires approx. 6 http get requests and is therefore cached for an arbitrary amount of time.
      * @return Promise with array of liveCodingStream objects
      */
     function getAllScheduled() {
-        var cacheKey = "livecodingScheduledCache",
-            refreshIntervalSeconds = 60 * 15,
-            offset = -100,
+        var offset = -100,
             results = [],
             deferred = $q.defer();
 
@@ -110,14 +131,10 @@ function livecodingService($q, _, browser, livecodingAPI) {
 
             livecodingAPI.getScheduled(offset).then(function(data) {
                 for (var i in data) {
-                    if (data[i].dateTime > new Date()) {
+                    if (data[i].timestamp > Date.now()) {
                         results.push(data[i]);
                     } else {
-                        // Cache results
-                        browser.storage.local.set(cacheKey, {
-                            timestamp: Date.now(),
-                            data: results
-                        });
+                        setCache("scheduled", results);
                         deferred.resolve(results);
                         return;
                     }
@@ -131,15 +148,14 @@ function livecodingService($q, _, browser, livecodingAPI) {
             });
         };
 
-        // Check cache
-        browser.storage.local.get(cacheKey).then(function(result) {
-            if (result && !_.isEmpty(result) && Date.now() < result.timestamp + refreshIntervalSeconds*1000) {
-                // Fix DateTime Objects
-                result.data.forEach(function(stream) {
-                    stream.dateTime = new Date(stream.timestamp * 1000);
+        getCache("scheduled").then(function(cache) {
+            if (cache) {
+                var result = cache.filter(function(stream) {
+                    // Remove passed streams
+                    return Date.now() < stream.timestamp;
                 });
 
-                deferred.resolve(result.data);
+                deferred.resolve(result);
             } else {
                 iRequests();
             }
@@ -173,5 +189,50 @@ function livecodingService($q, _, browser, livecodingAPI) {
      */
     function authenticate() {
         browser.openTab(livecodingAPI.getAuthorizeUrl());
+    }
+
+    /**
+     * Get Cache
+     * Get Cached data by key
+     * @param key (string)
+     * @return Promise
+     */
+    function getCache(key) {
+        var deferred = $q.defer();
+
+        browser.storage.local.get(cacheKey).then(function(result) {
+            if (!key) {
+                deferred.resolve(result);
+                return;
+            } else {
+                result = (result || {})[key];
+            }
+
+            if (!result || Date.now() > result.timestamp + refreshCacheSeconds*1000)
+                result = {};
+
+            deferred.resolve(result.data || null);
+        });
+
+        return deferred.promise;
+    }
+
+    /**
+     * Set Cache
+     * Cache data for later use
+     * @param key (string)
+     * @param data (any)
+     * @return undefined
+     */
+    function setCache(key, data) {
+        getCache().then(function(obj) {
+            obj = obj || {};
+            obj[key] = {
+                timestamp: Date.now(),
+                data: data
+            };
+
+            browser.storage.local.set(cacheKey, obj);
+        });
     }
 }
