@@ -1,5 +1,7 @@
 LiveCoding.tv Notifier
 ======================
+NOTICE: currently broken due to livecoding.tv API changes. If the issues I have with it aren't addressed during the following weeks, I will unpublish the extension.
+
 A chrome extension that will display notifications when your favourite streamers on `LiveCoding.tv <https://www.LiveCoding.tv/>`_ go live! You can also browse whatever else is available to watch.
 
 Chrome Web Store: `Link <https://chrome.google.com/webstore/detail/livecodingtv-notifier/lamnllmdnpadbhconapjiapmnpklmgbm/>`_.
