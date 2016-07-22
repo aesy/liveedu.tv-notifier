@@ -39,7 +39,7 @@
                 </h3>
 
                 <h3 ng-if="streams.currentPage === 'scheduled'">
-                    Time left: {{stream.dateTime|humanReadableDateDiff: "minute"}}.
+                    Time left: {{stream.timestamp / 1000 | humanReadableSeconds: true: "minute"}}.
                 </h3>
             </div>
 

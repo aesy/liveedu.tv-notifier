@@ -26,7 +26,6 @@ function settingsCtrl($timeout, _, browser, settings) {
 
     /**
      * Remove favorite from temporary settings (not permanent until save-button is clicked)
-     * TODO: rename favorite -> following
      * @param name (string)
      * @return undefined
      */

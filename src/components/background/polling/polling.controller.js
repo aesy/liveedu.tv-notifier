@@ -2,9 +2,9 @@ angular
     .module("app")
     .controller("pollingCtrl", pollingCtrl);
 
-pollingCtrl.$inject = ["$interval", "$filter", "settingsService", "browserService", "notificationFactory", "pollingService"];
+pollingCtrl.$inject = ["$interval", "$filter", "lodash", "settingsService", "browserService", "notificationFactory", "pollingService"];
 
-function pollingCtrl($interval, $filter, settings, browser, Notification, polling) {
+function pollingCtrl($interval, $filter, _, settings, browser, Notification, polling) {
     var promise,
         opts;
 
@@ -31,11 +31,13 @@ function pollingCtrl($interval, $filter, settings, browser, Notification, pollin
      */
     function start() {
         stop();
-        poll();
 
-        promise = $interval(function() {
+        if (opts.follows.names || opts.reminders) {
             poll();
-        }, opts.polling.frequencyMinutes * 60000);
+            promise = $interval(function() {
+                poll();
+            }, opts.polling.frequencyMinutes * 60000);
+        }
     }
 
     /**
@@ -51,12 +53,20 @@ function pollingCtrl($interval, $filter, settings, browser, Notification, pollin
      * @return undefined
      */
     function poll() {
-        polling.getUnseenLiveStreams(opts.follows.names).then(function(livestreams) {
-            remind(polling.getRecentlySeen());
-            updateBadge(livestreams);
+        polling.getUnseenLiveStreams().then(function(livestreams) {
+            var followedLivestreams = livestreams.filter(function(stream) {
+                return _.includes(opts.follows.names, stream.username.toLowerCase());
+            });
+
+            var notFollowedLivestreams = livestreams.filter(function(stream) {
+                return !_.includes(opts.follows.names, stream.username.toLowerCase());
+            });
+
+            remind(notFollowedLivestreams);
+            updateBadge(followedLivestreams);
 
             if (opts.notification.show)
-                notify(livestreams, function(stream) {
+                notify(followedLivestreams, function(stream) {
                     return {
                         title: $filter("capitalize")(stream.username) + "s stream is live!",
                         message: stream.category + ": " + stream.title,
@@ -78,7 +88,10 @@ function pollingCtrl($interval, $filter, settings, browser, Notification, pollin
         }
 
         if (opts.badge.persistent) {
-            browser.setBadge(polling.getRecentlySeen().length || "");
+            var lastSeenFollowed = polling.getRecentlySeen().filter(function(username) {
+                return _.includes(opts.follows.names, username.toLowerCase());
+            });
+            browser.setBadge(lastSeenFollowed.length || "");
         } else {
             var currentBadge = parseInt(browser.getBadge()) || 0;
             browser.setBadge((currentBadge + livestreams.length) || "");
@@ -94,20 +107,18 @@ function pollingCtrl($interval, $filter, settings, browser, Notification, pollin
         var currentTimestamp = Date.now(),
             liveResults = [],
             cancelled = [],
-            removeAfter = opts.polling.dismissReminderAfterMinutes * 60, // Totally arbitrary
-            checkBefore = 10 * 60;
+            removeAfter = opts.polling.dismissReminderAfterMinutes * 60,
+            checkBefore = 15 * 60; // Totally arbitrary
 
         opts.reminders.forEach(function(reminder) {
-            if (reminder.timestamp < currentTimestamp - removeAfter*1000) {
+            if (reminder.timestamp < currentTimestamp - removeAfter*1000 - opts.polling.frequencyMinutes*60000) {
                 settings.removeReminder(reminder);
                 cancelled.push(reminder);
                 return;
             }
 
             livestreams.forEach(function(stream) {
-                var username = stream.username.toLowerCase();
-
-                if (reminder.username.toLowerCase() !== username || opts.follows.names.indexOf(username) > -1)
+                if (reminder.username.toLowerCase() !== stream.username.toLowerCase())
                     return;
 
                 if (reminder.timestamp <= currentTimestamp + checkBefore*1000) {
@@ -121,7 +132,7 @@ function pollingCtrl($interval, $filter, settings, browser, Notification, pollin
             notify(cancelled, function(stream) {
                 return {
                     title: $filter("capitalize")(stream.username) + "s scheduled stream notice",
-                    message: $filter("humanReadableSeconds")(currentTimestamp - stream.timestamp, "minute").toLowerCase()
+                    message: $filter("humanReadableSeconds")((currentTimestamp - stream.timestamp) / 1000, false, "minute").toLowerCase()
                              + " has passed but " + stream.username + "s stream has yet to go live.",
                     url: stream.url
                 };

@@ -31,7 +31,7 @@ function pollingService($q, _, livecoding) {
     function addSeen(username) {
         seen.push({
             username: username,
-            lastSeen: timestampSeconds()
+            lastSeen: Date.now()
         });
     }
 
@@ -45,7 +45,7 @@ function pollingService($q, _, livecoding) {
             var name = seen[i].username;
 
             if (name == username) {
-                seen[i].lastSeen = timestampSeconds();
+                seen[i].lastSeen = Date.now();
                 return;
             }
         }
@@ -55,12 +55,12 @@ function pollingService($q, _, livecoding) {
 
     /**
      * Get recently (since last check) seen users
-     * @param offset (optional int)
+     * @param offset (optional int) seconds
      * @return array of strings
      */
     function getRecentlySeen(offset) {
         return seen.filter(function(value) {
-            return value.lastSeen >= lastCheck - (offset || 0);
+            return value.lastSeen >= lastCheck - (offset*1000 || 0);
         }).map(function(value) {
             return value.username;
         });
@@ -68,37 +68,25 @@ function pollingService($q, _, livecoding) {
 
     /**
      * Get list of unseen streams that are currently on-air
-     * @param filter (string or array of strings) filter out specific users
      * @read liveCodingStream documentation in livecodingService
      * @return Promise with array of liveCodingStream objects
      */
-    function getUnseenLiveStreams(filter) {
+    function getUnseenLiveStreams() {
         var deferred = $q.defer(),
-            promise = livecoding.getAllLive(),
             previouslySeen = getRecentlySeen(downtimeCooldown);
 
-        livecoding.filteredLivestreams(promise, [].concat(filter)).then(function(livestreams) {
-            deferred.resolve(livestreams.filter(function(stream) {
-                var username = stream.username;
+        livecoding.getAllLive().then(function(livestreams) {
+            livestreams = livestreams.filter(function(stream) {
+                updateSeen(stream.username);
 
-                updateSeen(username);
+                return !_.includes(previouslySeen, stream.username);
+            });
 
-                return !_.includes(previouslySeen, username);
-            }));
+            deferred.resolve(livestreams);
         });
 
-        lastCheck = timestampSeconds();
+        lastCheck = Date.now();
 
         return deferred.promise;
     }
-}
-
-
-// TODO: keep it DRY
-/**
- * Get current timestamp in seconds
- * @return int
- */
-function timestampSeconds() {
-    return Math.floor(new Date().getTime() / 1000);
 }

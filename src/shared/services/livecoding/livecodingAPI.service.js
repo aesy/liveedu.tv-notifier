@@ -226,9 +226,6 @@ function livecodingAPIService($http, $q) {
         setAccessToken({});
     }
 
-    /**
-     * TODO: Merge this with getAccessToken() and get rid of listeners
-     */
     function authorize(code) {
         var deferred = $q.defer();
 
@@ -271,7 +268,7 @@ function livecodingAPIService($http, $q) {
 
         $http.get(baseUrl + url, config).then(function(response) {
             deferred.resolve(response);
-        }, errorHandlerFactory(deferred));
+        }).catch(errorHandlerFactory(deferred));
 
         return deferred.promise;
     }
@@ -289,7 +286,7 @@ function livecodingAPIService($http, $q) {
 
         $http.post(baseUrl + url, params, config).then(function(response) {
             deferred.resolve(response);
-        }, errorHandlerFactory(deferred));
+        }).catch(errorHandlerFactory(deferred));
 
         return deferred.promise;
     }

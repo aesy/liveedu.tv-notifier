@@ -53,12 +53,7 @@ function settingsService($q, _, browser, livecoding) {
             }
         };
 
-    /**
-     * Listen for storage changes and make sure settings variable reflects it
-     */
-    browser.storage.sync.onChange(storageKey, function() { onChange(true); });
-    browser.storage.local.onChange(storageKey, function() { onChange(false); });
-    livecoding.on("ready", function() { onChange(null, "ready"); });
+    init();
 
     return {
         get: get,
@@ -73,15 +68,33 @@ function settingsService($q, _, browser, livecoding) {
     };
 
     /**
+     * Initialize service
+     */
+    function init() {
+        /**
+         * Listen for storage changes and make sure settings variable reflects it
+         */
+        browser.storage.sync.onChange(storageKey, function() {
+            if (get().browserSync)
+                onChange();
+        });
+
+        browser.storage.local.onChange(storageKey, function() {
+            if (!get().browserSync)
+                onChange();
+        });
+
+        livecoding.on("ready", function() {
+            onChange("ready");
+        });
+    }
+
+    /**
      * onChange Event
-     * @param browserSync (optional bool) If set, must match current settings to proceed
      * @param event (optional string) Custom event, defaults to 'change'
      * @return undefined
      */
-    function onChange(browserSync, event) {
-        if (!_.includes([undefined, null], browserSync) && get().browserSync !== browserSync)
-            return;
-
+    function onChange(event) {
         sync().then(function() {
             fire(event || "change");
         });
@@ -105,6 +118,11 @@ function settingsService($q, _, browser, livecoding) {
     function set(data) {
         if (data.browserSync !== undefined && data.browserSync !== get().browserSync)
             clear();
+
+        if (data.follows && data.follows.ignore)
+            settings.follows.ignore = [];
+        if (data.follows && data.follows.names)
+            settings.follows.names = [];
 
         settings = _.defaultsDeep(data, settings);
         saveChanges();

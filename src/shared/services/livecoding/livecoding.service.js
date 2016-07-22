@@ -12,17 +12,11 @@ livecodingService.$inject = ["$q", "lodash", "browserService", "livecodingAPISer
 function livecodingService($q, _, browser, livecodingAPI) {
     var storageKey = "livecodingToken",
         cacheKey = "livecodingCache",
-        refreshCacheSeconds = 60 * 15,
+        refreshCacheSeconds = 60 * 30,
         callbacks = {},
         ready = false;
 
-    livecodingAPI.onNewToken(function(token) {
-        browser.storage.local.set(storageKey, token);
-    });
-
-    setTokenIfAvailable().then(function() {
-        fire("ready");
-    });
+    init();
 
     return {
         authenticate: authenticate,
@@ -36,6 +30,19 @@ function livecodingService($q, _, browser, livecodingAPI) {
         revokeToken: livecodingAPI.revokeToken,
         on: on
     };
+
+    /**
+     * Initialize service
+     */
+    function init() {
+        livecodingAPI.onNewToken(function(token) {
+            browser.storage.local.set(storageKey, token);
+        });
+
+        setTokenIfAvailable().then(function() {
+            fire("ready");
+        });
+    }
 
     /**
      * Add event listener
@@ -142,9 +149,6 @@ function livecodingService($q, _, browser, livecodingAPI) {
 
                 if (data.length)
                     iRequests();
-            }, function(error) {
-                console.log("getAllScheduled Error: ", error);
-                iRequests();
             });
         };
 
@@ -194,7 +198,7 @@ function livecodingService($q, _, browser, livecodingAPI) {
     /**
      * Get Cache
      * Get Cached data by key
-     * @param key (string)
+     * @param key (optional string) Leave empty to get all keys
      * @return Promise
      */
     function getCache(key) {
@@ -208,8 +212,11 @@ function livecodingService($q, _, browser, livecodingAPI) {
                 result = (result || {})[key];
             }
 
-            if (!result || Date.now() > result.timestamp + refreshCacheSeconds*1000)
-                result = {};
+            if (!result || Date.now() > result.timestamp + refreshCacheSeconds*1000) {
+                clearCache();
+                deferred.resolve(null);
+                return;
+            }
 
             deferred.resolve(result.data || null);
         });
@@ -234,5 +241,14 @@ function livecodingService($q, _, browser, livecodingAPI) {
 
             browser.storage.local.set(cacheKey, obj);
         });
+    }
+
+    /**
+     * Clear Cache
+     * Clear cache data
+     * @return Promise
+     */
+    function clearCache() {
+        return browser.storage.local.clear(cacheKey);
     }
 }

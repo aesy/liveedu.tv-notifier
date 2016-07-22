@@ -59,7 +59,7 @@ function humanReadableSeconds() {
         if (!angular.isNumber(seconds))
             return;
 
-        var diff = timeDiff(seconds, isTimestamp ? Date.now() / 1000 : 0, skip || []),
+        var diff = timeDiff(seconds, isTimestamp ? Math.floor(Date.now() / 1000) : 0, skip || []),
             output = [],
             times = [
                 {label: "Day",    value: diff.days },
