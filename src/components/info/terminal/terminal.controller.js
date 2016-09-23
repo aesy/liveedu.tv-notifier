@@ -16,12 +16,12 @@ function terminalCtrl($location, livecoding) {
     /**
      * Determine output
      */
-    if ($location.search().hasOwnProperty("auth")) {
-        auth();
-    } else if($location.search().hasOwnProperty("update")) {
+    if($location.search().hasOwnProperty("update")) {
         update();
     } else if ($location.search().hasOwnProperty("install")) {
         install();
+    } else { // auth
+        auth();
     }
 
     /**

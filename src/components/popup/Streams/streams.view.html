@@ -1,5 +1,6 @@
 <ul class="streams list-group">
     <li class="container-fluid stream animate list-group-item"
+        ng-if="!streams.error"
         ng-repeat="stream in filteredStreams =
                    (streams.collection |
                    filter:streams.filter |
@@ -83,11 +84,15 @@
         </div>
     </li>
 
-    <p ng-if="!filteredStreams.length && !streams.searching">
+    <p ng-if="streams.error && !streams.searching">
+        {{streams.error}}
+    </p>
+
+    <p ng-if="!streams.error && !filteredStreams.length && !streams.searching">
         There is nothing here! :-(
     </p>
 
-    <p ng-if="!filteredStreams.length && streams.searching">
+    <p ng-if="streams.searching">
         <inline-svg src="img/loader.svg" class="loader"></inline-svg>
     </p>
 </ul>

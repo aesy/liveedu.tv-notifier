@@ -12,6 +12,7 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
     vm.filter = filter.matchStream;
     vm.searching = true;
     vm.settings = {};
+	vm.error = null;
 
     /**
      * Initialize
@@ -108,8 +109,6 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
 
         switch (vm.currentPage) {
             case "following":
-                promise = livecoding.filteredLivestreams(livecoding.getAllLive(), vm.settings.follows.names);
-                break;
             case "livestreams":
                 promise = livecoding.getAllLive();
                 break;
@@ -122,7 +121,26 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
         }
 
         promise.then(function(streams) {
+	        if (vm.currentPage === "following") {
+		        streams = streams.filter(function(stream) {
+			        return _.includes(vm.settings.follows.names, stream.username.toLowerCase());
+		        });
+	        }
+
             vm.collection = streams;
+            vm.searching = false;
+	        vm.error = null;
+        }).catch(function(error) {
+	        switch (error.status) {
+		        case 401:
+			        livecoding.revokeToken();
+			        vm.error = "You do not seem to be logged in. Log in at livecoding.tv or log in from the sidebar " +
+				        "to keep track of your follows.";
+			        break;
+		        default:
+			        vm.error = "Could not connect to livecoding.tv (error code: " + (error.status || 0) + ")";
+	        }
+
             vm.searching = false;
         })
     };

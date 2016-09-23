@@ -15,8 +15,7 @@ function livecodingAPIService($http, $q) {
             clientId: "3uXPPL5p7PuKEPgwn5vEbK6TmGQO4YfD5rVRGn6Z",
             clientSecret: "fy2VvRhk3oFARzZjM5lNyYsOcpP5B2c4eKoxm2GfOKWsh8TkpNuReOw9R7InjqEZaHKdzGK4hMYAdMeGzqV0CCew1qFLYiZw9UHIKv7hU6r47tQU8PSUF585bzGbiMQ4",
             scope: ["read:user"],
-            redirectUri: "http://82.196.14.156/livecoding/"
-            //redirectUri: browser.page.getBaseUrl() + "auth.html" // TODO: notify livecoding support that redirects to chrome extentions are not allowed.
+            redirectUri: "chrome-extension://knomiabncogdncghckkcmloofpafkkld/message.html"
         };
 
     return {
@@ -84,7 +83,7 @@ function livecodingAPIService($http, $q) {
                 deferred.reject();
 
             deferred.resolve(liveCodingStream(results));
-        });
+        }).catch(deferred.reject);
 
         return deferred.promise;
     }
@@ -107,7 +106,7 @@ function livecodingAPIService($http, $q) {
                 deferred.reject();
 
             deferred.resolve(liveCodingStream(results));
-        });
+        }).catch(deferred.reject);
 
         return deferred.promise;
     }
@@ -132,7 +131,7 @@ function livecodingAPIService($http, $q) {
                 deferred.reject();
 
             deferred.resolve(liveCodingStream(results));
-        });
+        }).catch(deferred.reject);
 
         return deferred.promise;
     }
@@ -156,7 +155,7 @@ function livecodingAPIService($http, $q) {
             var users = response.data;
 
             deferred.resolve(users);
-        });
+        }).catch(deferred.reject);
 
         return deferred.promise;
     }
@@ -212,7 +211,7 @@ function livecodingAPIService($http, $q) {
             });
 
             deferred.resolve();
-        });
+        }).catch(deferred.reject);
 
         return deferred.promise;
     }
@@ -238,7 +237,7 @@ function livecodingAPIService($http, $q) {
             });
 
             deferred.resolve();
-        }, function() {
+        }).catch(function() {
             deferred.reject();
         });
 

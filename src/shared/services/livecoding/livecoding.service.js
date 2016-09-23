@@ -22,7 +22,6 @@ function livecodingService($q, _, browser, livecodingAPI) {
         authenticate: authenticate,
         authorize: livecodingAPI.authorize,
         getFollowing: livecodingAPI.getFollowing,
-        filteredLivestreams: filteredLivestreams,
         getAllLive: livecodingAPI.getLivestreams,
         getAllVideos: getVideos,
         getAllScheduled: getAllScheduled,
@@ -84,24 +83,6 @@ function livecodingService($q, _, browser, livecodingAPI) {
     }
 
     /**
-     * Filter out specific users from API request that returns liveCodingStream objects
-     * @param promise (Promise) of livecodingAPI $http request
-     * @param usernames (array of strings)
-     * @return Promise with array of liveCodingStream objects
-     */
-    function filteredLivestreams(promise, usernames) {
-        var deferred = $q.defer();
-
-        promise.then(function(livestreams) {
-            deferred.resolve(livestreams.filter(function(stream) {
-                return _.includes(usernames, stream.username.toLowerCase());
-            }));
-        });
-
-        return deferred.promise;
-    }
-
-    /**
      * Get list of recent recorded streams
      * Result is cached for an arbitrary amount of time.
      * @return Promise with array of liveCodingStream objects
@@ -116,7 +97,7 @@ function livecodingService($q, _, browser, livecodingAPI) {
                 livecodingAPI.getVideos().then(function(results) {
                     setCache("videos", results);
                     deferred.resolve(results);
-                });
+                }).catch(deferred.reject);
             }
         });
 
@@ -149,7 +130,7 @@ function livecodingService($q, _, browser, livecodingAPI) {
 
                 if (data.length)
                     iRequests();
-            });
+            }).catch(deferred.reject);
         };
 
         getCache("scheduled").then(function(cache) {
