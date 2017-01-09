@@ -49,7 +49,7 @@ function pollingCtrl($interval, $filter, _, settings, browser, Notification, pol
     }
 
     /**
-     * Poll LiveCoding for new streams
+     * Poll LiveEdu for new streams
      * @return undefined
      */
     function poll() {
@@ -78,7 +78,7 @@ function pollingCtrl($interval, $filter, _, settings, browser, Notification, pol
 
     /**
      * Update extension badge
-     * @param livestreams (array of liveCodingStream objects)
+     * @param livestreams (array of liveEduStream objects)
      * @return undefined
      */
     function updateBadge(livestreams) {
@@ -100,7 +100,7 @@ function pollingCtrl($interval, $filter, _, settings, browser, Notification, pol
 
     /**
      * Notifies user of streams that user has requested to be reminded of
-     * @param livestreams (array of liveCodingStream objects)
+     * @param livestreams (array of liveEduStream objects)
      * @return undefined
      */
     function remind(livestreams) {
@@ -149,7 +149,7 @@ function pollingCtrl($interval, $filter, _, settings, browser, Notification, pol
 
     /**
      * Notify user of new unseen livestreams
-     * @param livestreams (array of liveCodingStream objects)
+     * @param livestreams (array of liveEduStream objects)
      * @param messageCallback (function which returns object with title, message and url properties)
      * @return undefined
      */

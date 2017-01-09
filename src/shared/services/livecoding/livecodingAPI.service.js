@@ -1,21 +1,21 @@
 angular
     .module("app")
-    .service("livecodingAPIService", livecodingAPIService);
+    .service("liveeduAPIService", liveeduAPIService);
 
-livecodingAPIService.$inject = ["$http", "$q"];
+liveeduAPIService.$inject = ["$http", "$q"];
 
 /**
- * Service for using LiveCoding.tvs' public API.
+ * Service for using LiveEdu.tvs' public API.
  */
-function livecodingAPIService($http, $q) {
-    var baseUrl= "https://www.livecoding.tv",
+function liveeduAPIService($http, $q) {
+    var baseUrl= "https://www.liveedu.tv",
         newTokenCallbacks = [],
         accessToken = {},
         config = { // set in API wrapper?
             clientId: "3uXPPL5p7PuKEPgwn5vEbK6TmGQO4YfD5rVRGn6Z",
             clientSecret: "fy2VvRhk3oFARzZjM5lNyYsOcpP5B2c4eKoxm2GfOKWsh8TkpNuReOw9R7InjqEZaHKdzGK4hMYAdMeGzqV0CCew1qFLYiZw9UHIKv7hU6r47tQU8PSUF585bzGbiMQ4",
             scope: ["read:user"],
-            redirectUri: "chrome-extension://knomiabncogdncghckkcmloofpafkkld/message.html"
+            redirectUri: "chrome-extension://lamnllmdnpadbhconapjiapmnpklmgbm/message.html"
         };
 
     return {
@@ -71,7 +71,7 @@ function livecodingAPIService($http, $q) {
 
     /**
      * Get list of streams on-air
-     * @return Promise with array of liveCodingStream objects
+     * @return Promise with array of liveEduStream objects
      */
     function getLivestreams() {
         var deferred = $q.defer();
@@ -82,7 +82,7 @@ function livecodingAPIService($http, $q) {
             if (!(results instanceof Array))
                 deferred.reject();
 
-            deferred.resolve(liveCodingStream(results));
+            deferred.resolve(liveEduStream(results));
         }).catch(deferred.reject);
 
         return deferred.promise;
@@ -90,7 +90,7 @@ function livecodingAPIService($http, $q) {
 
     /**
      * Get list of recent recorded streams
-     * @return Promise with array of liveCodingStream objects
+     * @return Promise with array of liveEduStream objects
      */
     function getVideos() {
         var deferred = $q.defer();
@@ -105,7 +105,7 @@ function livecodingAPIService($http, $q) {
             if (!(results instanceof Array))
                 deferred.reject();
 
-            deferred.resolve(liveCodingStream(results));
+            deferred.resolve(liveEduStream(results));
         }).catch(deferred.reject);
 
         return deferred.promise;
@@ -114,7 +114,7 @@ function livecodingAPIService($http, $q) {
     /**
      * Get list of scheduled streams
      * @param offset (optional int)
-     * @return Promise with array of liveCodingStream objects
+     * @return Promise with array of liveEduStream objects
      */
     function getScheduled(offset) {
         var deferred = $q.defer();
@@ -130,7 +130,7 @@ function livecodingAPIService($http, $q) {
             if (!(results instanceof Array))
                 deferred.reject();
 
-            deferred.resolve(liveCodingStream(results));
+            deferred.resolve(liveEduStream(results));
         }).catch(deferred.reject);
 
         return deferred.promise;
@@ -255,7 +255,7 @@ function livecodingAPIService($http, $q) {
     /**
      * Http get request wrapper
      * Will refresh access token if necessary
-     * @param url (string) NOT containing LiveCoding base URL
+     * @param url (string) NOT containing LiveEdu base URL
      * @param params (object) additional parameters
      * @param config (AccessTokenConfig object | AuthConfig object)
      * @return Promise with http response
@@ -275,7 +275,7 @@ function livecodingAPIService($http, $q) {
     /**
      * Http post request wrapper
      * Will refresh access token if necessary
-     * @param url (string) NOT containing LiveCoding base URL
+     * @param url (string) NOT containing LiveEdu base URL
      * @param params (object)
      * @param config (AccessTokenConfig object | AuthConfig object)
      * @return Promise with http response
@@ -316,7 +316,7 @@ function livecodingAPIService($http, $q) {
      */
     function AuthConfig() {
         if (!isAuthenticated())
-            throw Error("livecodingAPI Service: Not Authenticated.");
+            throw Error("liveeduAPI Service: Not Authenticated.");
 
         return {
             headers: {
@@ -415,7 +415,7 @@ function livecodingAPIService($http, $q) {
   (int) timestamp
  }
  */
-function liveCodingStream(stream) {
+function liveEduStream(stream) {
     return stream.map(function(value) {
         return {
             username: (value.user || value.livestream).match(/^.*\/(.+)\//)[1] || "",

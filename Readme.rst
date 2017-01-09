@@ -1,8 +1,9 @@
-LiveCoding.tv Notifier
-======================
-A chrome extension that will display notifications when your favourite streamers on `LiveCoding.tv <https://www.LiveCoding.tv/>`_ go live! You can also browse whatever else is available to watch.
+LiveEdu.tv Notifier
+===================
+A chrome extension that will display notifications when your favourite streamers on `LiveEdu.tv <https://www.LiveEdu.tv/>`_ go live!
+You can also browse whatever else is available to watch.
 
-Chrome Web Store: `Link <https://chrome.google.com/webstore/detail/livecodingtv-notifier/lamnllmdnpadbhconapjiapmnpklmgbm/>`_.
+Chrome Web Store: `Link <https://chrome.google.com/webstore/detail/lamnllmdnpadbhconapjiapmnpklmgbm/>`_.
 
 Screenshots
 -----------
@@ -14,7 +15,7 @@ Screenshots
 
 To-do List
 ----------
-* Show user avatar and stream language (not possible with livecoding.tvs' current API).
+* Show user avatar and stream language (not possible with liveedu.tvs' current API).
 
 License
 -------

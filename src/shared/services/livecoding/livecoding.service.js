@@ -1,15 +1,15 @@
 angular
     .module("app")
-    .service("livecodingService", livecodingService);
+    .service("liveeduService", liveeduService);
 
-livecodingService.$inject = ["$q", "lodash", "browserService", "livecodingAPIService"];
+liveeduService.$inject = ["$q", "lodash", "browserService", "liveeduAPIService"];
 
 /**
- * Wrapping service for livecodingAPIService
+ * Wrapping service for liveeduAPIService
  * which stores and persists the token in browsers storage.
- * Use this instead of livecodingAPIService.
+ * Use this instead of liveeduAPIService.
  */
-function livecodingService($q, _, browser, livecodingAPI) {
+function liveeduService($q, _, browser, liveeduAPI) {
     var storageKey = "livecodingToken",
         cacheKey = "livecodingCache",
         refreshCacheSeconds = 60 * 30,
@@ -20,13 +20,13 @@ function livecodingService($q, _, browser, livecodingAPI) {
 
     return {
         authenticate: authenticate,
-        authorize: livecodingAPI.authorize,
-        getFollowing: livecodingAPI.getFollowing,
-        getAllLive: livecodingAPI.getLivestreams,
+        authorize: liveeduAPI.authorize,
+        getFollowing: liveeduAPI.getFollowing,
+        getAllLive: liveeduAPI.getLivestreams,
         getAllVideos: getVideos,
         getAllScheduled: getAllScheduled,
-        isAuthenticated: livecodingAPI.isAuthenticated,
-        revokeToken: livecodingAPI.revokeToken,
+        isAuthenticated: liveeduAPI.isAuthenticated,
+        revokeToken: liveeduAPI.revokeToken,
         on: on
     };
 
@@ -34,7 +34,7 @@ function livecodingService($q, _, browser, livecodingAPI) {
      * Initialize service
      */
     function init() {
-        livecodingAPI.onNewToken(function(token) {
+        liveeduAPI.onNewToken(function(token) {
             browser.storage.local.set(storageKey, token);
         });
 
@@ -85,7 +85,7 @@ function livecodingService($q, _, browser, livecodingAPI) {
     /**
      * Get list of recent recorded streams
      * Result is cached for an arbitrary amount of time.
-     * @return Promise with array of liveCodingStream objects
+     * @return Promise with array of liveEduStream objects
      */
     function getVideos() {
         var deferred = $q.defer();
@@ -94,7 +94,7 @@ function livecodingService($q, _, browser, livecodingAPI) {
             if (cache) {
                 deferred.resolve(cache);
             } else {
-                livecodingAPI.getVideos().then(function(results) {
+                liveeduAPI.getVideos().then(function(results) {
                     setCache("videos", results);
                     deferred.resolve(results);
                 }).catch(deferred.reject);
@@ -107,7 +107,7 @@ function livecodingService($q, _, browser, livecodingAPI) {
     /**
      * Get list of all scheduled streams (not including past broadcasts).
      * It requires approx. 6 http get requests and is therefore cached for an arbitrary amount of time.
-     * @return Promise with array of liveCodingStream objects
+     * @return Promise with array of liveEduStream objects
      */
     function getAllScheduled() {
         var offset = -100,
@@ -117,7 +117,7 @@ function livecodingService($q, _, browser, livecodingAPI) {
         var iRequests = function() {
             offset += 100;
 
-            livecodingAPI.getScheduled(offset).then(function(data) {
+            liveeduAPI.getScheduled(offset).then(function(data) {
                 for (var i in data) {
                     if (data[i].timestamp > Date.now()) {
                         results.push(data[i]);
@@ -159,7 +159,7 @@ function livecodingService($q, _, browser, livecodingAPI) {
 
         browser.storage.local.get(storageKey).then(function(data) {
             if (data && !_.isEmpty(data))
-                livecodingAPI.setAccessToken(data);
+                liveeduAPI.setAccessToken(data);
 
             deferred.resolve();
         });
@@ -173,7 +173,7 @@ function livecodingService($q, _, browser, livecodingAPI) {
      * @return undefined
      */
     function authenticate() {
-        browser.openTab(livecodingAPI.getAuthorizeUrl());
+        browser.openTab(liveeduAPI.getAuthorizeUrl());
     }
 
     /**

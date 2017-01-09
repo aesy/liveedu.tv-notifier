@@ -1,8 +1,8 @@
 {
-  "name": "LiveCoding.tv Notifier",
-  "description": "Desktop notifications for LiveCoding.tv letting you know when your favorite streamers go live!",
-  "version": "1.1.1",
-  "homepage_url": "https://github.com/easyfuckingpeasy/LiveCoding.tv-Notifier",
+  "name": "LiveEdu.tv Notifier",
+  "description": "Desktop notifications for LiveEdu.tv (formerly LiveCoding.tv) letting you know when your favorite streamers go live!",
+  "version": "1.1.4",
+  "homepage_url": "https://github.com/easyfuckingpeasy/LiveEdu.tv-Notifier",
   "background": {
     "page": "background.html"
   },
@@ -20,8 +20,8 @@
   },
   "permissions": [
     "storage",
-    "https://www.livecoding.tv/o/token/",
-    "https://www.livecoding.tv/*",
+    "https://www.liveedu.tv/o/token/",
+    "https://www.liveedu.tv/*",
     "notifications"
   ],
   "web_accessible_resources": [

@@ -2,9 +2,9 @@ angular
     .module("app")
     .service("pollingService", pollingService);
 
-pollingService.$inject = ["$q", "lodash", "livecodingService"];
+pollingService.$inject = ["$q", "lodash", "liveeduService"];
 
-function pollingService($q, _, livecoding) {
+function pollingService($q, _, liveedu) {
     /**
      * List of seen streamers
      * Contins objects with the following structure:
@@ -68,14 +68,14 @@ function pollingService($q, _, livecoding) {
 
     /**
      * Get list of unseen streams that are currently on-air
-     * @read liveCodingStream documentation in livecodingService
-     * @return Promise with array of liveCodingStream objects
+     * @read liveEduStream documentation in liveeduService
+     * @return Promise with array of liveEduStream objects
      */
     function getUnseenLiveStreams() {
         var deferred = $q.defer(),
             previouslySeen = getRecentlySeen(downtimeCooldown);
 
-        livecoding.getAllLive().then(function(livestreams) {
+        liveedu.getAllLive().then(function(livestreams) {
             livestreams = livestreams.filter(function(stream) {
                 updateSeen(stream.username);
 

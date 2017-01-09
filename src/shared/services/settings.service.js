@@ -2,9 +2,9 @@ angular
 	.module("app")
 	.service("settingsService", settingsService);
 
-settingsService.$inject = ["$q", "lodash", "browserService", "livecodingService"];
+settingsService.$inject = ["$q", "lodash", "browserService", "liveeduService"];
 
-function settingsService($q, _, browser, livecoding) {
+function settingsService($q, _, browser, liveedu) {
     var storageKey = "LiveCoding.tv-Notifier_settings",
         callbacks = {},
         ready = false,
@@ -84,7 +84,7 @@ function settingsService($q, _, browser, livecoding) {
                 onChange();
         });
 
-        livecoding.on("ready", function() {
+        liveedu.on("ready", function() {
             onChange("ready");
         });
     }
@@ -168,7 +168,7 @@ function settingsService($q, _, browser, livecoding) {
 
     /**
      * Add reminder of scheduled broadcast
-     * @param stream (liveCodingStream object)
+     * @param stream (liveEduStream object)
      * @return undefined
      */
     function addReminder(stream) {
@@ -180,7 +180,7 @@ function settingsService($q, _, browser, livecoding) {
 
     /**
      * Stop reminder of scheduled broadcast
-     * @param stream (liveCodingStream object)
+     * @param stream (liveEduStream object)
      * @return undefined
      */
     function removeReminder(stream) {
@@ -198,7 +198,7 @@ function settingsService($q, _, browser, livecoding) {
 
     /**
      * Check if there will be an reminder of stream
-     * @param stream (liveCodingStream object)
+     * @param stream (liveEduStream object)
      * @return undefined
      */
     function willRemind(stream) {
@@ -208,7 +208,7 @@ function settingsService($q, _, browser, livecoding) {
     }
 
     /**
-     * Make sure user names are lowercase as the livecoding API sometimes doesn't preserve
+     * Make sure user names are lowercase as the liveedu API sometimes doesn't preserve
      * capitalization, leading to comparison errors.
      * @return undefined
      */
@@ -294,14 +294,14 @@ function settingsService($q, _, browser, livecoding) {
         browser.storage[type].get(storageKey).then(function(data) {
             settings = data || {};
 
-            return livecoding.promise;
+            return liveedu.promise;
         }).then(function() {
-            if (!livecoding.isAuthenticated()) {
+            if (!liveedu.isAuthenticated()) {
                 deferred.resolve();
                 return;
             }
 
-            livecoding.getFollowing().then(function(data) {
+            liveedu.getFollowing().then(function(data) {
                 var oldFollows = get().follows;
 
                 var currentFollows = data.map(function(value) {

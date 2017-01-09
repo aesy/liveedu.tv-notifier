@@ -2,13 +2,13 @@ angular
     .module("app")
     .controller("terminalCtrl", terminalCtrl);
 
-terminalCtrl.$inject = ["$location", "livecodingService"];
+terminalCtrl.$inject = ["$location", "liveeduService"];
 
-function terminalCtrl($location, livecoding) {
+function terminalCtrl($location, liveedu) {
     var vm = this;
 
     var name = "user";
-    vm.user = name + "@livecoding: ~";
+    vm.user = name + "@liveedu: ~";
 
     /** Terminal output */
     vm.output = [];
@@ -32,20 +32,20 @@ function terminalCtrl($location, livecoding) {
         vm.output.push.apply(vm.output, [
             {
                 preword: vm.user + "$ ",
-                words: ["curl -H \"Authorization: Basic user@livecoding\""],
+                words: ["curl -H \"Authorization: Basic user@liveedu\""],
                 typeTime: 50,
                 delay: 2000
             }, {
                 words: ["Content-Type: application/x-www-form-urlencoded;charset=utf-8"],
                 typeTime: 50
             }, {
-                words: ["https://www.livecoding.tv/o/token/"],
+                words: ["https://www.liveedu.tv/o/token/"],
                 typeTime: 50,
                 pause: 1000
             }
         ]);
 
-        livecoding.authorize($location.search().code).then(function() {
+        liveedu.authorize($location.search().code).then(function() {
             vm.output.push({
                 words: ["Authorization Successful :-)"],
                 typeTime: 100
@@ -68,7 +68,7 @@ function terminalCtrl($location, livecoding) {
         vm.output.push.apply(vm.output, [
             {
                 preword: vm.user + "$ ",
-                words: ["wget https://clients2.google.com/service/update2/LiveCoding.tv-Notifier.zip"],
+                words: ["wget https://clients2.google.com/service/update2/LiveEdu.tv-Notifier.zip"],
                 typeTime: 100,
                 delay: 2000,
                 pause: 500
@@ -85,7 +85,7 @@ function terminalCtrl($location, livecoding) {
                 words: ["Length: 65557980 (6.5MB) [application/zip]"],
                 pause: 200
             }, {
-                words: ["Saving to: 'LiveCoding.tv-Notifier.zip'"],
+                words: ["Saving to: 'LiveEdu.tv-Notifier.zip'"],
                 pause: 200
             }, {
                 preword: "6.52MB ",
@@ -93,11 +93,11 @@ function terminalCtrl($location, livecoding) {
                 typeTime: 1000,
                 pause: 1000
             }, {
-                words: [new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString() + " (1.08 MB/s) - 'LiveCoding.tv-Notifier.zip' saved [65557980/65557980]"],
+                words: [new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString() + " (1.08 MB/s) - 'LiveEdu.tv-Notifier.zip' saved [65557980/65557980]"],
                 pause: 200
             }, {
                 preword: vm.user + "$ ",
-                words: ["aptitude update LiveCoding.tv-Notifier.zip"],
+                words: ["aptitude update LiveEdu.tv-Notifier.zip"],
                 typeTime: 100,
                 delay: 1000,
                 pause: 500
@@ -105,19 +105,19 @@ function terminalCtrl($location, livecoding) {
                 words: ["(Reading database... 36453 files and directories currently installed.)"],
                 pause: 200
             }, {
-                words: ["Unpacking undefined (from ./LiveCoding.tv-Notifier.zip) ..."],
+                words: ["Unpacking undefined (from ./LiveEdu.tv-Notifier.zip) ..."],
                 pause: 200
             }, {
-                words: ["Removing any system startup links for /etc/init.d/LiveCoding.tv-Notifier ..."],
+                words: ["Removing any system startup links for /etc/init.d/LiveEdu.tv-Notifier ..."],
                 pause: 200
             }, {
                 words: ["Processing triggers for install-info (50.2.00.2fsg.1-2) ..."],
                 pause: 200
             }, {
-                words: ["Setting up LiveCoding.tv-Notifier (3.5-0ubuntu1) ..."],
+                words: ["Setting up LiveEdu.tv-Notifier (3.5-0ubuntu1) ..."],
                 pause: 200
             }, {
-                words: ["LiveCoding.tv-Notifier successfully updated!"],
+                words: ["LiveEdu.tv-Notifier successfully updated!"],
                 pause: 2000
             }
         ]);
@@ -131,7 +131,7 @@ function terminalCtrl($location, livecoding) {
         vm.output.push.apply(vm.output, [
             {
                 preword: vm.user + "$ ",
-                words: ["apt-get install LiveCoding.tv-Notifier"],
+                words: ["apt-get install LiveEdu.tv-Notifier"],
                 typeTime: 100,
                 delay: 2000,
                 pause: 500
@@ -143,7 +143,7 @@ function terminalCtrl($location, livecoding) {
                 pause: 200
             }, {
                 preword: vm.user + "$ ",
-                words: ["sudo apt-get -f install LiveCoding.tv-Notifier"],
+                words: ["sudo apt-get -f install LiveEdu.tv-Notifier"],
                 typeTime: 100,
                 delay: 1000,
                 pause: 500
@@ -172,16 +172,16 @@ function terminalCtrl($location, livecoding) {
                 words: ["After this operation, " + (Math.random() * 3 + 5).toFixed(2) + " MB of additional disk space will be used."],
                 pause: 200
             }, {
-                words: ["Selecting previously unselected package LiveCoding.tv-Notifier."],
+                words: ["Selecting previously unselected package LiveEdu.tv-Notifier."],
                 pause: 200
             }, {
                 words: ["(Reading database ... " + Math.floor(Math.random() * 500) + " files and directories currently installed. )"],
                 pause: 200
             }, {
-                words: ["Preparing to unpack .../LiveCoding.tv-Notifier_0.9.0-1ubuntu1_amd64.deb ..."],
+                words: ["Preparing to unpack .../LiveEdu.tv-Notifier_0.9.0-1ubuntu1_amd64.deb ..."],
                 pause: 200
             }, {
-                words: ["Unpacking LiveCoding.tv-Notifier (0.9.0-1ubuntu1) ..."],
+                words: ["Unpacking LiveEdu.tv-Notifier (0.9.0-1ubuntu1) ..."],
                 pause: 200
             }, {
                 words: ["Processing triggers for install-info (50.2.00.2fsg.1-2) ..."],
@@ -190,10 +190,10 @@ function terminalCtrl($location, livecoding) {
                 words: ["Processing triggers for man-db (2.6.7.1-1ubuntu1) ..."],
                 pause: 200
             }, {
-                words: ["Setting up LiveCoding.tv-Notifier (0.9.0-1ubuntu1) ..."],
+                words: ["Setting up LiveEdu.tv-Notifier (0.9.0-1ubuntu1) ..."],
                 pause: 200
             }, {
-                words: ["LiveCoding.tv-Notifier successfully installed!"],
+                words: ["LiveEdu.tv-Notifier successfully installed!"],
                 pause: 200
             }, {
                 words: [" "],

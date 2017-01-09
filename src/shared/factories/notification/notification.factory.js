@@ -6,7 +6,7 @@ notificationFactory.$inject = ["browserService"];
 
 function notificationFactory(browser) {
     var notifications = {}, // Collection of notifications, object keys = notification ids
-        idName = "livecoding_tv_notifier",
+        idName = "liveedu_tv_notifier",
         idNumb = 0;
 
     /**
