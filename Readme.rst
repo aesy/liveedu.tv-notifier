@@ -5,6 +5,10 @@ You can also browse whatever else is available to watch.
 
 Chrome Web Store: `Link <https://chrome.google.com/webstore/detail/lamnllmdnpadbhconapjiapmnpklmgbm/>`_.
 
+Notice
+------
+Because of lack of interest from both myself and others, I'm no longer actively maintaining this repo. I do however keep an eye on it and will gladly accept pull requests. Check the todo list or issues below if you want to contribute, but don't know how!
+
 Screenshots
 -----------
 +-------------------------------------+---------------------------------------+
@@ -13,9 +17,14 @@ Screenshots
 | .. image:: img/Screenshot_popup.png | .. image:: img/Screenshot_options.png |
 +-------------------------------------+---------------------------------------+
 
-To-do List
-----------
+To-do
+-----
 * Show user avatar and stream language (not possible with liveedu.tvs' current API).
+
+Issues
+------
+* Stream links direct to streamer profile instead of stream.
+* Stream thumbnails are broken.
 
 License
 -------
