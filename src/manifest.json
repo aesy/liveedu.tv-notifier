@@ -1,7 +1,7 @@
 {
   "name": "LiveEdu.tv Notifier",
   "description": "Desktop notifications for LiveEdu.tv (formerly LiveCoding.tv) letting you know when your favorite streamers go live!",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "homepage_url": "https://github.com/easyfuckingpeasy/LiveEdu.tv-Notifier",
   "background": {
     "page": "background.html"

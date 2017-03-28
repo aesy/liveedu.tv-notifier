@@ -7,7 +7,7 @@ Chrome Web Store: `Link <https://chrome.google.com/webstore/detail/lamnllmdnpadb
 
 Notice
 ------
-Because of lack of interest from both myself and others, I'm no longer actively maintaining this repo. I do however keep an eye on it and will gladly accept pull requests. Check the todo list or issues below if you want to contribute, but don't know how!
+Due to lack of external interest plus LiveEdus' insistance on breaking their API without notice, I'm no longer actively maintaining this repo. I do however keep an eye on it and will gladly accept pull requests. Check the todo list or issues below if you want to contribute, but don't know how!
 
 Screenshots
 -----------
@@ -20,11 +20,13 @@ Screenshots
 To-do
 -----
 * Show user avatar and stream language (not possible with liveedu.tvs' current API).
+* Don't use bower
+* Use Webpack instead of gulp
+* Update dependencies
 
 Issues
 ------
 * Stream links direct to streamer profile instead of stream.
-* Stream thumbnails are broken.
 
 License
 -------
