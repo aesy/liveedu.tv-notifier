@@ -2,9 +2,9 @@ angular
     .module("app")
     .controller("streamCtrl", streamCtrl);
 
-streamCtrl.$inject = ["$scope", "$routeParams", "lodash", "settingsService", "livecodingService", "browserService", "filterService"];
+streamCtrl.$inject = ["$scope", "$routeParams", "lodash", "settingsService", "liveeduService", "browserService", "filterService"];
 
-function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filter) {
+function streamCtrl($scope, $routeParams, _, settings, liveedu, browser, filter) {
     var vm = this;
 
     vm.collection = [];
@@ -34,15 +34,15 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
     }
 
     /**
-     * Open livecoding.tv stream chat window
+     * Open liveedu.tv stream chat window
      * @param name (string) username of streamer
      * @return undefined
      */
     vm.openChat = function(name) {
-        var windowName     = "livecodingtv.chat." + name;
+        var windowName     = "Chat: " + name;
         var windowFeatures = "resizable,width=320,height=480,dependent,dialog,minimizable," +
                              "scrollbars=no,menubar=no,toolbar=no,location=no,personalbar=no";
-        var url            = "http://www.livecoding.tv/chat/" + name + "/";
+        var url            = "http://www.liveedu.tv/" + name + "/chat/";
 
         var chatWindow = window.open(url, windowName, windowFeatures);
 
@@ -74,8 +74,8 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
 
     /**
      * Get method for sorting streams based on current page
-     * @param stream (liveCodingStream)
-     * @read liveCodingStream documentation in livecodingService
+     * @param stream (liveEduStream)
+     * @read liveEduStream documentation in liveeduService
      * @return string | int
      */
     vm.order = function(stream) {
@@ -110,13 +110,13 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
         switch (vm.currentPage) {
             case "following":
             case "livestreams":
-                promise = livecoding.getAllLive();
+                promise = liveedu.getAllLive();
                 break;
             case "videos":
-                promise = livecoding.getAllVideos();
+                promise = liveedu.getAllVideos();
                 break;
             case "scheduled":
-                promise = livecoding.getAllScheduled();
+                promise = liveedu.getAllScheduled();
                 break;
         }
 
@@ -133,12 +133,12 @@ function streamCtrl($scope, $routeParams, _, settings, livecoding, browser, filt
         }).catch(function(error) {
 	        switch (error.status) {
 		        case 401:
-			        livecoding.revokeToken();
-			        vm.error = "You do not seem to be logged in. Log in at livecoding.tv or log in from the sidebar " +
+			        liveedu.revokeToken();
+			        vm.error = "You do not seem to be logged in. Log in at liveedu.tv or log in from the sidebar " +
 				        "to keep track of your follows.";
 			        break;
 		        default:
-			        vm.error = "Could not connect to livecoding.tv (error code: " + (error.status || 0) + ")";
+			        vm.error = "Could not connect to liveedu.tv (error code: " + (error.status || 0) + ")";
 	        }
 
             vm.searching = false;

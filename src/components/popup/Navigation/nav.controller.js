@@ -2,12 +2,12 @@ angular
     .module("app")
     .controller("navCtrl", navCtrl);
 
-navCtrl.$inject = ["$rootScope", "$location", "livecodingService"];
+navCtrl.$inject = ["$rootScope", "$location", "liveeduService"];
 
-function navCtrl($rootScope, $location, livecoding) {
+function navCtrl($rootScope, $location, liveedu) {
     var vm = this;
 
-    vm.isAuthenticated = livecoding.isAuthenticated;
+    vm.isAuthenticated = liveedu.isAuthenticated;
 
     /**
      * Request list of streams to be refreshed
@@ -18,11 +18,11 @@ function navCtrl($rootScope, $location, livecoding) {
     };
 
     /**
-     * Login to livecoding.tv
+     * Login to liveedu.tv
      * @return undefined
      */
     vm.login = function () {
-        livecoding.authenticate();
+        liveedu.authenticate();
     };
 
     /**
@@ -30,7 +30,7 @@ function navCtrl($rootScope, $location, livecoding) {
      * @return undefined
      */
     vm.logout = function() {
-        livecoding.revokeToken();
+        liveedu.revokeToken();
 
         // Remove favorites also ?
     };

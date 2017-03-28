@@ -43,12 +43,12 @@ function filterService(_) {
         difficulty = input;
     }
 
-     // TODO: fetch new stream objects using `filter_fields: coding_category__slug & coding_difficulty` in livecoding API
+     // TODO: fetch new stream objects using `filter_fields: coding_category__slug & coding_difficulty` in liveedu API
      // TODO: instead of filtering matching streams out.
     /**
-     * Match a liveCodingStream with set filter strings
-     * @param stream (liveCodingStream)
-     * @read livecodingAPI->liveCodingStream
+     * Match a liveEduStream with set filter strings
+     * @param stream (liveEduStream)
+     * @read liveeduAPI->liveEduStream
      * @return boolean is match
      */
     function matchStream(stream) {
