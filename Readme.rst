@@ -7,7 +7,7 @@ Chrome Web Store: `Link <https://chrome.google.com/webstore/detail/lamnllmdnpadb
 
 Notice
 ------
-Due to lack of external interest plus LiveEdus' insistance on breaking their API without notice, I'm no longer actively maintaining this repo. I do however keep an eye on it and will gladly accept pull requests. Check the todo list or issues below if you want to contribute, but don't know how!
+Due to lack of external interest, I'm no longer actively maintaining this repo. I do however keep an eye on it and will gladly accept pull requests. Check the todo list or issues below if you want to contribute, but don't know how!
 
 Screenshots
 -----------
