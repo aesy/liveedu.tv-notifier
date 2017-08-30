@@ -3,11 +3,10 @@ LiveEdu.tv Notifier
 A chrome extension that will display notifications when your favourite streamers on `LiveEdu.tv <https://www.LiveEdu.tv/>`_ go live!
 You can also browse whatever else is available to watch.
 
-Chrome Web Store: `Link <https://chrome.google.com/webstore/detail/lamnllmdnpadbhconapjiapmnpklmgbm/>`_.
-
 Notice
 ------
-Due to lack of external interest, I'm no longer actively maintaining this repo. I do however keep an eye on it and will gladly accept pull requests. Check the todo list or issues below if you want to contribute, but don't know how!
+Due to lack of external interest and LiveEdu.tvs' inability to maintain a stable API I have decided to take the extension down.
+If you feel compelled to revive and maintain the project, I'll happily help you get started.
 
 Screenshots
 -----------
